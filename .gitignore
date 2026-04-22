@@ -1,0 +1,21 @@
+# 환경변수 (절대 커밋 금지)
+.env
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# Vercel
+.vercel
+
+# 개발 도구 내부 파일
+.bkit/
+.claude/
+
+# 테스트용 이미지
+png/
+
+# 개발 문서 (선택사항 — 올리고 싶으면 삭제)
+agents/
+QA_REPORT.md
+SELF_CHECK.md

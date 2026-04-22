@@ -1,0 +1,108 @@
+<!-- ── 온보딩 ── -->
+<div id="screen-onboarding" class="screen screen-no-nav active">
+  <div class="onb-header">
+    <div class="onb-logo">🥗 Cal AI</div>
+    <div class="onb-sub">사진으로 시작하는 칼로리 관리</div>
+  </div>
+  <div class="step-bar">
+    <div class="step-dot active" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+    <div class="step-dot" id="dot3"></div>
+    <div class="step-dot" id="dot4"></div>
+  </div>
+
+  <!-- Step1: 신체정보 -->
+  <div id="onb-step1" class="step-content">
+    <h2>기본 정보를 알려주세요</h2>
+    <p>칼로리 목표 계산에 사용돼요</p>
+    <div class="gender-cards">
+      <div class="sel-card" onclick="selectGender('male')" id="gender-male">
+        <div class="card-icon">👨</div><div class="card-title">남성</div>
+      </div>
+      <div class="sel-card" onclick="selectGender('female')" id="gender-female">
+        <div class="card-icon">👩</div><div class="card-title">여성</div>
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-group"><label>나이</label><input type="number" id="inp-age" min="10" max="99" placeholder="25"></div>
+      <div class="input-group"><label>키 (cm)</label><input type="number" id="inp-height" min="100" max="250" placeholder="170"></div>
+      <div class="input-group"><label>몸무게 (kg)</label><input type="number" id="inp-weight" min="30" max="300" placeholder="70"></div>
+    </div>
+    <div id="onb-err1" class="error-msg"></div>
+    <div class="onb-nav"><button class="btn btn-primary" onclick="goStep(2)">다음</button></div>
+  </div>
+
+  <!-- Step2: 활동량 -->
+  <div id="onb-step2" class="step-content" style="display:none">
+    <h2>평소 활동량은 어떠세요?</h2>
+    <p>정확한 칼로리 계산을 위해 필요해요</p>
+    <div class="activity-list">
+      <div class="activity-item" onclick="selectActivity('sedentary',1.2,this)">
+        <div class="act-icon">🛋️</div><div><div class="act-title">비활동</div><div class="act-desc">거의 운동 안 해요 (좌식 생활)</div></div>
+      </div>
+      <div class="activity-item" onclick="selectActivity('light',1.375,this)">
+        <div class="act-icon">🚶</div><div><div class="act-title">가벼운 활동</div><div class="act-desc">주 1~3회 가벼운 운동</div></div>
+      </div>
+      <div class="activity-item" onclick="selectActivity('moderate',1.55,this)">
+        <div class="act-icon">🏋️</div><div><div class="act-title">보통 활동</div><div class="act-desc">주 3~5회 운동</div></div>
+      </div>
+      <div class="activity-item" onclick="selectActivity('active',1.725,this)">
+        <div class="act-icon">🏃</div><div><div class="act-title">활동적</div><div class="act-desc">주 6~7회 강도 높은 운동</div></div>
+      </div>
+      <div class="activity-item" onclick="selectActivity('very_active',1.9,this)">
+        <div class="act-icon">🏅</div><div><div class="act-title">매우 활동적</div><div class="act-desc">운동선수 또는 육체노동</div></div>
+      </div>
+    </div>
+    <div id="onb-err2" class="error-msg"></div>
+    <div class="onb-nav">
+      <button class="btn btn-outline" onclick="goStep(1)" style="max-width:90px">이전</button>
+      <button class="btn btn-primary" onclick="goStep(3)">다음</button>
+    </div>
+  </div>
+
+  <!-- Step3: 목표 -->
+  <div id="onb-step3" class="step-content" style="display:none">
+    <h2>목표가 무엇인가요?</h2>
+    <p>목표에 맞게 칼로리를 조정해요</p>
+    <div class="goal-cards">
+      <div class="goal-card" onclick="selectGoal('lose',this)">
+        <div class="goal-icon">📉</div><div><div class="goal-title">체중 감량</div><div class="goal-sub">하루 500 kcal 적게</div></div>
+      </div>
+      <div class="goal-card" onclick="selectGoal('maintain',this)">
+        <div class="goal-icon">⚖️</div><div><div class="goal-title">체중 유지</div><div class="goal-sub">현재 체중 유지</div></div>
+      </div>
+      <div class="goal-card" onclick="selectGoal('gain',this)">
+        <div class="goal-icon">📈</div><div><div class="goal-title">체중 증량</div><div class="goal-sub">하루 300 kcal 더</div></div>
+      </div>
+    </div>
+    <label class="privacy-check">
+      <input type="checkbox" id="privacy-consent">
+      <span>칼로리 계산을 위해 입력한 신체 정보를 사용하는 데 동의합니다</span>
+    </label>
+    <div id="onb-err3" class="error-msg"></div>
+    <div class="onb-nav">
+      <button class="btn btn-outline" onclick="goStep(2)" style="max-width:90px">이전</button>
+      <button class="btn btn-primary" onclick="goStep(4)">다음</button>
+    </div>
+  </div>
+
+  <!-- Step4: TDEE 결과 -->
+  <div id="onb-step4" class="step-content" style="display:none">
+    <h2>추천 일일 칼로리</h2>
+    <p>계산 결과를 확인하고 수정할 수 있어요</p>
+    <div class="tdee-result">
+      <div class="tdee-number" id="tdee-display">2000</div>
+      <div class="tdee-unit">kcal / 일</div>
+    </div>
+    <div class="tdee-breakdown" id="tdee-breakdown"></div>
+    <div class="macro-preview" id="macro-preview"></div>
+    <div class="input-group">
+      <label>목표 칼로리 직접 수정 (선택)</label>
+      <input type="number" id="inp-tdee-edit" min="500" max="9999" placeholder="2000">
+    </div>
+    <div class="onb-nav">
+      <button class="btn btn-outline" onclick="goStep(3)" style="max-width:90px">이전</button>
+      <button class="btn btn-primary" onclick="saveOnboarding()">🚀 시작하기</button>
+    </div>
+  </div>
+</div>
