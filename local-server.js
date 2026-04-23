@@ -5,9 +5,10 @@ const path = require('path');
 const handleAnalyze = require('./api/analyze');
 const handleConfig = require('./api/config');
 
-const HOST = '127.0.0.1';
+const HOST = process.env.HOST || '0.0.0.0';
 const PORT = Number(process.env.PORT || 3000);
 const OUTPUT_DIR = path.join(__dirname, 'output');
+const DISPLAY_HOST = HOST === '0.0.0.0' ? '127.0.0.1' : HOST;
 
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -133,5 +134,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`Local server running at http://${HOST}:${PORT}/`);
+  console.log(`Local server running at http://${DISPLAY_HOST}:${PORT}/`);
 });

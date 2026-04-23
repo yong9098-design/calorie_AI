@@ -1,9 +1,14 @@
 // ═══════════════════════════════════════════
 //  설정 로드 / Supabase 초기화
 // ═══════════════════════════════════════════
-async function loadRuntimeConfig(forceReload=false) {
-  if(forceReload) runtimeConfig = null;
-  if(runtimeConfig) return runtimeConfig;
+function getEmbeddedRuntimeConfig() {
+  if(!EMBEDDED_RUNTIME_CONFIG?.supabaseUrl || !EMBEDDED_RUNTIME_CONFIG?.supabaseAnonKey) {
+    return null;
+  }
+  return EMBEDDED_RUNTIME_CONFIG;
+}
+
+async function fetchRuntimeConfig() {
   const res = await fetch(apiUrl('/api/config'), { cache:'no-store' });
   const json = await res.json().catch(() => ({}));
   if(!res.ok) {
@@ -12,8 +17,26 @@ async function loadRuntimeConfig(forceReload=false) {
       : `Runtime config load failed (${res.status})`;
     throw new Error(json.error||fallback);
   }
-  runtimeConfig = json;
-  return runtimeConfig;
+  return json;
+}
+
+async function loadRuntimeConfig(forceReload=false) {
+  if(forceReload) runtimeConfig = null;
+  if(runtimeConfig) return runtimeConfig;
+
+  const embeddedConfig = getEmbeddedRuntimeConfig();
+
+  try {
+    runtimeConfig = await fetchRuntimeConfig();
+    return runtimeConfig;
+  } catch(error) {
+    if(embeddedConfig) {
+      console.warn('Falling back to embedded runtime config.', error);
+      runtimeConfig = embeddedConfig;
+      return runtimeConfig;
+    }
+    throw error;
+  }
 }
 
 function getFriendlyInitError(error) {

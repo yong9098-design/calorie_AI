@@ -1,13 +1,29 @@
 // build.js — src/ 소스 파일들을 output/index.html 하나로 조립
 const fs = require('fs');
 const path = require('path');
+const { getEnv } = require('./api/_env');
 
 const ROOT = __dirname;
 const SRC = path.join(ROOT, 'src');
 const OUT = path.join(ROOT, 'output', 'index.html');
 
+function getEmbeddedRuntimeConfigScript() {
+  const runtimeConfig = {
+    supabaseUrl: getEnv('SUPABASE_URL') || '',
+    supabaseAnonKey: getEnv('SUPABASE_ANON_KEY') || '',
+  };
+
+  if (!runtimeConfig.supabaseUrl || !runtimeConfig.supabaseAnonKey) {
+    return 'window.__CAL_AI_EMBEDDED_CONFIG__ = null;';
+  }
+
+  const serialized = JSON.stringify(runtimeConfig).replace(/</g, '\\u003c');
+  return `window.__CAL_AI_EMBEDDED_CONFIG__ = ${serialized};`;
+}
+
 // 1. HTML 뼈대 읽기
 let html = fs.readFileSync(path.join(SRC, 'shell.html'), 'utf8');
+html = html.replace('<!--BUILD:RUNTIME_CONFIG-->', getEmbeddedRuntimeConfigScript());
 
 // 2. CSS 인라인 삽입
 const css = fs.readFileSync(path.join(SRC, 'styles', 'main.css'), 'utf8');

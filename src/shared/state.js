@@ -16,6 +16,7 @@ let currentStatsMode = 'week';
 let currentStep = 1;
 
 const LOCAL_API_ORIGIN = 'http://127.0.0.1:3000';
+const EMBEDDED_RUNTIME_CONFIG = globalThis.__CAL_AI_EMBEDDED_CONFIG__ || null;
 const GUEST_SESSION_KEY = 'guest_session';
 const GUEST_PROFILE_KEY = 'guest_profile';
 const GUEST_MEALS_KEY = 'guest_meals';

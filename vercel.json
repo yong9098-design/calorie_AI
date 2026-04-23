@@ -1,8 +1,6 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/api/config", "dest": "/api/config.js" },
-    { "src": "/api/analyze", "dest": "/api/analyze.js" },
     { "handle": "filesystem" },
     { "src": "/", "dest": "/output/index.html" },
     { "src": "/(.*)", "dest": "/output/$1" }
