@@ -6,7 +6,6 @@
 <title>Cal AI — 칼로리 트래커</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>window.__CAL_AI_EMBEDDED_CONFIG__ = {"supabaseUrl":"https://stboklbbfbipmqukrahc.supabase.co","supabaseAnonKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0Ym9rbGJiZmJpcG1xdWtyYWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDMxMjgsImV4cCI6MjA5MjE3OTEyOH0.-vxUZw_29MLKfINm30LzQ5TNXs1aXs8ewqPb-oilLpE"};</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -152,10 +151,11 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 .empty-sub{font-size:13px;margin-top:4px}
 
 /* ── FAB ── */
-#fab{position:fixed;bottom:76px;right:calc(50% - 215px + 16px);width:54px;height:54px;border-radius:50%;background:var(--green);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(34,197,94,.4);z-index:90;transition:transform .2s}
-#fab:hover{transform:scale(1.08)}
+#fab{position:fixed;bottom:76px;right:calc(50% - 215px + 16px);width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(34,197,94,.45);z-index:90;transition:transform .2s,box-shadow .2s}
+#fab:hover{transform:scale(1.1);box-shadow:0 8px 24px rgba(34,197,94,.55)}
+#fab:active{transform:scale(0.95)}
 #fab.visible{display:flex}
-#fab svg{width:24px;height:24px}
+#fab svg{width:26px;height:26px}
 
 /* ── 오버레이 / 시트 ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center}
@@ -220,10 +220,32 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 .settings-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border)}
 .si-label{font-size:14px;font-weight:500}
 .si-sub{font-size:12px;color:var(--sub);margin-top:2px}
-.model-radio-group{display:flex;gap:8px;padding:0 16px 14px}
-.model-radio{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;border:2px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s;flex:1;text-align:center;line-height:1.4}
+.model-radio-group{display:flex;gap:10px;padding:0 16px 14px}
+.model-radio{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 12px;border:2px solid var(--border);border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s;flex:1;text-align:center;line-height:1.4;gap:4px}
 .model-radio.selected{border-color:var(--green);background:var(--green-bg);color:var(--green-dark)}
 .model-radio small{font-size:11px;font-weight:400;color:var(--sub)}
+.model-radio .model-badge{font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px;margin-top:2px;white-space:nowrap}
+.model-radio:not(.selected) .model-badge{background:#f3f4f6;color:#6b7280}
+.model-radio.selected .model-badge{background:rgba(34,197,94,.15);color:#15803d}
+.detail-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;color:#15803d;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:12px}
+.detail-btn svg{width:16px;height:16px;stroke:#15803d;flex-shrink:0}
+.detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:flex-end;justify-content:center}
+.detail-overlay.active{display:flex}
+.detail-sheet{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:430px;max-height:82vh;display:flex;flex-direction:column}
+.detail-sheet-head{padding:16px 16px 0;flex-shrink:0}
+.detail-sheet-head h2{font-size:17px;font-weight:700;margin-bottom:2px}
+.detail-sheet-head p{font-size:13px;color:var(--sub);margin-bottom:12px}
+.detail-sheet-head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.detail-sheet-body{padding:0 16px 32px;overflow-y:auto}
+.detail-table{width:100%;border-collapse:collapse;font-size:13px}
+.detail-table th{background:#f9fafb;padding:9px 8px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e5e7eb;white-space:nowrap}
+.detail-table td{padding:9px 8px;border-bottom:1px solid #f3f4f6;color:#111827;vertical-align:top}
+.detail-table .total-row td{border-bottom:none;font-weight:700;background:#f0fdf4;color:#15803d}
+.detail-table .cal-cell{color:#16a34a;font-weight:600;white-space:nowrap}
+.detail-table .note-cell{color:#6b7280;font-size:12px}
+.meal-card.clickable{cursor:pointer;transition:background .15s}
+.meal-card.clickable:active{background:#f0fdf4}
+.meal-card .detail-hint{font-size:11px;color:#16a34a;margin-top:2px}
 
 </style>
 </head>
@@ -405,7 +427,7 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
     </div>
   </div>
   <div class="meal-section" id="home-meals-wrap">
-    <div class="empty-state"><div class="empty-icon">🍽️</div><div class="empty-text">오늘 기록된 식사가 없어요</div><div class="empty-sub">아래 + 버튼으로 음식을 분석해보세요</div></div>
+    <div class="empty-state"><div class="empty-icon">🍽️</div><div class="empty-text">오늘 기록된 식사가 없어요</div><div class="empty-sub">📸 카메라 버튼을 눌러 음식을 찍어보세요</div></div>
   </div>
 </div>
 
@@ -442,8 +464,16 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
   <div class="settings-section">
     <div class="settings-section-title">AI 분석 모델</div>
     <div class="model-radio-group">
-      <div class="model-radio selected" id="model-flash" onclick="selectModel('flash')">⚡ Flash<br><small>빠름 · 절약</small></div>
-      <div class="model-radio" id="model-pro" onclick="selectModel('pro')">🎯 Pro<br><small>정확 · 고비용</small></div>
+      <div class="model-radio selected" id="model-flash" onclick="selectModel('flash')">
+        ⚡ Flash
+        <small>빠름 · 절약</small>
+        <span class="model-badge">하루 20장 무료</span>
+      </div>
+      <div class="model-radio" id="model-pro" onclick="selectModel('pro')">
+        🎯 Pro
+        <small>정확 · 고비용</small>
+        <span class="model-badge">장당 3원 · Gemini 2.5</span>
+      </div>
     </div>
   </div>
   <div class="settings-section">
@@ -492,9 +522,36 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 
 <!-- ── FAB ── -->
 <button id="fab" title="음식 분석">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
 </button>
-<input type="file" id="img-input" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="img-input-camera" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="img-input-gallery" accept="image/*" style="display:none">
+
+<!-- 바텀 시트 오버레이 -->
+<div id="bottom-sheet-overlay" onclick="closeBottomSheet()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;transition:opacity .2s"></div>
+
+<!-- 바텀 시트 패널 -->
+<div id="bottom-sheet" style="display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-radius:24px 24px 0 0;z-index:201;padding:12px 20px calc(env(safe-area-inset-bottom,0px) + 24px);box-shadow:0 -4px 24px rgba(0,0,0,0.12)">
+  <div style="width:36px;height:4px;background:#d1d5db;border-radius:2px;margin:0 auto 20px"></div>
+  <p style="text-align:center;font-size:12px;font-weight:600;color:#9ca3af;letter-spacing:.08em;text-transform:uppercase;margin:0 0 16px">음식 사진 추가</p>
+  <div style="display:flex;gap:12px;margin-bottom:4px">
+    <!-- 카메라 버튼 -->
+    <button onclick="openCamera()" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 12px;border:none;border-radius:16px;background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);color:#fff;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(34,197,94,0.35);transition:transform .15s,box-shadow .15s" onmousedown="this.style.transform='scale(0.96)';this.style.boxShadow='0 2px 6px rgba(34,197,94,0.3)'" onmouseup="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(34,197,94,0.35)'" onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(34,197,94,0.35)'">
+      <span style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </span>
+      카메라로 촬영
+    </button>
+    <!-- 갤러리 버튼 -->
+    <button onclick="openGallery()" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 12px;border:none;border-radius:16px;background:linear-gradient(135deg,#6366f1 0%,#4f46e5 100%);color:#fff;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(99,102,241,0.35);transition:transform .15s,box-shadow .15s" onmousedown="this.style.transform='scale(0.96)';this.style.boxShadow='0 2px 6px rgba(99,102,241,0.3)'" onmouseup="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(99,102,241,0.35)'" onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(99,102,241,0.35)'">
+      <span style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </span>
+      갤러리에서 선택
+    </button>
+  </div>
+  <button onclick="closeBottomSheet()" style="width:100%;margin-top:12px;padding:14px;border:none;border-radius:12px;background:#f3f4f6;color:#6b7280;font-size:14px;font-weight:500;cursor:pointer">취소</button>
+</div>
 
 <!-- ── 분석/수정 오버레이 ── -->
 <div class="overlay" id="analysis-overlay">
@@ -522,8 +579,32 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
       <button class="mt-btn" onclick="selectMealType('dinner',this)">🍽️ 저녁</button>
       <button class="mt-btn" onclick="selectMealType('snack',this)">🍪 간식</button>
     </div>
+    <button class="detail-btn" id="detail-analysis-btn" onclick="showDetailModal(currentComponents)" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+      식단 칼로리 분석 보기
+    </button>
     <div id="save-err" class="error-msg"></div>
     <button class="btn btn-primary" id="save-btn" onclick="saveMeal()">저장</button>
+  </div>
+</div>
+
+<!-- ── 식단 칼로리 상세 분석 모달 ── -->
+<div class="detail-overlay" id="detail-overlay" onclick="if(event.target===this)closeDetailModal()">
+  <div class="detail-sheet">
+    <div class="detail-sheet-head">
+      <div class="detail-sheet-head-row">
+        <div>
+          <h2>식단 칼로리 분석</h2>
+          <p>제시된 이미지의 구성 요소별 추정치는 다음과 같습니다.</p>
+        </div>
+        <button class="close-btn" onclick="closeDetailModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="detail-sheet-body">
+      <div id="detail-content"></div>
+    </div>
   </div>
 </div>
 
@@ -572,11 +653,11 @@ let currentReanalyzeMeal = null;
 let historyDate = new Date();
 let currentBase64 = null;
 let currentImageMime = 'image/jpeg';
+let currentComponents = null;
 let currentStatsMode = 'week';
 let currentStep = 1;
 
 const LOCAL_API_ORIGIN = 'http://127.0.0.1:3000';
-const EMBEDDED_RUNTIME_CONFIG = globalThis.__CAL_AI_EMBEDDED_CONFIG__ || null;
 const GUEST_SESSION_KEY = 'guest_session';
 const GUEST_PROFILE_KEY = 'guest_profile';
 const GUEST_MEALS_KEY = 'guest_meals';
@@ -648,14 +729,9 @@ function applyGuestProfile(temp = {}) {
 // ═══════════════════════════════════════════
 //  설정 로드 / Supabase 초기화
 // ═══════════════════════════════════════════
-function getEmbeddedRuntimeConfig() {
-  if(!EMBEDDED_RUNTIME_CONFIG?.supabaseUrl || !EMBEDDED_RUNTIME_CONFIG?.supabaseAnonKey) {
-    return null;
-  }
-  return EMBEDDED_RUNTIME_CONFIG;
-}
-
-async function fetchRuntimeConfig() {
+async function loadRuntimeConfig(forceReload=false) {
+  if(forceReload) runtimeConfig = null;
+  if(runtimeConfig) return runtimeConfig;
   const res = await fetch(apiUrl('/api/config'), { cache:'no-store' });
   const json = await res.json().catch(() => ({}));
   if(!res.ok) {
@@ -664,26 +740,8 @@ async function fetchRuntimeConfig() {
       : `Runtime config load failed (${res.status})`;
     throw new Error(json.error||fallback);
   }
-  return json;
-}
-
-async function loadRuntimeConfig(forceReload=false) {
-  if(forceReload) runtimeConfig = null;
-  if(runtimeConfig) return runtimeConfig;
-
-  const embeddedConfig = getEmbeddedRuntimeConfig();
-
-  try {
-    runtimeConfig = await fetchRuntimeConfig();
-    return runtimeConfig;
-  } catch(error) {
-    if(embeddedConfig) {
-      console.warn('Falling back to embedded runtime config.', error);
-      runtimeConfig = embeddedConfig;
-      return runtimeConfig;
-    }
-    throw error;
-  }
+  runtimeConfig = json;
+  return runtimeConfig;
 }
 
 function getFriendlyInitError(error) {
@@ -892,11 +950,34 @@ async function saveOnboarding() {
   };
   localStorage.setItem('onboarding_temp', JSON.stringify(data));
   localStorage.setItem('onboarding_complete','true');
-  showScreen('auth');
+
+  if (currentUser) {
+    if (isGuestMode()) {
+      applyGuestProfile({ ...data });
+    } else {
+      await syncOnboarding(currentUser.id);
+    }
+    localStorage.removeItem('onboarding_temp');
+    await loadProfile();
+    showMain('home');
+  } else {
+    showScreen('auth');
+  }
 }
 
 function resetOnboarding() {
-  if(!confirm('온보딩을 다시 진행할까요?')) return;
+  openResetModal();
+}
+function openResetModal() {
+  document.getElementById('reset-modal-overlay').style.display = 'block';
+  document.getElementById('reset-modal').style.display = 'block';
+}
+function closeResetModal() {
+  document.getElementById('reset-modal-overlay').style.display = 'none';
+  document.getElementById('reset-modal').style.display = 'none';
+}
+function executeReset() {
+  closeResetModal();
   localStorage.removeItem('onboarding_complete');
   localStorage.removeItem('onboarding_temp');
   currentStep=1;
@@ -964,13 +1045,27 @@ async function handleAuth(mode) {
   } finally { setBtn(btnId, false, mode==='login'?'로그인':'회원가입'); }
 }
 
-async function handleGuestLogin() {
-  hideE('auth-error');
-  document.getElementById('auth-success').style.display='none';
-  const nickname = prompt('이름 또는 별명을 입력해 주세요');
-  if(nickname===null) return;
-  const name = nickname.trim();
-  if(!name) { showAuthError('이름 또는 별명을 입력해 주세요.'); return; }
+function openGuestModal() {
+  document.getElementById('guest-nickname-input').value = '';
+  document.getElementById('guest-modal-error').style.display = 'none';
+  document.getElementById('guest-modal-overlay').style.display = 'block';
+  document.getElementById('guest-modal').style.display = 'block';
+  setTimeout(() => document.getElementById('guest-nickname-input').focus(), 100);
+}
+function closeGuestModal() {
+  document.getElementById('guest-modal-overlay').style.display = 'none';
+  document.getElementById('guest-modal').style.display = 'none';
+}
+async function confirmGuestModal() {
+  const name = document.getElementById('guest-nickname-input').value.trim();
+  const errEl = document.getElementById('guest-modal-error');
+  if(!name) {
+    errEl.textContent = '닉네임을 입력해 주세요.';
+    errEl.style.display = 'block';
+    document.getElementById('guest-nickname-input').focus();
+    return;
+  }
+  closeGuestModal();
   setBtn('guest-btn', true, '시작 중...');
   try {
     profile = { daily_calorie_goal:2000, protein_goal:150, carb_goal:250, fat_goal:65, gemini_model:'flash' };
@@ -986,6 +1081,11 @@ async function handleGuestLogin() {
     setBtn('guest-btn', false, '비회원으로 시작');
   }
 }
+function handleGuestLogin() {
+  hideE('auth-error');
+  document.getElementById('auth-success').style.display='none';
+  openGuestModal();
+}
 
 async function syncOnboarding(userId) {
   const temp = JSON.parse(localStorage.getItem('onboarding_temp')||'{}');
@@ -994,16 +1094,46 @@ async function syncOnboarding(userId) {
   localStorage.removeItem('onboarding_temp');
 }
 
-async function signOut() {
-  const guest = isGuestMode();
-  const msg = guest
-    ? '비회원 세션에서 나갈까요? 저장된 비회원 데이터는 이 브라우저에 유지됩니다.'
-    : '로그아웃 하시겠어요?';
-  if(!confirm(msg)) return;
-  if(!guest) await sbClient?.auth.signOut();
+let _logoutIsGuest = false;
+
+function signOut() {
+  _logoutIsGuest = isGuestMode();
+  const icon   = document.getElementById('logout-modal-icon');
+  const title  = document.getElementById('logout-modal-title');
+  const desc   = document.getElementById('logout-modal-desc');
+  const btn    = document.getElementById('logout-confirm-btn');
+  if(_logoutIsGuest) {
+    icon.textContent  = '👋';
+    icon.style.background = '#fff7ed';
+    title.textContent = '비회원 세션을 종료할까요?';
+    desc.textContent  = '저장된 비회원 데이터는 이 브라우저에 계속 유지됩니다. 언제든 다시 비회원으로 시작할 수 있어요.';
+    btn.style.background = 'linear-gradient(135deg,#f97316 0%,#ea580c 100%)';
+    btn.style.boxShadow  = '0 4px 12px rgba(249,115,22,0.35)';
+    btn.textContent = '세션 종료';
+  } else {
+    icon.textContent  = '🔐';
+    icon.style.background = '#fef2f2';
+    title.textContent = '로그아웃 할까요?';
+    desc.textContent  = '로그아웃 후에도 기록은 서버에 안전하게 저장돼요. 언제든 다시 로그인할 수 있어요.';
+    btn.style.background = 'linear-gradient(135deg,#ef4444 0%,#dc2626 100%)';
+    btn.style.boxShadow  = '0 4px 12px rgba(239,68,68,0.35)';
+    btn.textContent = '로그아웃';
+  }
+  document.getElementById('logout-modal-overlay').style.display = 'block';
+  document.getElementById('logout-modal').style.display = 'block';
+}
+
+function closeLogoutModal() {
+  document.getElementById('logout-modal-overlay').style.display = 'none';
+  document.getElementById('logout-modal').style.display = 'none';
+}
+
+async function executeLogout() {
+  closeLogoutModal();
+  if(!_logoutIsGuest) await sbClient?.auth.signOut();
   currentUser = null;
   profile = { daily_calorie_goal:2000, protein_goal:150, carb_goal:250, fat_goal:65, gemini_model:'flash' };
-  if(guest) clearGuestSession();
+  if(_logoutIsGuest) clearGuestSession();
   localStorage.removeItem('onboarding_complete');
   showScreen('auth');
 }
@@ -1060,7 +1190,7 @@ function renderRing(meals) {
 
 function renderHomeMeals(meals) {
   const wrap = document.getElementById('home-meals-wrap');
-  if(!meals.length) { wrap.innerHTML='<div class="empty-state"><div class="empty-icon">🍽️</div><div class="empty-text">오늘 기록된 식사가 없어요</div><div class="empty-sub">아래 + 버튼으로 음식을 분석해보세요</div></div>'; return; }
+  if(!meals.length) { wrap.innerHTML='<div class="empty-state"><div class="empty-icon">🍽️</div><div class="empty-text">오늘 기록된 식사가 없어요</div><div class="empty-sub">📸 카메라 버튼을 눌러 음식을 찍어보세요</div></div>'; return; }
   const groups = { breakfast:[], lunch:[], dinner:[], snack:[] };
   meals.forEach(m => (groups[m.meal_type]||groups.snack).push(m));
   let html = '';
@@ -1071,7 +1201,11 @@ function renderHomeMeals(meals) {
       const thumb = m.image_url
         ? `<img class="meal-thumb" src="${escH(m.image_url)}" alt="food">`
         : `<div class="meal-thumb-icon">${MEAL_ICON[m.meal_type]||'🍴'}</div>`;
-      html += `<div class="meal-card">${thumb}<div class="meal-info"><div class="meal-name">${escH(m.food_name)}</div><div class="meal-type-tag">단백질 ${m.protein||0}g · 탄수 ${m.carbs||0}g · 지방 ${m.fat||0}g</div></div><div class="meal-kcal">${m.calories}</div></div>`;
+      const hasDetail = !!m.notes;
+      const notesAttr = hasDetail ? ` data-notes="${escH(m.notes).replace(/"/g,'&quot;')}"` : '';
+      const clickAttr = hasDetail ? ` onclick="showMealDetailFromEl(this)"` : '';
+      const hint = hasDetail ? `<div class="detail-hint">📊 칼로리 분석 보기</div>` : '';
+      html += `<div class="meal-card${hasDetail?' clickable':''}"${clickAttr}${notesAttr}>${thumb}<div class="meal-info"><div class="meal-name">${escH(m.food_name)}</div><div class="meal-type-tag">단백질 ${m.protein||0}g · 탄수 ${m.carbs||0}g · 지방 ${m.fat||0}g</div>${hint}</div><div class="meal-kcal">${m.calories}</div></div>`;
     });
   });
   wrap.innerHTML = html;
@@ -1085,11 +1219,29 @@ function renderHomeMeals(meals) {
 document.getElementById('fab').addEventListener('click', () => {
   currentEditMealId = null; currentBase64 = null; currentImageMime = 'image/jpeg';
   clearForm();
-  document.getElementById('img-input').value='';
-  document.getElementById('img-input').click();
+  openBottomSheet();
 });
 
-document.getElementById('img-input').addEventListener('change', async e => {
+function openBottomSheet() {
+  document.getElementById('bottom-sheet-overlay').style.display = 'block';
+  document.getElementById('bottom-sheet').style.display = 'block';
+}
+function closeBottomSheet() {
+  document.getElementById('bottom-sheet-overlay').style.display = 'none';
+  document.getElementById('bottom-sheet').style.display = 'none';
+}
+function openCamera() {
+  closeBottomSheet();
+  document.getElementById('img-input-camera').value = '';
+  document.getElementById('img-input-camera').click();
+}
+function openGallery() {
+  closeBottomSheet();
+  document.getElementById('img-input-gallery').value = '';
+  document.getElementById('img-input-gallery').click();
+}
+
+async function handleImageFile(e) {
   const file = e.target.files[0]; if(!file) return;
   showLoad('AI가 분석하고 있어요...');
   currentImageMime = file.type||'image/jpeg';
@@ -1098,7 +1250,10 @@ document.getElementById('img-input').addEventListener('change', async e => {
     setPreview(currentBase64, currentImageMime);
     await runGemini(currentBase64, currentImageMime);
   } catch(err) { hideLoad(); showFallback(); }
-});
+}
+
+document.getElementById('img-input-camera').addEventListener('change', handleImageFile);
+document.getElementById('img-input-gallery').addEventListener('change', handleImageFile);
 
 const toB64 = file => new Promise((res,rej) => { const r=new FileReader(); r.onload=e=>res(e.target.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file); });
 
@@ -1125,10 +1280,12 @@ async function runGemini(b64, mime) {
     if(!res.ok) throw new Error(json.error||'AI analysis failed');
     const text = json.text||'';
     const result = parseGemini(text);
+    currentComponents = Array.isArray(result.components) && result.components.length ? result.components : null;
     hideLoad();
     fillForm(result);
     document.getElementById('ai-fail-banner').style.display='none';
     document.getElementById('analysis-title').textContent='음식 분석 결과';
+    document.getElementById('detail-analysis-btn').style.display = currentComponents ? 'flex' : 'none';
     openOverlay();
   } catch(e) { hideLoad(); showFallback(); }
 }
@@ -1152,8 +1309,10 @@ function clearForm() {
   ['inp-food','inp-cal','inp-prot','inp-carb','inp-fat','inp-qty'].forEach(id => document.getElementById(id).value='');
   document.getElementById('preview-wrap').innerHTML='<div class="img-placeholder">📷</div>';
   document.getElementById('ai-fail-banner').style.display='none';
+  document.getElementById('detail-analysis-btn').style.display='none';
   hideE('save-err');
   currentMealType='breakfast';
+  currentComponents=null;
   document.querySelectorAll('.mt-btn').forEach((b,i)=>b.classList.toggle('selected',i===0));
 }
 
@@ -1165,6 +1324,31 @@ function showFallback() {
 
 function openOverlay() { document.getElementById('analysis-overlay').classList.add('active'); }
 function closeAnalysis() { document.getElementById('analysis-overlay').classList.remove('active'); currentEditMealId=null; }
+
+function showDetailModal(components) {
+  if(!Array.isArray(components)||!components.length) return;
+  const totalMin = components.reduce((s,c)=>s+(c.calories_min||0),0);
+  const totalMax = components.reduce((s,c)=>s+(c.calories_max||0),0);
+  const calFmt = (min,max) => min===max ? `${min}` : `${min} ~ ${max}`;
+  let rows = components.map(c=>`<tr>
+    <td>${escH(c.name)}</td>
+    <td>${escH(c.quantity||'')}</td>
+    <td class="cal-cell">${calFmt(c.calories_min||0,c.calories_max||c.calories_min||0)}</td>
+    <td class="note-cell">${escH(c.note||'')}</td>
+  </tr>`).join('');
+  rows += `<tr class="total-row">
+    <td>합계</td>
+    <td>${components.length}가지</td>
+    <td class="cal-cell">${calFmt(totalMin,totalMax)}</td>
+    <td></td>
+  </tr>`;
+  document.getElementById('detail-content').innerHTML=`<table class="detail-table"><thead><tr><th>구성 요소</th><th>양 (추정)</th><th>칼로리 (kcal)</th><th>비고</th></tr></thead><tbody>${rows}</tbody></table>`;
+  document.getElementById('detail-overlay').classList.add('active');
+}
+function closeDetailModal() { document.getElementById('detail-overlay').classList.remove('active'); }
+function showMealDetailFromEl(el) {
+  try { const c=JSON.parse(el.dataset.notes||'[]'); if(Array.isArray(c)&&c.length) showDetailModal(c); } catch(e){}
+}
 
 function selectMealType(type, el) {
   currentMealType = type;
@@ -1192,6 +1376,7 @@ async function saveMeal() {
       fat: parseFloat(document.getElementById('inp-fat').value)||0,
       quantity: document.getElementById('inp-qty').value||'1인분',
       image_url: currentBase64 ? `data:${currentImageMime};base64,${currentBase64}` : null,
+      notes: currentComponents ? JSON.stringify(currentComponents) : null,
       logged_at: new Date().toISOString()
     };
     if(isGuestMode()) {
@@ -1341,8 +1526,7 @@ async function reanalyzeSaved() {
 function reanalyzeNew() {
   closeReanalysis();
   clearForm();
-  document.getElementById('img-input').value='';
-  document.getElementById('img-input').click();
+  openBottomSheet();
 }
 
 
@@ -1430,6 +1614,19 @@ async function updateProfileModel(m) {
   try { await sbClient.from('profiles').update({gemini_model:m}).eq('id',currentUser.id); } catch(e){}
 }
 
+function showToast(msg = '저장되었어요!') {
+  const el = document.getElementById('save-toast');
+  document.getElementById('save-toast-msg').textContent = msg;
+  el.style.display = 'block';
+  el.style.opacity = '1';
+  el.style.transition = 'opacity .3s';
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => {
+    el.style.opacity = '0';
+    setTimeout(() => { el.style.display = 'none'; }, 300);
+  }, 2200);
+}
+
 async function saveGoals() {
   const cal=parseInt(document.getElementById('set-cal-goal').value)||2000;
   const prot=parseInt(document.getElementById('set-prot-goal').value)||150;
@@ -1440,7 +1637,7 @@ async function saveGoals() {
   else if(sbClient&&currentUser) {
     try { await sbClient.from('profiles').upsert({id:currentUser.id,daily_calorie_goal:cal,protein_goal:prot,carb_goal:carb,fat_goal:fat}); } catch(e){}
   }
-  alert('목표가 저장되었어요!');
+  showToast('목표가 저장되었어요! 🎯');
 }
 
 
@@ -1451,5 +1648,81 @@ async function saveGoals() {
 window.addEventListener('DOMContentLoaded', initApp);
 
 </script>
+
+<!-- ── 저장 완료 토스트 ── -->
+<div id="save-toast" style="display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:600;pointer-events:none">
+  <div style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:13px 20px;border-radius:50px;box-shadow:0 8px 24px rgba(34,197,94,0.4);font-size:14px;font-weight:600;white-space:nowrap">
+    <span style="font-size:18px">✅</span>
+    <span id="save-toast-msg">목표가 저장되었어요!</span>
+  </div>
+</div>
+
+<!-- ── 재설정 확인 모달 ── -->
+<div id="reset-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)"></div>
+<div id="reset-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 40px);max-width:340px;background:#fff;border-radius:24px;z-index:501;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2)">
+  <div style="padding:28px 24px 20px;text-align:center">
+    <div style="width:64px;height:64px;border-radius:50%;background:#fff7ed;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px">🔄</div>
+    <div style="font-size:17px;font-weight:700;color:#111827;margin-bottom:8px">프로필을 재설정할까요?</div>
+    <div style="font-size:13px;color:#6b7280;line-height:1.6">온보딩을 처음부터 다시 진행해요.<br>기존에 입력한 목표 수치는 변경될 수 있어요.</div>
+  </div>
+  <div style="height:1px;background:#f3f4f6;margin:0 24px"></div>
+  <div style="display:flex;gap:10px;padding:16px 20px 20px">
+    <button onclick="closeResetModal()" style="flex:1;padding:13px;border:2px solid #e5e7eb;border-radius:12px;background:#fff;color:#374151;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s" onmouseenter="this.style.background='#f9fafb'" onmouseleave="this.style.background='#fff'">취소</button>
+    <button onclick="executeReset()" style="flex:1;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(249,115,22,0.35);transition:transform .15s" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">재설정</button>
+  </div>
+</div>
+
+<!-- ── 로그아웃 확인 모달 ── -->
+<div id="logout-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)"></div>
+<div id="logout-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 40px);max-width:340px;background:#fff;border-radius:24px;z-index:501;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2)">
+  <!-- 상단 아이콘 영역 -->
+  <div style="padding:28px 24px 20px;text-align:center">
+    <div id="logout-modal-icon" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px"></div>
+    <div id="logout-modal-title" style="font-size:17px;font-weight:700;color:#111827;margin-bottom:8px"></div>
+    <div id="logout-modal-desc" style="font-size:13px;color:#6b7280;line-height:1.6"></div>
+  </div>
+  <!-- 구분선 -->
+  <div style="height:1px;background:#f3f4f6;margin:0 24px"></div>
+  <!-- 버튼 영역 -->
+  <div style="display:flex;gap:10px;padding:16px 20px 20px">
+    <button onclick="closeLogoutModal()" style="flex:1;padding:13px;border:2px solid #e5e7eb;border-radius:12px;background:#fff;color:#374151;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s" onmouseenter="this.style.background='#f9fafb'" onmouseleave="this.style.background='#fff'">취소</button>
+    <button id="logout-confirm-btn" onclick="executeLogout()" style="flex:1;padding:13px;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:transform .15s,opacity .15s" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">확인</button>
+  </div>
+</div>
+
+<!-- ── 비회원 닉네임 모달 ── -->
+<div id="guest-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)" onclick="closeGuestModal()"></div>
+<div id="guest-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 40px);max-width:360px;background:#fff;border-radius:24px;z-index:501;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2)">
+  <!-- 헤더 그라디언트 -->
+  <div style="background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);padding:28px 24px 24px;text-align:center">
+    <div style="width:56px;height:56px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px">🥗</div>
+    <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:4px">Cal AI에 오신 걸 환영해요!</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.85)">사진 한 장으로 시작하는 스마트 칼로리 관리</div>
+  </div>
+  <!-- 입력 영역 -->
+  <div style="padding:24px">
+    <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px">닉네임을 입력해 주세요</div>
+    <div style="position:relative">
+      <input id="guest-nickname-input" type="text" maxlength="20" placeholder="예: 건강한 민준"
+        style="width:100%;padding:14px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:15px;outline:none;box-sizing:border-box;transition:border-color .2s;font-family:inherit"
+        onfocus="this.style.borderColor='#22c55e'"
+        onblur="this.style.borderColor='#e5e7eb'"
+        onkeydown="if(event.key==='Enter')confirmGuestModal()">
+    </div>
+    <div id="guest-modal-error" style="display:none;font-size:12px;color:#ef4444;margin-top:6px;padding-left:4px"></div>
+    <!-- 혜택 배지 -->
+    <div style="display:flex;gap:6px;margin-top:16px">
+      <div style="flex:1;background:#f0fdf4;border-radius:10px;padding:10px 8px;text-align:center;font-size:11px;color:#15803d;font-weight:500;line-height:1.5">✅ 무료 사용<br>하루 20장</div>
+      <div style="flex:1;background:#f0f9ff;border-radius:10px;padding:10px 8px;text-align:center;font-size:11px;color:#0369a1;font-weight:500;line-height:1.5">📊 칼로리<br>자동 분석</div>
+      <div style="flex:1;background:#fdf4ff;border-radius:10px;padding:10px 8px;text-align:center;font-size:11px;color:#7e22ce;font-weight:500;line-height:1.5">🔒 데이터<br>로컬 저장</div>
+    </div>
+    <!-- CTA 버튼 -->
+    <button onclick="confirmGuestModal()" style="width:100%;margin-top:16px;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);color:#fff;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(34,197,94,0.4);transition:transform .15s" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
+      무료로 시작하기 →
+    </button>
+    <p style="text-align:center;font-size:11px;color:#9ca3af;margin:10px 0 0">회원가입 없이 바로 시작할 수 있어요</p>
+  </div>
+</div>
+
 </body>
 </html>
