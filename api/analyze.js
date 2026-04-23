@@ -6,10 +6,11 @@ const MODEL_IDS = {
 };
 
 const ANALYSIS_PROMPT = [
-  'Analyze this food photo and estimate nutrition for a single serving.',
-  'Return the food name, quantity, total calories, protein, carbs, and fat.',
-  'Also return a components array listing each visible food item separately with its name, estimated quantity, calorie range (min/max), and a brief note.',
-  'If the dish appears Korean, return food_name, component names, quantities, and notes in Korean.',
+  '이 음식 사진을 분석하여 1인분 기준 영양 정보를 추정해주세요.',
+  '음식명, 양, 총 칼로리, 단백질, 탄수화물, 지방을 반환하세요.',
+  '또한 사진에 보이는 각 음식 항목을 개별적으로 나열한 components 배열도 반환하세요.',
+  'components에는 각 항목의 이름, 예상 양, 칼로리 범위(최소/최대), 간단한 설명을 포함하세요.',
+  '모든 텍스트(food_name, 음식명, 설명, note 등)는 반드시 한국어로 작성하세요.',
 ].join(' ');
 
 const RESPONSE_JSON_SCHEMA = {
