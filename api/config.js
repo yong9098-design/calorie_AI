@@ -1,24 +1,30 @@
-const { getEnv } = require('./_env');
+import { getEnv } from './_env.js';
 
-module.exports = async (req, res) => {
-  res.setHeader('Cache-Control', 'no-store');
+export const config = { runtime: 'edge' };
 
+export default async function handler(req) {
   if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
-    return res.status(405).json({ error: 'Method Not Allowed' });
+    return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
+      status: 405,
+      headers: { Allow: 'GET', 'Content-Type': 'application/json' },
+    });
   }
 
   const SUPABASE_URL = getEnv('SUPABASE_URL');
   const SUPABASE_ANON_KEY = getEnv('SUPABASE_ANON_KEY');
 
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    return res.status(500).json({
-      error: 'Missing SUPABASE_URL or SUPABASE_ANON_KEY',
+    return new Response(JSON.stringify({ error: 'Missing SUPABASE_URL or SUPABASE_ANON_KEY' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
-  return res.status(200).json({
-    supabaseUrl: SUPABASE_URL,
-    supabaseAnonKey: SUPABASE_ANON_KEY,
-  });
-};
+  return new Response(
+    JSON.stringify({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY }),
+    {
+      status: 200,
+      headers: { 'Cache-Control': 'no-store', 'Content-Type': 'application/json' },
+    }
+  );
+}
