@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Cal AI — 칼로리 트래커</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -1645,6 +1648,11 @@ async function saveGoals() {
 // ═══════════════════════════════════════════
 //  앱 진입점
 // ═══════════════════════════════════════════
+
+// 서버리스 함수 사전 Warm-up: 페이지 로드 즉시 /api/config를 fire-and-forget으로 호출해
+// Vercel Cold Start를 앱 초기화 전에 미리 해소한다.
+fetch('/api/config').catch(() => {});
+
 window.addEventListener('DOMContentLoaded', initApp);
 
 </script>

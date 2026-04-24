@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "regions": ["hnd1"],
   "builds": [
     { "src": "api/config.js", "use": "@vercel/node" },
     { "src": "api/analyze.js", "use": "@vercel/node" },
