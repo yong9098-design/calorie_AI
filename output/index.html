@@ -657,6 +657,7 @@ let currentReanalyzeMeal = null;
 let historyDate = new Date();
 const mealCache = new Map();
 let historyDebounceTimer = null;
+let preloadPromise = null;
 let currentBase64 = null;
 let currentImageMime = 'image/jpeg';
 let currentComponents = null;
@@ -680,8 +681,30 @@ const escH = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 const fmtDate = d => { const D=['일','월','화','수','목','금','토']; return `${d.getMonth()+1}월 ${d.getDate()}일 (${D[d.getDay()]})`; };
 const localDS = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const getDR = d => { const s=new Date(d); s.setHours(0,0,0,0); const e=new Date(d); e.setHours(23,59,59,999); return {start:s.toISOString(),end:e.toISOString()}; };
-const mealCacheKey = d => d.toISOString().slice(0,10);
-function invalidateMealCache() { mealCache.clear(); }
+const mealCacheKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+function invalidateMealCache() { mealCache.clear(); preloadPromise = preloadMealData(); }
+
+async function preloadMealData() {
+  if (!sbClient || !currentUser || isGuestMode()) return;
+  const since = new Date();
+  since.setDate(since.getDate() - 30);
+  try {
+    const rows = unwrapSupabase(
+      await sbClient.from('meal_logs').select('*')
+        .eq('user_id', currentUser.id)
+        .gte('logged_at', since.toISOString())
+        .order('logged_at'),
+      ''
+    ) || [];
+    for (const meal of rows) {
+      const key = mealCacheKey(new Date(meal.logged_at));
+      if (!mealCache.has(key)) mealCache.set(key, []);
+      mealCache.get(key).push(meal);
+    }
+    const todayKey = mealCacheKey(new Date());
+    if (!mealCache.has(todayKey)) mealCache.set(todayKey, []);
+  } catch(e) { console.error('preload error:', e); }
+}
 const showLoad = t => { document.getElementById('loading-text').textContent=t||'처리 중...'; document.getElementById('loading-overlay').style.display='flex'; };
 const hideLoad = () => { document.getElementById('loading-overlay').style.display='none'; };
 const showE = (id,m) => { const el=document.getElementById(id); if(el){el.textContent=m;el.style.display='block';} };
@@ -817,6 +840,7 @@ async function initApp() {
       if(session) {
         currentUser = session.user;
         await loadProfile();
+        preloadPromise = preloadMealData();
         showMain('home');
         return;
       }
@@ -1026,6 +1050,7 @@ async function handleAuth(mode) {
       currentUser = data.user;
       await syncOnboarding(currentUser.id);
       await loadProfile();
+      preloadPromise = preloadMealData();
       showMain('home');
     } else {
       const email = document.getElementById('signup-email').value.trim();
@@ -1041,6 +1066,7 @@ async function handleAuth(mode) {
         currentUser = data.user;
         await syncOnboarding(currentUser.id);
         await loadProfile();
+        preloadPromise = preloadMealData();
         showMain('home');
       } else {
         showAuthSuccess('회원가입 완료! 이메일 인증 후 로그인해 주세요.');
@@ -1164,6 +1190,7 @@ async function loadHomeData() {
   try {
     const today = new Date();
     const key = mealCacheKey(today);
+    if (!mealCache.has(key) && preloadPromise) await preloadPromise;
     let meals;
     if (mealCache.has(key)) {
       meals = mealCache.get(key);
@@ -1439,15 +1466,21 @@ async function loadHistoryData() {
   if(!sbClient||!currentUser) return;
 
   const key = mealCacheKey(historyDate);
-  if (mealCache.has(key)) {
-    renderHistory(mealCache.get(key));
-    prefetchAdjacentDates(historyDate);
-    return;
+
+  // 캐시 히트: 즉시 렌더
+  if (mealCache.has(key)) { renderHistory(mealCache.get(key)); return; }
+
+  // preload 진행 중: 완료 대기 후 캐시 재확인
+  if (preloadPromise) {
+    document.getElementById('history-list-wrap').innerHTML =
+      '<div class="empty-state"><div class="list-spinner"></div></div>';
+    await preloadPromise;
+    if (mealCache.has(key)) { renderHistory(mealCache.get(key)); return; }
   }
 
+  // 30일 범위 밖 날짜: 직접 쿼리
   document.getElementById('history-list-wrap').innerHTML =
     '<div class="empty-state"><div class="list-spinner"></div></div>';
-
   const requestKey = key;
   try {
     const {start,end} = getDR(historyDate);
@@ -1457,29 +1490,8 @@ async function loadHistoryData() {
       '기록을 불러오지 못했어요.'
     ) || [];
     mealCache.set(requestKey, meals);
-    if (mealCacheKey(historyDate) === requestKey) {
-      renderHistory(meals);
-      prefetchAdjacentDates(historyDate);
-    }
+    if (mealCacheKey(historyDate) === requestKey) renderHistory(meals);
   } catch(e){ console.error(e); }
-}
-
-async function prefetchAdjacentDates(date) {
-  if (!sbClient || !currentUser) return;
-  const offsets = [-1, 1].map(o => { const d = new Date(date); d.setDate(d.getDate() + o); return d; });
-  for (const d of offsets) {
-    const key = mealCacheKey(d);
-    if (mealCache.has(key)) continue;
-    try {
-      const { start, end } = getDR(d);
-      const meals = unwrapSupabase(
-        await sbClient.from('meal_logs').select('*')
-          .eq('user_id',currentUser.id).gte('logged_at',start).lte('logged_at',end).order('logged_at'),
-        ''
-      ) || [];
-      mealCache.set(key, meals);
-    } catch {}
-  }
 }
 
 function renderHistory(meals) {
