@@ -57,6 +57,7 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 .warning-msg{background:#fffbeb;color:#92400e;border:1px solid #fde68a;border-radius:8px;padding:12px;font-size:13px;margin-bottom:12px}
 
 .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+.list-spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── 온보딩 ── */
@@ -654,6 +655,8 @@ let currentMealType = 'breakfast';
 let currentEditMealId = null;
 let currentReanalyzeMeal = null;
 let historyDate = new Date();
+const mealCache = new Map();
+let historyDebounceTimer = null;
 let currentBase64 = null;
 let currentImageMime = 'image/jpeg';
 let currentComponents = null;
@@ -677,6 +680,8 @@ const escH = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 const fmtDate = d => { const D=['일','월','화','수','목','금','토']; return `${d.getMonth()+1}월 ${d.getDate()}일 (${D[d.getDay()]})`; };
 const localDS = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const getDR = d => { const s=new Date(d); s.setHours(0,0,0,0); const e=new Date(d); e.setHours(23,59,59,999); return {start:s.toISOString(),end:e.toISOString()}; };
+const mealCacheKey = d => d.toISOString().slice(0,10);
+function invalidateMealCache() { mealCache.clear(); }
 const showLoad = t => { document.getElementById('loading-text').textContent=t||'처리 중...'; document.getElementById('loading-overlay').style.display='flex'; };
 const hideLoad = () => { document.getElementById('loading-overlay').style.display='none'; };
 const showE = (id,m) => { const el=document.getElementById(id); if(el){el.textContent=m;el.style.display='block';} };
@@ -1157,12 +1162,20 @@ async function loadHomeData() {
   }
   if(!sbClient||!currentUser) return;
   try {
-    const { start, end } = getDR(new Date());
-    const meals = unwrapSupabase(
-      await sbClient.from('meal_logs').select('*')
-        .eq('user_id',currentUser.id).gte('logged_at',start).lte('logged_at',end).order('logged_at'),
-      '오늘 식단을 불러오지 못했어요.'
-    ) || [];
+    const today = new Date();
+    const key = mealCacheKey(today);
+    let meals;
+    if (mealCache.has(key)) {
+      meals = mealCache.get(key);
+    } else {
+      const { start, end } = getDR(today);
+      meals = unwrapSupabase(
+        await sbClient.from('meal_logs').select('*')
+          .eq('user_id',currentUser.id).gte('logged_at',start).lte('logged_at',end).order('logged_at'),
+        '오늘 식단을 불러오지 못했어요.'
+      ) || [];
+      mealCache.set(key, meals);
+    }
     renderRing(meals);
     renderHomeMeals(meals);
   } catch(e) { console.error(e); }
@@ -1395,6 +1408,7 @@ async function saveMeal() {
         unwrapSupabase(await sbClient.from('meal_logs').insert(payload), '식사 저장에 실패했어요.');
       }
     }
+    invalidateMealCache();
     closeAnalysis();
     loadHomeData();
     if(document.getElementById('screen-history').classList.contains('active')) loadHistoryData();
@@ -1408,7 +1422,12 @@ async function saveMeal() {
 // ═══════════════════════════════════════════
 //  히스토리
 // ═══════════════════════════════════════════
-function changeHistoryDate(d) { historyDate.setDate(historyDate.getDate()+d); loadHistoryData(); }
+function changeHistoryDate(d) {
+  historyDate.setDate(historyDate.getDate() + d);
+  document.getElementById('history-date-text').textContent = fmtDate(historyDate);
+  clearTimeout(historyDebounceTimer);
+  historyDebounceTimer = setTimeout(loadHistoryData, 150);
+}
 
 async function loadHistoryData() {
   document.getElementById('history-date-text').textContent = fmtDate(historyDate);
@@ -1418,6 +1437,18 @@ async function loadHistoryData() {
     return;
   }
   if(!sbClient||!currentUser) return;
+
+  const key = mealCacheKey(historyDate);
+  if (mealCache.has(key)) {
+    renderHistory(mealCache.get(key));
+    prefetchAdjacentDates(historyDate);
+    return;
+  }
+
+  document.getElementById('history-list-wrap').innerHTML =
+    '<div class="empty-state"><div class="list-spinner"></div></div>';
+
+  const requestKey = key;
   try {
     const {start,end} = getDR(historyDate);
     const meals = unwrapSupabase(
@@ -1425,8 +1456,30 @@ async function loadHistoryData() {
         .eq('user_id',currentUser.id).gte('logged_at',start).lte('logged_at',end).order('logged_at'),
       '기록을 불러오지 못했어요.'
     ) || [];
-    renderHistory(meals);
+    mealCache.set(requestKey, meals);
+    if (mealCacheKey(historyDate) === requestKey) {
+      renderHistory(meals);
+      prefetchAdjacentDates(historyDate);
+    }
   } catch(e){ console.error(e); }
+}
+
+async function prefetchAdjacentDates(date) {
+  if (!sbClient || !currentUser) return;
+  const offsets = [-1, 1].map(o => { const d = new Date(date); d.setDate(d.getDate() + o); return d; });
+  for (const d of offsets) {
+    const key = mealCacheKey(d);
+    if (mealCache.has(key)) continue;
+    try {
+      const { start, end } = getDR(d);
+      const meals = unwrapSupabase(
+        await sbClient.from('meal_logs').select('*')
+          .eq('user_id',currentUser.id).gte('logged_at',start).lte('logged_at',end).order('logged_at'),
+        ''
+      ) || [];
+      mealCache.set(key, meals);
+    } catch {}
+  }
 }
 
 function renderHistory(meals) {
@@ -1491,6 +1544,7 @@ async function deleteMeal(id) {
   try {
     if(isGuestMode()) saveGuestMeals(getGuestMeals().filter(meal => meal.id!==id));
     else await sbClient.from('meal_logs').delete().eq('id',id);
+    invalidateMealCache();
     loadHistoryData();
     loadHomeData();
   } catch(e){ alert('삭제에 실패했어요.'); }
