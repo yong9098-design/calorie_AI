@@ -138,3 +138,198 @@ AI 칼로리 트래커 프로젝트 변경 이력
 - Supabase MCP로 테이블 생성 확인 (profiles, meal_logs 각 RLS 활성화)
 - Flash(`gemini-2.5-flash`) 및 Pro(`gemini-2.5-pro`) API 직접 호출 검증 완료
 - 반복 횟수: 해당 없음 (설정·인프라 작업)
+
+---
+
+## [2026-04-23] UX 상업화, 배포 완료, AI 한국어 고정 (R5)
+
+### 구현 내용
+- **바텀 시트 카메라/갤러리 분리 UX**: FAB 클릭 시 바텀시트 슬라이드업 → 카메라(초록 카드) / 갤러리(보라 카드) 두 버튼으로 분기. 스마트폰에서 카메라 직접 실행(`capture="environment"`), PC에서는 파일 피커 동작
+- **FAB 카메라 아이콘 교체**: 기존 [+] 텍스트 FAB → 카메라 SVG 아이콘 + 초록 그라디언트 스타일(60px), 빈 상태 문구 "📸 카메라 버튼을 눌러 음식을 찍어보세요"로 변경
+- **비회원 닉네임 커스텀 모달**: 기존 브라우저 `prompt()` 제거 → 상업적 디자인의 커스텀 모달(`#guest-modal`)로 교체
+- **로그아웃 커스텀 모달**: 기존 `confirm()` 제거 → 회원/게스트 분기(`currentUser` 판별) 동적 콘텐츠, [취소]/[로그아웃] 버튼 포함 모달
+- **목표 저장 토스트 알림**: 기존 `alert()` 제거 → 2.2초 자동 소멸 토스트(`#save-toast`, `showToast()`) 하단 표시
+- **재설정 확인 커스텀 모달**: 기존 `confirm()` 제거 → [취소]/[재설정] 버튼 포함 위험 확인 모달(`#reset-modal`)
+- **AI 모델 카드 가격 뱃지**: Flash 카드에 "하루 20장 무료", Pro 카드에 "장당 3원 · Gemini 2.5" `.model-badge` 태그 추가 (화면 잘림 없음)
+- **재설정 후 재로그인 불필요**: `saveOnboarding()` 내 `currentUser` 분기 추가 — 로그인 상태에서 온보딩 완료 시 `syncOnboarding()` / `applyGuestProfile()` 즉시 호출 후 홈 화면(`showMain('home')`) 바로 이동. 미인증 사용자만 기존 로그인 화면으로 이동
+- **GitHub 저장소 push 및 Vercel 배포**: `https://github.com/yong9098-design/calorie_AI` 저장소에 전체 코드 push, Vercel 프로젝트(`calorie-ai-gamma.vercel.app`) 자동 배포 연동 완료
+- **`vercel.json` explicit builds 설정**: 루트 `server.js`가 Vercel 엔트리포인트로 오인되는 문제 수정 → `builds` 배열로 `api/config.js`, `api/analyze.js`는 `@vercel/node`, `output/**`은 `@vercel/static` 명시
+- **`server.js` → `local-server.js` 리네임**: 로컬 개발 전용 서버 파일 구분. `start-local-server.bat` 참조 경로 동기화
+- **`src/` 폴더 및 `build.js` 삭제**: 더 이상 사용되지 않는 빌드 시스템 소스 파일 제거. `output/index.html` 직접 편집 방식으로 완전 전환
+- **AI 분석 프롬프트 한국어 강제**: `api/analyze.js` `ANALYSIS_PROMPT`에 "모든 텍스트(food_name, 음식명, 설명, note 등)는 반드시 한국어로 작성하세요" 지시 추가 — 영어 응답 방지
+
+### 핵심 로직
+- **바텀 시트**: `openBottomSheet()` / `closeBottomSheet()` + 백드롭 블러 오버레이. `<input type="file" capture="environment">` (카메라)와 `<input type="file">` (갤러리) 두 개 분리
+- **커스텀 모달 패턴**: HTML 고정 모달 요소 + JS `open/close` 토글 함수. `confirm()`/`prompt()` 완전 제거
+- **`saveOnboarding()` 로그인 분기**:
+  ```js
+  if (currentUser) {
+    isGuestMode() ? applyGuestProfile({...data}) : await syncOnboarding(currentUser.id);
+    localStorage.removeItem('onboarding_temp');
+    await loadProfile();
+    showMain('home');
+  } else {
+    showScreen('auth');
+  }
+  ```
+- **Vercel 라우팅 수정**: `vercel.json`에 `builds` 배열 추가로 루트 `server.js` 없이도 `api/*.js` 서버리스 함수 정상 인식
+- **AI 프롬프트**: `ANALYSIS_PROMPT` 마지막에 한국어 강제 문장 + `responseJsonSchema` 구조화 응답으로 일관된 JSON 출력 보장
+
+### 변경된 파일
+- `output/index.html` — 바텀시트, FAB 아이콘, 커스텀 모달 4종, 모델 뱃지, 재설정 분기 로직 추가
+- `api/analyze.js` — `ANALYSIS_PROMPT` 한국어 강제 문장 추가
+- `vercel.json` — `builds` 배열 명시 추가 (서버리스 함수 + 정적 파일 명확 분리)
+- `local-server.js` — 기존 `server.js` 리네임 (로컬 개발 전용 명시)
+- `start-local-server.bat` — `node server.js` → `node local-server.js` 경로 수정
+- `package.json` — 신규 생성 (Node 18+ 엔진 명시, npm 의존성 없음)
+- `src/` — 전체 삭제 (24개 파일 + `build.js`)
+
+### QA 결과
+- Vercel 배포 URL `https://calorie-ai-gamma.vercel.app` 에서 `/api/config` 정상 응답 확인
+- 스마트폰 실기기에서 카메라/갤러리 분기 동작 확인
+- 커스텀 모달 4종 (비회원, 로그아웃, 재설정, 저장 토스트) 동작 확인
+- 로그인 상태 재설정 후 홈 화면 즉시 이동 확인
+- 반복 횟수: 해당 없음 (UX 개선 + 배포 작업)
+
+---
+
+## [2026-04-25] Vercel Edge Runtime 호환성 수정 및 배포 파이프라인 정비
+
+### 구현 내용
+- Vercel 프로젝트 설정 `framework: "node"` → `framework: null` 변경 (REST API 직접 수정)
+- `vercel.json`에서 `builds` 배열 제거, `outputDirectory: "output"` 방식으로 전환
+- `api/config.js`, `api/analyze.js`에 `export const config = { runtime: 'edge' }` 적용 (Edge Runtime)
+- `vercel build --prod` + `vercel deploy --prebuilt --prod` 수동 배포 파이프라인 확립
+
+### 핵심 로직
+- **Edge Runtime 전환**: `@vercel/node` 빌더 제거 후 `runtime: 'edge'` export로 전환 → Cold Start 없이 빠른 응답
+- **outputDirectory 방식**: `builds` 배열 없이 `outputDirectory: "output"`으로 정적 파일 서빙 + API 라우트 자동 인식
+
+### 변경된 파일
+- `vercel.json` — `builds` 배열 제거, `outputDirectory`, `headers`, `routes` 단순화
+- `api/config.js` — Edge Runtime 설정 추가
+- `api/analyze.js` — Edge Runtime 설정 추가
+
+### QA 결과
+- Vercel 프로덕션 배포 정상 완료 확인
+- 반복 횟수: 해당 없음 (인프라 수정)
+
+---
+
+## [2026-04-25] 기록 탭 사진 복원 및 3단 캐시 아키텍처 도입
+
+### 구현 내용
+- `renderHistory()` 함수에서 `image_url` 있으면 `<img>` 태그 렌더링 (기존: 항상 이모지 아이콘)
+- 3단 캐시 분리: `mealCache`(프리로드·이미지 없음) / `homeMealCache`(홈 상세·이미지 있음) / `historyMealCache`(기록 탭·이미지+노트)
+- SELECT 상수 3종 정의: `MEAL_SUMMARY_SELECT` / `MEAL_HISTORY_SELECT` / `MEAL_DETAIL_SELECT`
+- `invalidateMealCache()` → 3개 캐시 동시 초기화 + 프리로드 재실행
+
+### 핵심 로직
+- **3단 캐시**: 경량 프리로드(30일 요약)와 이미지 포함 상세 데이터를 캐시 분리 → 홈 즉시 렌더 유지하면서 기록 탭 사진 표시
+- **SELECT 상수**: `MEAL_HISTORY_SELECT = 'id,meal_type,food_name,calories,protein,carbs,fat,image_url,notes,logged_at'`
+
+### 변경된 파일
+- `output/index.html` — `renderHistory()` 이미지 렌더 복원, 3단 캐시 구조, SELECT 상수 추가
+
+### QA 결과
+- 기록 탭 사진 정상 표시 확인
+- 반복 횟수: 해당 없음 (버그 수정)
+
+---
+
+## [2026-04-25] 기록 탭 2단계 렌더링 (딜레이 제거)
+
+### 구현 내용
+- `fetchAndUpdateThumbs(key, start, end)` 함수 신규 추가: 백그라운드에서 이미지 포함 데이터 fetch 후 `renderHistory()` 재호출
+- `loadHistoryData()` 캐시 체크 순서 개선:
+  1. `historyMealCache` 히트 → 즉시 렌더 (이미지 있음)
+  2. `homeMealCache` 히트 → 즉시 렌더
+  3. `mealCache` 히트 → **즉시 렌더 (이미지 없음)** + 백그라운드 `fetchAndUpdateThumbs` 실행
+  4. 캐시 없음 → 스피너 → `MEAL_HISTORY_SELECT` fetch
+
+### 핵심 로직
+- **Phase 1**: 로그인 시 프리로드된 `mealCache` 데이터로 0ms 즉시 렌더 (이모지 아이콘)
+- **Phase 2**: 백그라운드 fetch 완료 후 이미지 포함 데이터로 재렌더 (~500ms)
+- 재방문 시 `historyMealCache` 캐시 히트로 사진까지 즉시 표시
+
+### 변경된 파일
+- `output/index.html` — `fetchAndUpdateThumbs()`, `loadHistoryData()` 수정
+
+### QA 결과
+- 기록 탭 첫 방문: 즉시 렌더 후 ~0.5초 내 사진 교체 확인
+- 날짜 이동: 스피너 없이 즉시 렌더 확인
+- 반복 횟수: 해당 없음 (성능 개선)
+
+---
+
+## [2026-04-25] 설정 화면 UI 수정 — 모델 뱃지 줄바꿈, 기본 모델 PRO, 기록 탭 분석 보기
+
+### 구현 내용
+- `.model-badge` CSS: `white-space:nowrap` → `white-space:normal; word-break:keep-all` (좁은 화면 줄바꿈 허용)
+- `.model-radio-group` 하단 패딩 `14px` → `16px` 조정
+- `profile` 기본값 `gemini_model: 'flash'` → `'pro'` 변경
+- 기록 탭 `renderHistory()`에 "칼로리 분석 보기" 기능 추가 (홈 탭 `renderMeal()`과 동일한 드롭다운 상세 뷰)
+
+### 핵심 로직
+- **기록 탭 상세 뷰**: `hasDetail`, `notesAttr`, `clickAttr`, `hint` 변수로 클릭 가능 카드 조건부 렌더 — `MEAL_HISTORY_SELECT`에 `notes` 포함 쿼리
+
+### 변경된 파일
+- `output/index.html` — 뱃지 CSS, 기본 모델, 기록 탭 상세 뷰 로직
+
+### QA 결과
+- Android 좁은 화면에서 뱃지 텍스트 줄바꿈 확인
+- 기록 탭 카드 클릭 시 영양소 상세 드롭다운 확인
+- 반복 횟수: 해당 없음 (UX 개선)
+
+---
+
+## [2026-04-25] PWA 설치 지원 (Android Chrome 홈 화면 추가)
+
+### 구현 내용
+- `output/manifest.webmanifest` 신규 생성: `display: standalone`, 아이콘 192/512px 정의
+- `output/icons/icon-192.png` / `output/icons/icon-512.png`: 녹색(#22c55e) 원형 아이콘 (Node.js PNG 인코더로 생성)
+- `output/sw.js` 신규 생성: 네트워크 우선 서비스 워커 (API 요청은 항상 네트워크, 나머지는 캐시 폴백)
+- `output/index.html` head: manifest 링크, theme-color, apple-touch-icon, mobile-web-app-capable 메타태그 추가
+- `output/index.html` body 말미: 서비스 워커 등록 스크립트 추가
+- `vercel.json`: manifest Content-Type 헤더, sw.js Service-Worker-Allowed 헤더 추가
+
+### 핵심 로직
+- **서비스 워커 전략**: `PRECACHE` 배열(/, manifest, 아이콘)은 설치 시 즉시 캐싱. API 요청(`/api/`)은 항상 네트워크. 나머지는 네트워크 우선 → 실패 시 캐시 폴백
+- **PWA 설치 조건 충족**: HTTPS + manifest + 서비스 워커 등록 → Chrome Android "앱 설치" 배너 자동 트리거
+
+### 변경된 파일
+- `output/manifest.webmanifest` — 신규 생성
+- `output/sw.js` — 신규 생성
+- `output/icons/icon-192.png`, `output/icons/icon-512.png` — 신규 생성
+- `output/index.html` — PWA 메타태그 + SW 등록 스크립트 추가
+- `vercel.json` — PWA 관련 응답 헤더 추가
+
+### QA 결과
+- Android Chrome에서 "홈 화면에 추가" / "앱 설치" 옵션 노출 확인
+- 반복 횟수: 해당 없음 (PWA 설정)
+
+---
+
+## [2026-04-25] Android Chrome 레이아웃 짤림 수정 (safe-area + flex-shrink)
+
+### 구현 내용
+- `viewport` 메타태그에 `viewport-fit=cover` 추가 → `env(safe-area-inset-bottom)` 값 활성화
+- `<meta name="color-scheme" content="light">` 추가 → 브라우저 강제 다크모드 적용 방지
+- `:root { color-scheme: light }` CSS 추가 → 라이트 테마 고정
+- `#bottom-nav` 높이: `60px` → `calc(60px + env(safe-area-inset-bottom,0px))`, 하단 패딩 추가
+- `.screen` 하단 패딩: `70px` → `calc(70px + env(safe-area-inset-bottom,0px))`
+- `#fab` 위치: `bottom: 76px` → `calc(76px + env(safe-area-inset-bottom,0px))`
+- `.settings-section` 에 `flex-shrink: 0` 추가 → 뷰포트 축소 시 섹션 압축 방지
+- `.top-bar` 에 `min-height: 56px` 추가 → flex 압축 방지
+
+### 핵심 로직
+- **Safe Area 대응**: `viewport-fit=cover` + `env(safe-area-inset-bottom)` 조합으로 Android 제스처 내비게이션 바 / OS 내비게이션 바 영역에 콘텐츠가 가려지지 않도록 처리
+- **flex-shrink 차단**: `.screen`이 flex column 컨테이너이고 뷰포트가 짧을 때(Chrome URL바 + 하단 툴바 표시 상태) 섹션 항목이 압축 → `overflow:hidden`이 버튼 하단 클리핑. `flex-shrink:0`으로 섹션은 압축 없이 스크롤로 대응
+- **다크모드 차단**: `color-scheme: light` 선언으로 Chrome Auto Dark Mode가 앱 색상을 임의 반전하는 현상 차단
+
+### 변경된 파일
+- `output/index.html` — viewport 메타, color-scheme, safe-area 패딩, flex-shrink 수정
+
+### QA 결과
+- Vercel 프로덕션 배포 완료 (`calorie-ai-gamma.vercel.app`)
+- 반복 횟수: 해당 없음 (레이아웃 버그 수정)
