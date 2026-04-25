@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Cal AI — 칼로리 트래커</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#22c55e">
@@ -29,7 +29,7 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 #app.app-booting .screen,#app.app-booting #bottom-nav,#app.app-booting #fab{display:none!important}
 #app.app-booting #loading-overlay{display:flex!important}
 
-.screen{display:none;flex-direction:column;flex:1;overflow-y:auto;padding-bottom:70px}
+.screen{display:none;flex-direction:column;flex:1;overflow-y:auto;padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}
 .screen.active{display:flex}
 .screen-no-nav{padding-bottom:0}
 
@@ -37,7 +37,7 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 .top-bar h1{font-size:18px;font-weight:700}
 .top-bar .date-text{font-size:13px;color:var(--sub)}
 
-#bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:60px;background:var(--card);border-top:1px solid var(--border);display:none;align-items:center;justify-content:space-around;z-index:100}
+#bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:calc(60px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:var(--card);border-top:1px solid var(--border);display:none;align-items:center;justify-content:space-around;z-index:100}
 #bottom-nav.visible{display:flex}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 0;border:none;background:none;color:var(--sub);font-size:10px;font-family:inherit;transition:color .2s}
 .nav-btn.active{color:var(--green)}
@@ -164,7 +164,7 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 .empty-sub{font-size:13px;margin-top:4px}
 
 /* ── FAB ── */
-#fab{position:fixed;bottom:76px;right:calc(50% - 215px + 16px);width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(34,197,94,.45);z-index:90;transition:transform .2s,box-shadow .2s}
+#fab{position:fixed;bottom:calc(76px + env(safe-area-inset-bottom,0px));right:calc(50% - 215px + 16px);width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(34,197,94,.45);z-index:90;transition:transform .2s,box-shadow .2s}
 #fab:hover{transform:scale(1.1);box-shadow:0 8px 24px rgba(34,197,94,.55)}
 #fab:active{transform:scale(0.95)}
 #fab.visible{display:flex}
