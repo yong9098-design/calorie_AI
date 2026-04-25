@@ -1537,6 +1537,28 @@ function changeHistoryDate(d) {
   historyDebounceTimer = setTimeout(loadHistoryData, 80);
 }
 
+async function fetchAndUpdateThumbs(key, start, end) {
+  try {
+    const meals = await fetchMealsInRange({ start, end, select: MEAL_HISTORY_SELECT, errorMessage: '' });
+    historyMealCache.set(key, meals);
+    if (mealCacheKey(historyDate) !== key) return;
+    meals.forEach(m => {
+      if (!m.image_url) return;
+      const dropMenu = document.getElementById('drop-' + m.id);
+      if (!dropMenu) return;
+      const card = dropMenu.closest('.history-meal-card');
+      if (!card) return;
+      const icon = card.querySelector('.meal-thumb-icon');
+      if (!icon) return;
+      const img = document.createElement('img');
+      img.className = 'meal-thumb';
+      img.alt = 'food';
+      img.src = m.image_url;
+      icon.replaceWith(img);
+    });
+  } catch(e) {}
+}
+
 async function loadHistoryData() {
   document.getElementById('history-date-text').textContent = fmtDate(historyDate);
   if(isGuestMode()) {
@@ -1550,6 +1572,14 @@ async function loadHistoryData() {
 
   if (historyMealCache.has(key)) { renderHistory(historyMealCache.get(key)); return; }
   if (homeMealCache.has(key)) { renderHistory(homeMealCache.get(key)); return; }
+
+  // Phase 1: 프리로드 캐시로 즉시 렌더, Phase 2: 백그라운드에서 사진 교체
+  if (mealCache.has(key)) {
+    renderHistory(mealCache.get(key));
+    const { start, end } = getDR(historyDate);
+    fetchAndUpdateThumbs(key, start, end);
+    return;
+  }
 
   document.getElementById('history-list-wrap').innerHTML =
     '<div class="empty-state"><div class="list-spinner"></div></div>';
