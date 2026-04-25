@@ -2,6 +2,16 @@
   "version": 2,
   "regions": ["hnd1"],
   "outputDirectory": "output",
+  "headers": [
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [{ "key": "Content-Type", "value": "application/manifest+json" }]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [{ "key": "Service-Worker-Allowed", "value": "/" }]
+    }
+  ],
   "routes": [
     { "src": "/api/config", "dest": "/api/config.js" },
     { "src": "/api/analyze", "dest": "/api/analyze.js" },
