@@ -1,15 +1,11 @@
 {
   "version": 2,
   "regions": ["hnd1"],
-  "builds": [
-    { "src": "api/config.js", "use": "@vercel/node" },
-    { "src": "api/analyze.js", "use": "@vercel/node" },
-    { "src": "output/**", "use": "@vercel/static" }
-  ],
+  "outputDirectory": "output",
   "routes": [
     { "src": "/api/config", "dest": "/api/config.js" },
     { "src": "/api/analyze", "dest": "/api/analyze.js" },
-    { "src": "/", "dest": "/output/index.html" },
-    { "src": "/(.*)", "dest": "/output/$1" }
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
