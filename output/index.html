@@ -660,6 +660,7 @@ let currentReanalyzeMeal = null;
 let historyDate = new Date();
 const mealCache = new Map();
 const homeMealCache = new Map();
+const historyMealCache = new Map();
 let historyDebounceTimer = null;
 let preloadPromise = null;
 let currentBase64 = null;
@@ -674,6 +675,7 @@ const GUEST_PROFILE_KEY = 'guest_profile';
 const GUEST_MEALS_KEY = 'guest_meals';
 const onb = { gender:null, age:null, height:null, weight:null, activity:null, actMult:1.2, goal:null };
 const MEAL_SUMMARY_SELECT = 'id,meal_type,food_name,calories,protein,carbs,fat,logged_at';
+const MEAL_HISTORY_SELECT = 'id,meal_type,food_name,calories,protein,carbs,fat,image_url,logged_at';
 const MEAL_DETAIL_SELECT = 'id,meal_type,food_name,calories,protein,carbs,fat,quantity,image_url,notes,logged_at';
 const MEAL_ICON = { breakfast:'🍳', lunch:'🍱', dinner:'🍽️', snack:'🍪' };
 const MEAL_LABEL = { breakfast:'아침', lunch:'점심', dinner:'저녁', snack:'간식' };
@@ -735,6 +737,7 @@ async function getMealRecord(id, { select=MEAL_DETAIL_SELECT, errorMessage='식�
 function invalidateMealCache() {
   mealCache.clear();
   homeMealCache.clear();
+  historyMealCache.clear();
   preloadPromise = (!sbClient || !currentUser || isGuestMode()) ? null : preloadMealData();
 }
 
@@ -1545,23 +1548,20 @@ async function loadHistoryData() {
 
   const key = mealCacheKey(historyDate);
 
-  if (mealCache.has(key)) { renderHistory(mealCache.get(key)); return; }
-  if (homeMealCache.has(key)) {
-    const meals = homeMealCache.get(key).map(toMealSummary);
-    mealCache.set(key, meals);
-    renderHistory(meals);
-    return;
-  }
+  if (historyMealCache.has(key)) { renderHistory(historyMealCache.get(key)); return; }
+  if (homeMealCache.has(key)) { renderHistory(homeMealCache.get(key)); return; }
 
   document.getElementById('history-list-wrap').innerHTML =
     '<div class="empty-state"><div class="list-spinner"></div></div>';
   const requestKey = key;
   try {
-    const meals = await fetchMealsForDate(historyDate, {
-      detailed: false,
+    const { start, end } = getDR(historyDate);
+    const meals = await fetchMealsInRange({
+      start, end,
+      select: MEAL_HISTORY_SELECT,
       errorMessage: '기록을 불러오지 못했어요.'
     });
-    mealCache.set(requestKey, meals);
+    historyMealCache.set(requestKey, meals);
     if (mealCacheKey(historyDate) === requestKey) renderHistory(meals);
   } catch(e){ console.error(e); }
 }
@@ -1576,7 +1576,9 @@ function renderHistory(meals) {
     if(!list.length) return;
     html+=`<div class="meal-section-title">${MEAL_LABEL[type]}</div>`;
     list.forEach(m=>{
-      const thumb = `<div class="meal-thumb-icon">${MEAL_ICON[m.meal_type]||'🍴'}</div>`;
+      const thumb = m.image_url
+        ? `<img class="meal-thumb" src="${escH(m.image_url)}" alt="food">`
+        : `<div class="meal-thumb-icon">${MEAL_ICON[m.meal_type]||'🍴'}</div>`;
       html+=`<div class="history-meal-card">
         ${thumb}
         <div class="meal-info"><div class="meal-name">${escH(m.food_name)}</div>
