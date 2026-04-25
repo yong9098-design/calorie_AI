@@ -187,6 +187,9 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 .date-nav-btn svg{width:20px;height:20px}
 .date-nav-text{font-size:15px;font-weight:700}
 .history-meal-card{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:10px;padding:12px;margin-bottom:8px;position:relative}
+.history-meal-card.clickable{cursor:pointer;transition:background .15s}
+.history-meal-card.clickable:active{background:#f0fdf4}
+.history-meal-card .detail-hint{font-size:11px;color:#16a34a;margin-top:2px}
 .more-btn{background:none;border:none;cursor:pointer;padding:4px 8px;color:var(--sub);font-size:20px;line-height:1;flex-shrink:0}
 .dropdown-menu{position:absolute;right:8px;top:40px;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:50;min-width:140px;display:none}
 .dropdown-menu.open{display:block}
@@ -470,12 +473,12 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
   <div class="settings-section">
     <div class="settings-section-title">AI 분석 모델</div>
     <div class="model-radio-group">
-      <div class="model-radio selected" id="model-flash" onclick="selectModel('flash')">
+      <div class="model-radio" id="model-flash" onclick="selectModel('flash')">
         ⚡ Flash
         <small>빠름 · 절약</small>
         <span class="model-badge">하루 20장 무료</span>
       </div>
-      <div class="model-radio" id="model-pro" onclick="selectModel('pro')">
+      <div class="model-radio selected" id="model-pro" onclick="selectModel('pro')">
         🎯 Pro
         <small>정확 · 고비용</small>
         <span class="model-badge">장당 3원 · Gemini 2.5</span>
@@ -653,7 +656,7 @@ let runtimeConfigPromise = null;
 let sbClient = null;
 let currentUser = null;
 let appInitError = '';
-let profile = { daily_calorie_goal:2000, protein_goal:150, carb_goal:250, fat_goal:65, gemini_model:'flash' };
+let profile = { daily_calorie_goal:2000, protein_goal:150, carb_goal:250, fat_goal:65, gemini_model:'pro' };
 let currentMealType = 'breakfast';
 let currentEditMealId = null;
 let currentReanalyzeMeal = null;
@@ -675,7 +678,7 @@ const GUEST_PROFILE_KEY = 'guest_profile';
 const GUEST_MEALS_KEY = 'guest_meals';
 const onb = { gender:null, age:null, height:null, weight:null, activity:null, actMult:1.2, goal:null };
 const MEAL_SUMMARY_SELECT = 'id,meal_type,food_name,calories,protein,carbs,fat,logged_at';
-const MEAL_HISTORY_SELECT = 'id,meal_type,food_name,calories,protein,carbs,fat,image_url,logged_at';
+const MEAL_HISTORY_SELECT = 'id,meal_type,food_name,calories,protein,carbs,fat,image_url,notes,logged_at';
 const MEAL_DETAIL_SELECT = 'id,meal_type,food_name,calories,protein,carbs,fat,quantity,image_url,notes,logged_at';
 const MEAL_ICON = { breakfast:'🍳', lunch:'🍱', dinner:'🍽️', snack:'🍪' };
 const MEAL_LABEL = { breakfast:'아침', lunch:'점심', dinner:'저녁', snack:'간식' };
@@ -1063,7 +1066,7 @@ async function saveOnboarding() {
   const data = {
     gender:onb.gender, age:onb.age, height_cm:onb.height, weight_kg:onb.weight,
     activity_level:onb.activity, goal_type:onb.goal,
-    daily_calorie_goal:tdee, protein_goal:prot, carb_goal:carb, fat_goal:fat, gemini_model:'flash'
+    daily_calorie_goal:tdee, protein_goal:prot, carb_goal:carb, fat_goal:fat, gemini_model:'pro'
   };
   localStorage.setItem('onboarding_temp', JSON.stringify(data));
   localStorage.setItem('onboarding_complete','true');
@@ -1187,7 +1190,7 @@ async function confirmGuestModal() {
   closeGuestModal();
   setBtn('guest-btn', true, '시작 중...');
   try {
-    profile = { daily_calorie_goal:2000, protein_goal:150, carb_goal:250, fat_goal:65, gemini_model:'flash' };
+    profile = { daily_calorie_goal:2000, protein_goal:150, carb_goal:250, fat_goal:65, gemini_model:'pro' };
     currentUser = { id:'guest-local', is_guest:true, user_metadata:{ display_name:name } };
     saveGuestSession(currentUser);
     applyGuestProfile({ guest_nickname:name, ...(readJSON('onboarding_temp', {})||{}) });
@@ -1251,7 +1254,7 @@ async function executeLogout() {
   closeLogoutModal();
   if(!_logoutIsGuest) await sbClient?.auth.signOut();
   currentUser = null;
-  profile = { daily_calorie_goal:2000, protein_goal:150, carb_goal:250, fat_goal:65, gemini_model:'flash' };
+  profile = { daily_calorie_goal:2000, protein_goal:150, carb_goal:250, fat_goal:65, gemini_model:'pro' };
   if(_logoutIsGuest) clearGuestSession();
   localStorage.removeItem('onboarding_complete');
   showScreen('auth');
@@ -1542,20 +1545,7 @@ async function fetchAndUpdateThumbs(key, start, end) {
     const meals = await fetchMealsInRange({ start, end, select: MEAL_HISTORY_SELECT, errorMessage: '' });
     historyMealCache.set(key, meals);
     if (mealCacheKey(historyDate) !== key) return;
-    meals.forEach(m => {
-      if (!m.image_url) return;
-      const dropMenu = document.getElementById('drop-' + m.id);
-      if (!dropMenu) return;
-      const card = dropMenu.closest('.history-meal-card');
-      if (!card) return;
-      const icon = card.querySelector('.meal-thumb-icon');
-      if (!icon) return;
-      const img = document.createElement('img');
-      img.className = 'meal-thumb';
-      img.alt = 'food';
-      img.src = m.image_url;
-      icon.replaceWith(img);
-    });
+    renderHistory(meals);
   } catch(e) {}
 }
 
@@ -1609,10 +1599,14 @@ function renderHistory(meals) {
       const thumb = m.image_url
         ? `<img class="meal-thumb" src="${escH(m.image_url)}" alt="food">`
         : `<div class="meal-thumb-icon">${MEAL_ICON[m.meal_type]||'🍴'}</div>`;
-      html+=`<div class="history-meal-card">
+      const hasDetail = !!m.notes;
+      const notesAttr = hasDetail ? ` data-notes="${escH(m.notes).replace(/"/g,'&quot;')}"` : '';
+      const clickAttr = hasDetail ? ` onclick="showMealDetailFromEl(this)"` : '';
+      const hint = hasDetail ? `<div class="detail-hint">📊 칼로리 분석 보기</div>` : '';
+      html+=`<div class="history-meal-card${hasDetail?' clickable':''}"${clickAttr}${notesAttr}>
         ${thumb}
         <div class="meal-info"><div class="meal-name">${escH(m.food_name)}</div>
-        <div class="meal-type-tag">단백질 ${m.protein||0}g · 탄수 ${m.carbs||0}g · 지방 ${m.fat||0}g</div></div>
+        <div class="meal-type-tag">단백질 ${m.protein||0}g · 탄수 ${m.carbs||0}g · 지방 ${m.fat||0}g</div>${hint}</div>
         <div class="meal-kcal">${m.calories}</div>
         <button class="more-btn" onclick="toggleDrop(event,'${escH(m.id)}')">⋮</button>
         <div class="dropdown-menu" id="drop-${escH(m.id)}">
@@ -1781,7 +1775,7 @@ function loadSettingsUI() {
   document.getElementById('set-prot-goal').value = profile.protein_goal||150;
   document.getElementById('set-carb-goal').value = profile.carb_goal||250;
   document.getElementById('set-fat-goal').value = profile.fat_goal||65;
-  selectModel(profile.gemini_model||'flash', false);
+  selectModel(profile.gemini_model||'pro', false);
 }
 
 function selectModel(m, save=true) {
