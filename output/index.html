@@ -1380,9 +1380,9 @@ function openGallery() {
 async function handleImageFile(e) {
   const file = e.target.files[0]; if(!file) return;
   showLoad('AI가 분석하고 있어요...');
+  currentImageMime = file.type||'image/jpeg';
   try {
-    const { b64, mime } = await compressImage(file);
-    currentBase64 = b64; currentImageMime = mime;
+    currentBase64 = await toB64(file);
     setPreview(currentBase64, currentImageMime);
     await runGemini(currentBase64, currentImageMime);
   } catch(err) { hideLoad(); showFallback(); }
@@ -1392,31 +1392,6 @@ document.getElementById('img-input-camera').addEventListener('change', handleIma
 document.getElementById('img-input-gallery').addEventListener('change', handleImageFile);
 
 const toB64 = file => new Promise((res,rej) => { const r=new FileReader(); r.onload=e=>res(e.target.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file); });
-
-async function compressImage(file, maxPx = 800, quality = 0.82) {
-  try {
-    const bmp = await createImageBitmap(file);
-    const scale = Math.min(1, maxPx / Math.max(bmp.width, bmp.height));
-    const w = Math.round(bmp.width * scale);
-    const h = Math.round(bmp.height * scale);
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    canvas.getContext('2d').drawImage(bmp, 0, 0, w, h);
-    bmp.close();
-    return await new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
-        if (!blob) { reject(new Error('blob failed')); return; }
-        const reader = new FileReader();
-        reader.onload = e => resolve({ b64: e.target.result.split(',')[1], mime: 'image/jpeg' });
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      }, 'image/jpeg', quality);
-    });
-  } catch {
-    const b64 = await toB64(file);
-    return { b64, mime: file.type || 'image/jpeg' };
-  }
-}
 
 function setPreview(b64, mime) {
   document.getElementById('preview-wrap').innerHTML = `<img src="data:${mime};base64,${b64}" alt="preview">`;
