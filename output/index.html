@@ -542,7 +542,7 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 <button id="fab" title="음식 분석">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
 </button>
-<input type="file" id="img-input-camera" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="img-input-camera" accept="image/*" style="display:none">
 <input type="file" id="img-input-gallery" accept="image/*" style="display:none">
 
 <!-- 바텀 시트 오버레이 -->
@@ -1380,9 +1380,9 @@ function openGallery() {
 async function handleImageFile(e) {
   const file = e.target.files[0]; if(!file) return;
   showLoad('AI가 분석하고 있어요...');
-  currentImageMime = file.type||'image/jpeg';
   try {
-    currentBase64 = await toB64(file);
+    const { b64, mime } = await compressImage(file);
+    currentBase64 = b64; currentImageMime = mime;
     setPreview(currentBase64, currentImageMime);
     await runGemini(currentBase64, currentImageMime);
   } catch(err) { hideLoad(); showFallback(); }
@@ -1392,6 +1392,29 @@ document.getElementById('img-input-camera').addEventListener('change', handleIma
 document.getElementById('img-input-gallery').addEventListener('change', handleImageFile);
 
 const toB64 = file => new Promise((res,rej) => { const r=new FileReader(); r.onload=e=>res(e.target.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file); });
+
+async function compressImage(file, maxPx = 800, quality = 0.82) {
+  try {
+    // resizeWidth 옵션으로 풀 해상도 디코딩 없이 효율적으로 리사이즈
+    const bmp = await createImageBitmap(file, { resizeWidth: maxPx, resizeQuality: 'medium' });
+    const canvas = document.createElement('canvas');
+    canvas.width = bmp.width; canvas.height = bmp.height;
+    canvas.getContext('2d').drawImage(bmp, 0, 0);
+    bmp.close();
+    return await new Promise((resolve, reject) => {
+      canvas.toBlob(blob => {
+        if (!blob) { reject(new Error('blob failed')); return; }
+        const reader = new FileReader();
+        reader.onload = e => resolve({ b64: e.target.result.split(',')[1], mime: 'image/jpeg' });
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      }, 'image/jpeg', quality);
+    });
+  } catch {
+    const b64 = await toB64(file);
+    return { b64, mime: file.type || 'image/jpeg' };
+  }
+}
 
 function setPreview(b64, mime) {
   document.getElementById('preview-wrap').innerHTML = `<img src="data:${mime};base64,${b64}" alt="preview">`;
