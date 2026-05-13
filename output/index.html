@@ -166,7 +166,7 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 .empty-sub{font-size:13px;margin-top:4px}
 
 /* ── FAB ── */
-#fab{position:fixed;bottom:calc(76px + env(safe-area-inset-bottom,0px));right:calc(50% - 215px + 16px);width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(34,197,94,.45);z-index:90;transition:transform .2s,box-shadow .2s}
+#fab{position:fixed;bottom:calc(76px + env(safe-area-inset-bottom,0px));right:calc(50% - 215px + 72px);width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(34,197,94,.45);z-index:90;transition:transform .2s,box-shadow .2s}
 #fab:hover{transform:scale(1.1);box-shadow:0 8px 24px rgba(34,197,94,.55)}
 #fab:active{transform:scale(0.95)}
 #fab.visible{display:flex}
@@ -452,7 +452,12 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 
 <!-- ── 히스토리 ── -->
 <div id="screen-history" class="screen">
-  <div class="top-bar"><h1>기록</h1></div>
+  <div class="top-bar" style="display:flex;align-items:center;justify-content:space-between">
+    <h1>기록</h1>
+    <button onclick="addMealForHistoryDate()" style="background:#22c55e;color:#fff;border:none;border-radius:20px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>식사 추가
+    </button>
+  </div>
   <div class="date-nav">
     <button class="date-nav-btn" onclick="changeHistoryDate(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
     <span class="date-nav-text" id="history-date-text"></span>
@@ -473,6 +478,26 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
   </div>
   <div class="chart-wrap"><div id="bar-chart" class="bar-chart"></div></div>
   <div class="stats-summary" id="stats-summary"></div>
+
+  <!-- 식관리 토글 버튼 -->
+  <div style="padding:8px 20px 0">
+    <button id="diet-mgmt-btn" onclick="toggleDietMgmt()" style="width:100%;padding:13px;border:1.5px solid #22c55e;border-radius:12px;background:#f0fdf4;color:#16a34a;font-size:14px;font-weight:600;cursor:pointer">
+      📋 식관리 분석 보기 ▼
+    </button>
+  </div>
+
+  <!-- 식관리 패널 -->
+  <div id="diet-mgmt-panel" style="display:none;padding:16px 20px 80px">
+    <p style="font-size:12px;font-weight:700;color:#6b7280;letter-spacing:.06em;margin:0 0 10px;text-transform:uppercase">영양소 평균 (일 기준)</p>
+    <div id="diet-macro-wrap"></div>
+
+    <p style="font-size:12px;font-weight:700;color:#6b7280;letter-spacing:.06em;margin:20px 0 10px;text-transform:uppercase">🤖 AI 식단 평가</p>
+    <button id="diet-ai-btn" onclick="requestDietAI()" style="width:100%;padding:13px;border:none;border-radius:12px;background:#22c55e;color:#fff;font-size:14px;font-weight:600;cursor:pointer">AI 식단 분석 요청하기</button>
+    <div id="diet-ai-result" style="display:none;margin-top:12px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;font-size:14px;line-height:1.75;color:#374151;white-space:pre-wrap;word-break:break-word"></div>
+
+    <p style="font-size:12px;font-weight:700;color:#6b7280;letter-spacing:.06em;margin:24px 0 10px;text-transform:uppercase">식단 기록</p>
+    <div id="diet-list-wrap"></div>
+  </div>
 </div>
 
 
@@ -675,10 +700,13 @@ const homeMealCache = new Map();
 const historyMealCache = new Map();
 let historyDebounceTimer = null;
 let preloadPromise = null;
+let pendingLogDate = null;
 let currentBase64 = null;
 let currentImageMime = 'image/jpeg';
 let currentComponents = null;
 let currentStatsMode = 'week';
+let dietMgmtOpen = false;
+let cachedDietMeals = [];
 let currentStep = 1;
 
 const LOCAL_API_ORIGIN = 'http://127.0.0.1:3000';
@@ -1354,9 +1382,17 @@ function renderHomeMeals(meals) {
 // ═══════════════════════════════════════════
 document.getElementById('fab').addEventListener('click', () => {
   currentEditMealId = null; currentBase64 = null; currentImageMime = 'image/jpeg';
+  pendingLogDate = null;
   clearForm();
   openBottomSheet();
 });
+
+function addMealForHistoryDate() {
+  currentEditMealId = null; currentBase64 = null; currentImageMime = 'image/jpeg';
+  pendingLogDate = new Date(historyDate);
+  clearForm();
+  openBottomSheet();
+}
 
 function openBottomSheet() {
   document.getElementById('bottom-sheet-overlay').style.display = 'block';
@@ -1536,7 +1572,7 @@ async function saveMeal() {
       quantity: document.getElementById('inp-qty').value||'1인분',
       image_url: currentBase64 ? `data:${currentImageMime};base64,${currentBase64}` : null,
       notes: currentComponents ? JSON.stringify(currentComponents) : null,
-      logged_at: new Date().toISOString()
+      logged_at: (pendingLogDate || new Date()).toISOString()
     };
     if(isGuestMode()) {
       let meals = getGuestMeals();
@@ -1551,6 +1587,7 @@ async function saveMeal() {
         unwrapSupabase(await sbClient.from('meal_logs').insert(payload), '식사 저장에 실패했어요.');
       }
     }
+    pendingLogDate = null;
     invalidateMealCache();
     closeAnalysis();
     loadHomeData();
@@ -1751,6 +1788,7 @@ function switchStatsTab(mode, el) {
   document.querySelectorAll('.stats-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   loadStatsData();
+  if (dietMgmtOpen) loadDietMgmtData();
 }
 
 async function loadStatsData() {
@@ -1797,6 +1835,156 @@ function renderChart(meals, days) {
   `;
 }
 
+
+// ── js/diet-mgmt.js ──
+const DIET_MEAL_EMOJI = { breakfast:'🍳', lunch:'🍱', dinner:'🍽️', snack:'🍪' };
+
+function toggleDietMgmt() {
+  dietMgmtOpen = !dietMgmtOpen;
+  const panel = document.getElementById('diet-mgmt-panel');
+  const btn   = document.getElementById('diet-mgmt-btn');
+  panel.style.display = dietMgmtOpen ? 'block' : 'none';
+  btn.textContent = dietMgmtOpen ? '📋 식관리 접기 ▲' : '📋 식관리 분석 보기 ▼';
+  if (dietMgmtOpen) loadDietMgmtData();
+}
+
+async function loadDietMgmtData() {
+  cachedDietMeals = [];
+  document.getElementById('diet-macro-wrap').innerHTML = '<div class="list-spinner" style="margin:16px auto"></div>';
+  document.getElementById('diet-list-wrap').innerHTML = '';
+  document.getElementById('diet-ai-result').style.display = 'none';
+  document.getElementById('diet-ai-btn').style.display = 'block';
+  document.getElementById('diet-ai-btn').textContent = 'AI 식단 분석 요청하기';
+  document.getElementById('diet-ai-btn').disabled = false;
+
+  const days = currentStatsMode === 'week' ? 7 : 30;
+  const end = new Date(); end.setHours(23,59,59,999);
+  const start = new Date(); start.setDate(start.getDate()-(days-1)); start.setHours(0,0,0,0);
+
+  let meals = [];
+  if (isGuestMode()) {
+    meals = getGuestMealsInRange(start.toISOString(), end.toISOString());
+  } else {
+    if (!sbClient || !currentUser) return;
+    try {
+      meals = await fetchMealsInRange({
+        start: start.toISOString(), end: end.toISOString(),
+        select: MEAL_SUMMARY_SELECT,
+        errorMessage: '식단 데이터를 불러오지 못했어요.'
+      });
+    } catch(e) {
+      document.getElementById('diet-macro-wrap').innerHTML = '<p style="color:#ef4444;font-size:13px">데이터를 불러오지 못했어요.</p>';
+      return;
+    }
+  }
+  cachedDietMeals = meals;
+  renderDietMacro(meals);
+  renderDietList(meals);
+}
+
+function renderDietMacro(meals) {
+  const loggedDays = new Set(meals.map(m => localDS(new Date(m.logged_at)))).size || 1;
+  const avgP = Math.round(meals.reduce((s,m)=>s+(m.protein||0),0) / loggedDays);
+  const avgC = Math.round(meals.reduce((s,m)=>s+(m.carbs||0),0)   / loggedDays);
+  const avgF = Math.round(meals.reduce((s,m)=>s+(m.fat||0),0)     / loggedDays);
+  const goalP = profile.protein_goal || 150;
+  const goalC = profile.carb_goal    || 250;
+  const goalF = profile.fat_goal     || 65;
+  document.getElementById('diet-macro-wrap').innerHTML =
+    dietMacroBar('단백질',   avgP, goalP, '#3b82f6') +
+    dietMacroBar('탄수화물', avgC, goalC, '#f59e0b') +
+    dietMacroBar('지방',     avgF, goalF, '#ef4444');
+}
+
+function dietMacroBar(label, val, goal, color) {
+  const pct = Math.min(100, Math.round((val/goal)*100));
+  const over = val > goal;
+  return `<div style="margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px">
+      <span style="font-weight:600;color:#374151">${label}</span>
+      <span style="color:${over?'#ef4444':'#6b7280'}">${val}g <span style="color:#d1d5db">/ ${goal}g</span> <span style="font-size:11px;color:${over?'#ef4444':'#22c55e'}">(${pct}%)</span></span>
+    </div>
+    <div style="background:#f3f4f6;border-radius:8px;height:9px;overflow:hidden">
+      <div style="width:${pct}%;height:100%;background:${over?'#ef4444':color};border-radius:8px;transition:width .5s"></div>
+    </div>
+  </div>`;
+}
+
+async function requestDietAI() {
+  if (!cachedDietMeals.length) {
+    alert('분석할 식단 기록이 없어요.');
+    return;
+  }
+  const btn = document.getElementById('diet-ai-btn');
+  const resultEl = document.getElementById('diet-ai-result');
+  btn.disabled = true;
+  btn.textContent = '🤖 AI가 분석 중...';
+  resultEl.style.display = 'none';
+
+  const period = currentStatsMode === 'week' ? '최근 7일' : '최근 30일';
+  const mealSummary = cachedDietMeals.map(m =>
+    `${localDS(new Date(m.logged_at))} [${m.meal_type}] ${m.food_name} ${m.calories}kcal 단백질${m.protein||0}g 탄수${m.carbs||0}g 지방${m.fat||0}g`
+  ).join('\n');
+
+  const prompt = `다음은 사용자의 ${period} 식단 기록입니다:\n\n${mealSummary}\n\n사용자 일일 목표: 칼로리 ${profile.daily_calorie_goal}kcal, 단백질 ${profile.protein_goal||150}g, 탄수화물 ${profile.carb_goal||250}g, 지방 ${profile.fat_goal||65}g\n\n위 식단을 아래 항목별로 상세하게 분석해 주세요. 반드시 한국어로 작성하세요.\n\n1. 📊 칼로리 분석\n   - 기간 총 칼로리 및 일 평균 칼로리\n   - 목표 대비 달성률(%), 과잉/부족 여부와 정도\n   - 요일/날짜별 칼로리 편차 (높은 날, 낮은 날 언급)\n\n2. 🥩 영양소 균형 분석\n   - 단백질/탄수화물/지방 각각의 일 평균 및 목표 달성률\n   - 3대 영양소 비율(P:C:F)이 이상적인 비율(20:50:30)과 얼마나 차이 나는지\n   - 부족하거나 과잉인 영양소와 그 영향\n\n3. 🍽️ 식사 패턴 분석\n   - 하루 식사 횟수 평균 및 규칙성\n   - 아침/점심/저녁/간식 비율\n   - 자주 등장하는 음식 TOP 3\n   - 특이 패턴 (야식, 결식, 폭식 등)\n\n4. ⚠️ 주의사항 및 개선 포인트\n   - 현재 식단에서 가장 우선적으로 개선해야 할 점 3가지\n   - 각 항목에 대한 구체적인 이유 설명`;
+
+  try {
+    const { data:{ session } = {} } = sbClient ? await sbClient.auth.getSession() : { data:{ session:null } };
+    const res = await fetch(apiUrl('/api/analyze'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(session?.access_token ? { Authorization:`Bearer ${session.access_token}` } : {})
+      },
+      body: JSON.stringify({ prompt })
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.error || 'AI 분석 실패');
+    const text = json.text || '분석 결과를 받지 못했어요.';
+    resultEl.textContent = text;
+    resultEl.style.display = 'block';
+    btn.textContent = '🔄 다시 분석하기';
+  } catch(e) {
+    resultEl.textContent = 'AI 분석에 실패했어요. 잠시 후 다시 시도해 주세요.\n(' + e.message + ')';
+    resultEl.style.display = 'block';
+    btn.textContent = 'AI 식단 분석 요청하기';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderDietList(meals) {
+  const wrap = document.getElementById('diet-list-wrap');
+  if (!meals.length) {
+    wrap.innerHTML = '<div style="text-align:center;color:#9ca3af;padding:24px 0">이 기간에 식단 기록이 없어요</div>';
+    return;
+  }
+  const groups = {};
+  meals.forEach(m => {
+    const ds = localDS(new Date(m.logged_at));
+    (groups[ds] = groups[ds] || []).push(m);
+  });
+  const DOW = ['일','월','화','수','목','금','토'];
+  let html = '';
+  Object.entries(groups).sort((a,b) => b[0].localeCompare(a[0])).forEach(([ds, list]) => {
+    const dayTotal = list.reduce((s,m)=>s+(m.calories||0),0);
+    const d = new Date(ds);
+    html += `<div style="margin-bottom:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+        <span style="font-size:13px;font-weight:700;color:#374151">${ds.slice(5).replace('-','/')} (${DOW[d.getDay()]})</span>
+        <span style="font-size:13px;font-weight:600;color:#22c55e">${dayTotal.toLocaleString()}kcal</span>
+      </div>`;
+    list.forEach(m => {
+      html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f9fafb;border-radius:10px;margin-bottom:5px">
+        <span style="font-size:18px;flex-shrink:0">${DIET_MEAL_EMOJI[m.meal_type]||'🍽️'}</span>
+        <span style="flex:1;font-size:14px;color:#1f2937;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escH(m.food_name)}</span>
+        <span style="font-size:13px;color:#6b7280;flex-shrink:0">${(m.calories||0).toLocaleString()}kcal</span>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+}
 
 // ── js/settings.js ──
 // ═══════════════════════════════════════════
