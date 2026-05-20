@@ -1801,12 +1801,28 @@ async function editMeal(id) {
 async function deleteMeal(id) {
   if(!confirm('식사 기록을 삭제할까요?')) return;
   try {
-    if(isGuestMode()) saveGuestMeals(getGuestMeals().filter(meal => meal.id!==id));
-    else await sbClient.from('meal_logs').delete().eq('id',id);
+    console.log('[deleteMeal] 삭제 시작: id=', id, 'type=', typeof id);
+    if(isGuestMode()) {
+      console.log('[deleteMeal] 게스트 모드: localStorage에서 삭제');
+      const before = getGuestMeals().length;
+      saveGuestMeals(getGuestMeals().filter(meal => meal.id!==id));
+      const after = getGuestMeals().length;
+      console.log(`[deleteMeal] 삭제 완료: ${before}개 → ${after}개`);
+    } else {
+      console.log('[deleteMeal] 로그인 모드: Supabase에서 삭제');
+      if(!sbClient) throw new Error('Supabase 클라이언트 미초기화');
+      const { error } = await sbClient.from('meal_logs').delete().eq('id', id);
+      if(error) throw error;
+      console.log('[deleteMeal] Supabase 삭제 성공');
+    }
     invalidateMealCache();
     loadHistoryData();
     loadHomeData();
-  } catch(e){ alert('삭제에 실패했어요.'); }
+    alert('식사 기록이 삭제되었습니다.');
+  } catch(e){
+    console.error('[deleteMeal] 오류:', e.message);
+    alert('삭제에 실패했어요: ' + e.message);
+  }
 }
 
 
