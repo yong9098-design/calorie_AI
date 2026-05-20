@@ -1827,9 +1827,11 @@ async function deleteMeal(id) {
       console.log('[deleteMeal] Supabase 삭제 성공');
     }
     invalidateMealCache();
-    loadHistoryData();
-    loadHomeData();
+    await loadHistoryData();
+    await loadHomeData();
     alert('식사 기록이 삭제되었습니다.');
+    // 화면 업데이트 강제: 1초 후 페이지 새로고침
+    setTimeout(() => location.reload(), 500);
   } catch(e){
     console.error('[deleteMeal] 오류:', e.message, e);
     alert('삭제에 실패했어요: ' + e.message);
