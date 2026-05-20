@@ -1974,7 +1974,11 @@ async function searchFoodsFromApi(q) {
   renderFoodsDB();
   try {
     const res = await fetch(`http://127.0.0.1:8001/api/food-search?q=${encodeURIComponent(q)}&rows=20`);
-    fooddbApiResults = await res.json();
+    const results = await res.json();
+    fooddbApiResults = results.map((item, idx) => ({
+      ...item,
+      id: 1000 + idx
+    }));
   } catch {
     fooddbApiResults = [];
   }
