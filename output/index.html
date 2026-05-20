@@ -452,11 +452,16 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 
 <!-- ── 히스토리 ── -->
 <div id="screen-history" class="screen">
-  <div class="top-bar" style="display:flex;align-items:center;justify-content:space-between">
+  <div class="top-bar" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
     <h1>기록</h1>
-    <button onclick="addMealForHistoryDate()" style="background:#22c55e;color:#fff;border:none;border-radius:20px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>식사 추가
-    </button>
+    <div style="display:flex;gap:6px">
+      <button onclick="openFoodDBModal()" style="background:#22c55e;color:#fff;border:none;border-radius:20px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">
+        🗃 음식DB
+      </button>
+      <button onclick="addMealForHistoryDate()" style="background:#22c55e;color:#fff;border:none;border-radius:20px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>추가
+      </button>
+    </div>
   </div>
   <div class="date-nav">
     <button class="date-nav-btn" onclick="changeHistoryDate(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -673,6 +678,61 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
   </div>
 </div>
 
+<!-- ── 음식 DB 모달 ── -->
+<div class="overlay" id="fooddb-modal" style="display:none">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">
+      🗃 음식 데이터베이스
+      <button class="close-btn" onclick="closeFoodDBModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div style="padding:0 16px">
+      <!-- 검색바 -->
+      <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:16px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;color:var(--sub);flex-shrink:0">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text" id="fooddb-search-input" placeholder="음식 검색..." onkeyup="filterFoodsDB()" style="flex:1;border:none;outline:none;font-size:15px;font-family:inherit">
+      </div>
+
+      <!-- 최근 음식 섹션 -->
+      <div id="fooddb-recent-section" style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <h2 style="font-size:14px;font-weight:700;color:var(--text)">⏱ 최근 음식</h2>
+        </div>
+        <div id="fooddb-recent-foods"></div>
+      </div>
+
+      <!-- 인기 음식 섹션 -->
+      <div id="fooddb-popular-section" style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <h2 style="font-size:14px;font-weight:700;color:var(--text)">⭐ 인기 음식</h2>
+        </div>
+        <div id="fooddb-popular-foods"></div>
+      </div>
+
+      <!-- API 검색 결과 -->
+      <div id="fooddb-search-results"></div>
+    </div>
+
+    <!-- 선택된 음식 표시 -->
+    <div style="padding:16px;margin-top:8px;border-top:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:600">선택된 음식: <span id="fooddb-count" style="color:var(--green)">0개</span></div>
+        <select id="fooddb-meal-type" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:#fff">
+          <option value="breakfast">🍳 아침</option>
+          <option value="lunch">🍱 점심</option>
+          <option value="dinner">🍽️ 저녁</option>
+          <option value="snack">🍪 간식</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="fooddb-save-btn" onclick="saveFoodsDB()" disabled style="width:100%;margin-bottom:8px">저장</button>
+      <button class="btn btn-outline" onclick="closeFoodDBModal()" style="width:100%">취소</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── 로딩 오버레이 ── -->
 <div id="loading-overlay" style="position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px">
   <div style="width:40px;height:40px;border:3px solid #d1fae5;border-top-color:#22c55e;border-radius:50%;animation:spin .7s linear infinite"></div>
@@ -720,6 +780,30 @@ const MEAL_DETAIL_SELECT = 'id,meal_type,food_name,calories,protein,carbs,fat,qu
 const MEAL_ICON = { breakfast:'🍳', lunch:'🍱', dinner:'🍽️', snack:'🍪' };
 const MEAL_LABEL = { breakfast:'아침', lunch:'점심', dinner:'저녁', snack:'간식' };
 
+// ── Food DB Modal State ──
+let fooddbSelected = {};
+let fooddbIsLoading = false;
+let fooddbSearchTimer = null;
+let fooddbApiResults = [];
+const fooddbData = {
+  recent: [
+    {id:1,name:'바나나',qty:'medium',cals:{small:80,medium:114,large:160},protein:{small:0.3,medium:0.8,large:1.1},carb:{small:20,medium:26,large:37},fat:{small:0.2,medium:0.3,large:0.4}},
+    {id:2,name:'밥',qty:'medium',cals:{small:150,medium:251,large:376},protein:{small:2.5,medium:5.2,large:7.8},carb:{small:33,medium:55,large:82},fat:{small:0.2,medium:0.5,large:0.7}},
+    {id:3,name:'닭가슴살',qty:'medium',cals:{small:150,medium:210,large:315},protein:{small:30,medium:42,large:63},carb:{small:0,medium:0,large:0},fat:{small:2.5,medium:4.5,large:6.8}},
+    {id:4,name:'고구마',qty:'medium',cals:{small:80,medium:127,large:190},protein:{small:1.5,medium:2.1,large:3.2},carb:{small:18,medium:28,large:42},fat:{small:0.1,medium:0.2,large:0.3}},
+    {id:5,name:'달걀',qty:'medium',cals:{small:70,medium:155,large:232},protein:{small:6,medium:13,large:19},carb:{small:0.5,medium:1.1,large:1.6},fat:{small:5,medium:11,large:16.5}},
+  ],
+  popular: [
+    {id:6,name:'밥',qty:'medium',cals:{small:150,medium:251,large:376},protein:{small:2.5,medium:5.2,large:7.8},carb:{small:33,medium:55,large:82},fat:{small:0.2,medium:0.5,large:0.7}},
+    {id:7,name:'바나나',qty:'medium',cals:{small:80,medium:114,large:160},protein:{small:0.3,medium:0.8,large:1.1},carb:{small:20,medium:26,large:37},fat:{small:0.2,medium:0.3,large:0.4}},
+    {id:8,name:'토마토',qty:'medium',cals:{small:15,medium:27,large:40},protein:{small:0.8,medium:1.3,large:2},carb:{small:3.8,medium:6,large:9},fat:{small:0.2,medium:0.3,large:0.5}},
+    {id:9,name:'닭가슴살',qty:'medium',cals:{small:150,medium:210,large:315},protein:{small:30,medium:42,large:63},carb:{small:0,medium:0,large:0},fat:{small:2.5,medium:4.5,large:6.8}},
+    {id:10,name:'두부',qty:'medium',cals:{small:60,medium:144,large:216},protein:{small:6.5,medium:15.7,large:23.6},carb:{small:1.8,medium:4.3,large:6.5},fat:{small:3.7,medium:8.9,large:13.3}},
+    {id:11,name:'사과',qty:'medium',cals:{small:40,medium:77,large:116},protein:{small:0.2,medium:0.4,large:0.6},carb:{small:10,medium:20,large:30},fat:{small:0.2,medium:0.2,large:0.3}},
+    {id:12,name:'오트밀',qty:'medium',cals:{small:80,medium:160,large:240},protein:{small:2.7,medium:5.4,large:8.1},carb:{small:13.8,medium:27.6,large:41.4},fat:{small:3.3,medium:6.5,large:9.8}},
+    {id:13,name:'아몬드',qty:'medium',cals:{small:80,medium:160,large:240},protein:{small:3,medium:6,large:9},carb:{small:3,medium:6,large:9},fat:{small:14,medium:28,large:42}},
+  ]
+};
 
 // ── shared/utils.js ──
 // ═══════════════════════════════════════════
@@ -1739,6 +1823,194 @@ function openReanalysis(mealId) {
   document.getElementById('reanalysis-modal').classList.add('active');
 }
 function closeReanalysis() { document.getElementById('reanalysis-modal').classList.remove('active'); currentReanalyzeMeal=null; }
+
+// ── Food DB Modal Functions ──
+function openFoodDBModal() {
+  fooddbSelected = {};
+  fooddbApiResults = [];
+  document.getElementById('fooddb-search-input').value = '';
+  document.getElementById('fooddb-modal').style.display = 'flex';
+  renderFoodsDB();
+}
+
+function closeFoodDBModal() {
+  document.getElementById('fooddb-modal').style.display = 'none';
+  fooddbSelected = {};
+  fooddbApiResults = [];
+}
+
+function renderFoodsDB() {
+  const q = document.getElementById('fooddb-search-input').value.trim();
+  const recentSec = document.getElementById('fooddb-recent-section');
+  const popularSec = document.getElementById('fooddb-popular-section');
+  const searchResult = document.getElementById('fooddb-search-results');
+
+  if(fooddbIsLoading) {
+    recentSec.style.display = 'none';
+    popularSec.style.display = 'none';
+    searchResult.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)"><div style="font-size:24px">⏳</div><p style="margin-top:8px;font-size:14px">검색 중...</p></div>';
+    return;
+  }
+  if(q && fooddbApiResults.length > 0) {
+    recentSec.style.display = 'none';
+    popularSec.style.display = 'none';
+    renderFooddbSection('fooddb-search-results', fooddbApiResults);
+    return;
+  }
+  if(q && fooddbApiResults.length === 0) {
+    recentSec.style.display = 'none';
+    popularSec.style.display = 'none';
+    searchResult.innerHTML = `<div style="text-align:center;padding:40px;color:var(--sub)"><div style="font-size:24px">🔍</div><p style="margin-top:8px;font-size:14px">'${q}' 검색 결과가 없습니다.</p></div>`;
+    return;
+  }
+  recentSec.style.display = '';
+  popularSec.style.display = '';
+  searchResult.innerHTML = '';
+  renderFooddbSection('fooddb-recent-foods', fooddbData.recent);
+  renderFooddbSection('fooddb-popular-foods', fooddbData.popular);
+}
+
+function renderFooddbSection(id, foods) {
+  const container = document.getElementById(id);
+  if(!foods || foods.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--sub);font-size:14px">음식이 없어요</div>';
+    return;
+  }
+  const searchVal = document.getElementById('fooddb-search-input').value.toLowerCase();
+  const filtered = foods.filter(f => f.name.toLowerCase().includes(searchVal));
+  container.innerHTML = filtered.map(food => `
+    <div style="display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;transition:background .2s${fooddbSelected[food.id]?';background:var(--green-bg);border-color:var(--green)':''}">
+      <input type="checkbox" onchange="toggleFoodDB(${food.id},'${food.name.replace(/'/g,"\\'")}')" ${fooddbSelected[food.id]?'checked':''} style="margin-top:4px;cursor:pointer;width:18px;height:18px;accent-color:var(--green)">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <span style="font-size:14px;font-weight:600;color:var(--text)">${escH(food.name)}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          ${['small','medium','large'].map(sz => `
+            <button onclick="changeQtyDB(${food.id},'${sz}')" style="background:${food.qty===sz?'var(--green)':'#f3f4f6'};color:${food.qty===sz?'#fff':'#111827'};border:none;border-radius:4px;padding:4px 8px;font-size:12px;cursor:pointer;transition:background .2s;font-family:inherit">${sz==='small'?'작음':sz==='large'?'큼':'중간'}</button>
+          `).join('')}
+        </div>
+        <div style="display:flex;gap:12px;font-size:12px">
+          <div style="display:flex;align-items:center;gap:3px"><span style="color:#ef4444">🔥</span><span style="color:#ef4444;font-weight:600">${food.cals[food.qty]}Cal</span></div>
+          <div style="display:flex;align-items:center;gap:3px"><span style="color:#3b82f6">💪</span><span style="color:#3b82f6;font-weight:600">${food.protein[food.qty].toFixed(1)}g</span></div>
+          <div style="display:flex;align-items:center;gap:3px"><span style="color:#f59e0b">🌾</span><span style="color:#f59e0b;font-weight:600">${food.carb[food.qty].toFixed(1)}g</span></div>
+          <div style="display:flex;align-items:center;gap:3px"><span style="color:#22c55e">🫒</span><span style="color:#22c55e;font-weight:600">${food.fat[food.qty].toFixed(1)}g</span></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleFoodDB(id, name) {
+  if(fooddbSelected[id]) {
+    delete fooddbSelected[id];
+  } else {
+    const allFoods = [...fooddbData.recent, ...fooddbData.popular, ...fooddbApiResults];
+    const food = allFoods.find(f => f.id === id);
+    if(food) {
+      fooddbSelected[id] = {name, qty: food.qty};
+    }
+  }
+  updateFooddbUI();
+}
+
+function changeQtyDB(id, qty) {
+  const allFoods = [...fooddbData.recent, ...fooddbData.popular, ...fooddbApiResults];
+  const food = allFoods.find(f => f.id === id);
+  if(food) food.qty = qty;
+  if(fooddbSelected[id]) fooddbSelected[id].qty = qty;
+  renderFoodsDB();
+  updateFooddbUI();
+}
+
+function filterFoodsDB() {
+  const q = document.getElementById('fooddb-search-input').value.trim();
+  clearTimeout(fooddbSearchTimer);
+  if(!q) {
+    fooddbApiResults = [];
+    renderFoodsDB();
+    return;
+  }
+  fooddbSearchTimer = setTimeout(() => searchFoodsFromApi(q), 300);
+}
+
+async function searchFoodsFromApi(q) {
+  fooddbIsLoading = true;
+  renderFoodsDB();
+  try {
+    const res = await fetch(`/api/food-search?q=${encodeURIComponent(q)}&rows=20`);
+    fooddbApiResults = await res.json();
+  } catch {
+    fooddbApiResults = [];
+  }
+  fooddbIsLoading = false;
+  renderFoodsDB();
+}
+
+function updateFooddbUI() {
+  const count = Object.keys(fooddbSelected).length;
+  document.getElementById('fooddb-count').textContent = count + '개';
+  document.getElementById('fooddb-save-btn').disabled = count === 0;
+}
+
+async function saveFoodsDB() {
+  const mealType = document.getElementById('fooddb-meal-type').value;
+  const count = Object.keys(fooddbSelected).length;
+  if(count === 0) {
+    alert('음식을 선택해 주세요.');
+    return;
+  }
+
+  try {
+    for(const [id, data] of Object.entries(fooddbSelected)) {
+      const allFoods = [...fooddbData.recent, ...fooddbData.popular, ...fooddbApiResults];
+      const food = allFoods.find(f => f.id === parseInt(id));
+      if(food) {
+        const meal = {
+          meal_type: mealType,
+          food_name: data.name,
+          calories: food.cals[data.qty] || 0,
+          protein: food.protein[data.qty] || 0,
+          carbs: food.carb[data.qty] || 0,
+          fat: food.fat[data.qty] || 0,
+          quantity: data.qty,
+          notes: ''
+        };
+        await saveMealDirect(meal);
+      }
+    }
+    alert(`${count}개의 음식이 저장되었습니다.`);
+    closeFoodDBModal();
+    showScreen('history');
+    renderHistoryMeals();
+  } catch(e) {
+    alert('음식 저장에 실패했습니다: ' + e.message);
+  }
+}
+
+async function saveMealDirect(meal) {
+  if(isGuestMode()) {
+    const guestMeals = JSON.parse(localStorage.getItem(GUEST_MEALS_KEY) || '[]');
+    const newMeal = {
+      id: Date.now() + Math.random(),
+      user_id: null,
+      ...meal,
+      logged_at: new Date().toISOString(),
+      image_url: null
+    };
+    guestMeals.push(newMeal);
+    localStorage.setItem(GUEST_MEALS_KEY, JSON.stringify(guestMeals));
+  } else {
+    if(!sbClient || !currentUser) throw new Error('로그인이 필요합니다.');
+    const { error } = await sbClient.from('meal_logs').insert([{
+      user_id: currentUser.id,
+      ...meal,
+      logged_at: new Date().toISOString(),
+      image_url: null
+    }]);
+    if(error) throw error;
+  }
+}
 
 async function reanalyzeSaved() {
   const targetMeal = currentReanalyzeMeal;
