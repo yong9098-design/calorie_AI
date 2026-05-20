@@ -1804,10 +1804,21 @@ async function deleteMeal(id) {
     console.log('[deleteMeal] 삭제 시작: id=', id, 'type=', typeof id);
     if(isGuestMode()) {
       console.log('[deleteMeal] 게스트 모드: localStorage에서 삭제');
-      const before = getGuestMeals().length;
-      saveGuestMeals(getGuestMeals().filter(meal => meal.id!==id));
+      const meals = getGuestMeals();
+      console.log('[deleteMeal] 삭제 전 개수:', meals.length, '모든 ID:', meals.map(m => `${m.id}(${typeof m.id})`));
+
+      // ID 비교: 문자열 vs 숫자 모두 처리
+      const idNum = typeof id === 'string' ? parseFloat(id) : id;
+      const filtered = meals.filter(meal => {
+        const mealIdNum = typeof meal.id === 'string' ? parseFloat(meal.id) : meal.id;
+        const match = mealIdNum === idNum;
+        if(match) console.log(`[deleteMeal] 삭제 대상 찾음: ${meal.id} === ${id}`);
+        return !match;
+      });
+
+      saveGuestMeals(filtered);
       const after = getGuestMeals().length;
-      console.log(`[deleteMeal] 삭제 완료: ${before}개 → ${after}개`);
+      console.log(`[deleteMeal] 삭제 완료: ${meals.length}개 → ${after}개`);
     } else {
       console.log('[deleteMeal] 로그인 모드: Supabase에서 삭제');
       if(!sbClient) throw new Error('Supabase 클라이언트 미초기화');
@@ -1820,7 +1831,7 @@ async function deleteMeal(id) {
     loadHomeData();
     alert('식사 기록이 삭제되었습니다.');
   } catch(e){
-    console.error('[deleteMeal] 오류:', e.message);
+    console.error('[deleteMeal] 오류:', e.message, e);
     alert('삭제에 실패했어요: ' + e.message);
   }
 }
