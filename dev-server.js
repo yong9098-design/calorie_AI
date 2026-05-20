@@ -18,16 +18,19 @@ function loadEnv() {
       if (idx === -1) continue;
       const key = trimmed.slice(0, idx).trim();
       const val = trimmed.slice(idx + 1).trim();
-      if (!process.env[key]) process.env[key] = val;
+      process.env[key] = val;
     }
-  } catch {}
+    console.log('[dev-server] .env loaded. FOOD_DB_API_KEY:', process.env.FOOD_DB_API_KEY ? 'SET' : 'NOT SET');
+  } catch (e) {
+    console.error('[dev-server] Failed to load .env:', e.message);
+  }
 }
 loadEnv();
 
 // 로컬 개발 환경에서 한국 정부 API SSL 인증서 체인 문제 우회
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8001;
 const BASE_URL = 'https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo02/getFoodNtrCpntDbInq02';
 
 const MIME = {
