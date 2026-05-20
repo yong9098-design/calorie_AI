@@ -1840,29 +1840,35 @@ function closeFoodDBModal() {
 }
 
 function renderFoodsDB() {
-  const q = document.getElementById('fooddb-search-input').value.trim();
+  const q = document.getElementById('fooddb-search-input').value.trim().toLowerCase();
   const recentSec = document.getElementById('fooddb-recent-section');
   const popularSec = document.getElementById('fooddb-popular-section');
   const searchResult = document.getElementById('fooddb-search-results');
 
-  if(fooddbIsLoading) {
+  if(fooddbIsLoading && q) {
     recentSec.style.display = 'none';
     popularSec.style.display = 'none';
     searchResult.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)"><div style="font-size:24px">⏳</div><p style="margin-top:8px;font-size:14px">검색 중...</p></div>';
     return;
   }
-  if(q && fooddbApiResults.length > 0) {
+
+  if(q) {
+    // 검색 모드: 사전 정의 음식 + API 결과 모두 표시
     recentSec.style.display = 'none';
     popularSec.style.display = 'none';
-    renderFooddbSection('fooddb-search-results', fooddbApiResults);
+    const recentFiltered = fooddbData.recent.filter(f => f.name.toLowerCase().includes(q));
+    const popularFiltered = fooddbData.popular.filter(f => f.name.toLowerCase().includes(q));
+    const allMatches = [...recentFiltered, ...popularFiltered, ...fooddbApiResults];
+
+    if(allMatches.length === 0) {
+      searchResult.innerHTML = `<div style="text-align:center;padding:40px;color:var(--sub)"><div style="font-size:24px">🔍</div><p style="margin-top:8px;font-size:14px">'${q}' 검색 결과가 없습니다.</p></div>`;
+    } else {
+      renderFooddbSection('fooddb-search-results', allMatches);
+    }
     return;
   }
-  if(q && fooddbApiResults.length === 0) {
-    recentSec.style.display = 'none';
-    popularSec.style.display = 'none';
-    searchResult.innerHTML = `<div style="text-align:center;padding:40px;color:var(--sub)"><div style="font-size:24px">🔍</div><p style="margin-top:8px;font-size:14px">'${q}' 검색 결과가 없습니다.</p></div>`;
-    return;
-  }
+
+  // 검색 없음: 최근/인기 음식 표시
   recentSec.style.display = '';
   popularSec.style.display = '';
   searchResult.innerHTML = '';
