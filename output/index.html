@@ -1968,9 +1968,11 @@ async function saveFoodsDB() {
   }
 
   try {
+    let savedCount = 0;
     for(const [id, data] of Object.entries(fooddbSelected)) {
       const allFoods = [...fooddbData.recent, ...fooddbData.popular, ...fooddbApiResults];
-      const food = allFoods.find(f => f.id === parseInt(id));
+      const foodId = typeof id === 'string' ? parseInt(id) : id;
+      const food = allFoods.find(f => f.id === foodId);
       if(food) {
         const meal = {
           meal_type: mealType,
@@ -1983,13 +1985,23 @@ async function saveFoodsDB() {
           notes: ''
         };
         await saveMealDirect(meal);
+        savedCount++;
+      } else {
+        console.warn(`[saveFoodsDB] 음식을 찾을 수 없음: id=${foodId}, name=${data.name}`);
       }
     }
-    alert(`${count}개의 음식이 저장되었습니다.`);
-    closeFoodDBModal();
-    showScreen('history');
-    renderHistoryMeals();
+    if(savedCount > 0) {
+      alert(`${savedCount}개의 음식이 저장되었습니다.`);
+      closeFoodDBModal();
+      invalidateMealCache();
+      loadHistoryData();
+      loadHomeData();
+      showScreen('history');
+    } else {
+      alert('저장할 음식을 찾을 수 없습니다.');
+    }
   } catch(e) {
+    console.error('[saveFoodsDB] 오류:', e);
     alert('음식 저장에 실패했습니다: ' + e.message);
   }
 }
