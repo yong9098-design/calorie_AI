@@ -293,18 +293,18 @@
                 <div class="mermaid">
 graph TD
     subgraph Client["🖥️ 클라이언트"]
-        B["📱 브라우저<br/>(HTML SPA)"]
-        SW["⚙️ Service Worker"]
+        B["Browser<br/>SPA"]
+        SW["Service<br/>Worker"]
     end
-    subgraph Backend["☁️ 백엔드"]
-        API1["GET /api/config"]
-        API2["POST /api/analyze"]
-        API3["GET /api/food-search"]
+    subgraph Backend["☁️ API"]
+        API1["Config"]
+        API2["Analyze"]
+        API3["Search"]
     end
     subgraph External["🌐 서비스"]
-        SB["🔐 Supabase"]
-        GM["🤖 Gemini"]
-        FDB["📊 식품DB"]
+        SB["Supabase"]
+        GM["Gemini"]
+        FDB["Food DB"]
     end
     subgraph Storage["💾 저장소"]
         LS["localStorage"]
@@ -337,15 +337,15 @@ graph TD
         <div class="diagram-container">
             <div class="diagram-content">
                 <div class="mermaid">
-graph TD
-    Boot[Start] --> Onb[Onboarding]
+flowchart LR
+    Boot[Boot] --> Onb[Onb]
     Onb --> Auth[Auth]
     Auth --> Home[Home]
     Home --> Camera[Camera]
     Home --> Search[Search]
-    Home --> Profile[Profile]
-    Home --> Settings[Settings]
-    Home --> History[History]
+    Home --> Profile[Prof]
+    Home --> Settings[Set]
+    Home --> History[Hist]
     Home --> Stats[Stats]
     Camera --> Analyze[Analyze]
     Analyze --> Edit[Edit]
@@ -368,21 +368,20 @@ graph TD
         <div class="diagram-container">
             <div class="diagram-content">
                 <div class="mermaid">
-graph TD
+flowchart LR
     Boot[Boot] --> Init[Init]
     Init --> State[State]
     Init --> Auth[Auth]
     State --> Nav[Nav]
     Nav --> Home[Home]
-    Nav --> Hist[History]
+    Nav --> Hist[Hist]
     Nav --> Stats[Stats]
-    Nav --> Prof[Profile]
-    Nav --> Sets[Settings]
-    Home --> Ana[Analyze]
-    Ana --> API2[Analyze API]
+    Nav --> Prof[Prof]
+    Nav --> Sets[Set]
+    Home --> Ana[Ana]
+    Ana --> API2[API2]
     API2 --> State
-    Hist --> API3[Search API]
-    All["Utils<br/>(모든 모듈)"]
+    Hist --> API3[API3]
                 </div>
                 <div class="description">
                     <h3>모듈 의존성</h3>
@@ -434,18 +433,16 @@ sequenceDiagram
         <div class="diagram-container">
             <div class="diagram-content">
                 <div class="mermaid">
-flowchart TD
-    Start[App Start] --> Check{Config Set?}
-    Check -->|Yes| GetSession[Get Session]
-    Check -->|No| Guest[Guest]
-    GetSession --> Check2{Session<br/>Exists?}
-    Check2 -->|Yes| Home[Home]
-    Check2 -->|No| Onb[Onboarding]
-    Onb --> AuthScreen[Auth Screen]
-    AuthScreen --> Choice{선택}
-    Choice -->|Login| Login[로그인]
-    Choice -->|SignUp| SignUp[회원가입]
-    Choice -->|Guest| Guest
+flowchart LR
+    Start[Start] --> Check{Config?}
+    Check -->|Yes| Session[Session]
+    Check -->|No| Onb[Onboarding]
+    Session --> Home[Home]
+    Onb --> Auth[Auth]
+    Auth --> Choice{Type?}
+    Choice -->|Login| Login[Login]
+    Choice -->|SignUp| SignUp[SignUp]
+    Choice -->|Guest| Guest[Guest]
     Login --> Home
     SignUp --> Home
     Guest --> Home

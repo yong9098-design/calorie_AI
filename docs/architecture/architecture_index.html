@@ -288,35 +288,35 @@
             <div class="diagram-content">
                 <div class="mermaid">
 graph TD
-    subgraph Client["🖥️ 클라이언트 계층"]
-        B["📱 브라우저<br/>(단일 HTML SPA)"]
-        SW["⚙️ Service Worker<br/>(PWA 캐싱)"]
+    subgraph Client["🖥️ 클라이언트"]
+        B["Browser<br/>SPA"]
+        SW["Service<br/>Worker"]
     end
-    subgraph Backend["☁️ 백엔드 API"]
-        API1["GET /api/config<br/>(환경변수 프록시)"]
-        API2["POST /api/analyze<br/>(이미지 분석)"]
-        API3["GET /api/food-search<br/>(음식 DB 프록시)"]
+    subgraph Backend["☁️ API"]
+        API1["Config"]
+        API2["Analyze"]
+        API3["Search"]
     end
-    subgraph External["🌐 외부 서비스"]
-        SB["🔐 Supabase<br/>(Auth + PostgreSQL)"]
-        GM["🤖 Google Gemini<br/>(Vision API)"]
-        FDB["📊 식약처 식품 DB<br/>(영양성분 검색)"]
+    subgraph External["🌐 서비스"]
+        SB["Supabase"]
+        GM["Gemini"]
+        FDB["Food DB"]
     end
-    subgraph Storage["💾 로컬 스토리지"]
-        LS["localStorage<br/>(설정, 토큰, 캐시)"]
-        IDB["IndexedDB<br/>(오프라인 데이터)"]
+    subgraph Storage["💾 스토리지"]
+        LS["localStorage"]
+        IDB["IndexedDB"]
     end
 
-    B -->|HTTP| API1
-    B -->|HTTP| API2
-    B -->|HTTP| API3
-    API1 -->|반환| SB
-    API2 -->|호출| GM
-    API3 -->|프록시| FDB
-    B -->|저장| LS
-    B -->|저장| IDB
-    B -->|등록| SW
-    SW -->|캐싱| LS
+    B --> API1
+    B --> API2
+    B --> API3
+    API1 --> SB
+    API2 --> GM
+    API3 --> FDB
+    B --> LS
+    B --> IDB
+    B --> SW
+    SW --> LS
                 </div>
                 <div class="description">
                     <h3>시스템 아키텍처</h3>
@@ -340,31 +340,18 @@ graph TD
         <div class="diagram-container">
             <div class="diagram-content">
                 <div class="mermaid">
-graph TD
-    Boot[Start]
-    Onb[Onboarding]
-    Auth[Auth]
-    Home[Home]
-    Camera[Camera]
-    Search[Search]
-    Profile[Profile]
-    Settings[Settings]
-    History[History]
-    Stats[Stats]
-    Analyze[Analyze]
-    Edit[Edit]
-
-    Boot --> Onb
-    Onb --> Auth
-    Auth --> Home
-    Home --> Camera
-    Home --> Search
-    Home --> Profile
-    Home --> Settings
-    Home --> History
-    Home --> Stats
-    Camera --> Analyze
-    Analyze --> Edit
+flowchart LR
+    Boot[Boot] --> Onb[Onb]
+    Onb --> Auth[Auth]
+    Auth --> Home[Home]
+    Home --> Camera[Camera]
+    Home --> Search[Search]
+    Home --> Profile[Prof]
+    Home --> Settings[Set]
+    Home --> History[Hist]
+    Home --> Stats[Stats]
+    Camera --> Analyze[Analyze]
+    Analyze --> Edit[Edit]
     Edit --> Home
     Search --> Edit
                 </div>
@@ -386,46 +373,28 @@ graph TD
         <div class="diagram-container">
             <div class="diagram-content">
                 <div class="mermaid">
-graph TD
-    Boot[Boot]
-    Init[Init]
-    State[State]
-    Nav[Nav]
-    Auth[Auth]
-    Onb[Onboarding]
-    Home[Home]
-    Hist[History]
-    Stats[Stats]
-    Prof[Profile]
-    Sets[Settings]
-    Ana[Analyze]
-    Reana[Reanalysis]
-    Utils[Utils]
-    API1[Config API]
-    API2[Analyze API]
-    API3[Search API]
-
-    Boot --> Init
-    Init --> State
-    Init --> Auth
-    Init --> Onb
-    State --> Nav
-    Nav --> Home
-    Nav --> Hist
-    Nav --> Stats
-    Nav --> Prof
-    Nav --> Sets
-    Home --> Ana
-    Home --> Utils
-    Ana --> API2
+flowchart LR
+    Boot[Boot] --> Init[Init]
+    Init --> State[State]
+    Init --> Auth[Auth]
+    Init --> Onb[Onb]
+    State --> Nav[Nav]
+    Nav --> Home[Home]
+    Nav --> Hist[Hist]
+    Nav --> Stats[Stats]
+    Nav --> Prof[Prof]
+    Nav --> Sets[Set]
+    Home --> Ana[Ana]
+    Home --> Util[Util]
+    Ana --> API2[API2]
     API2 --> State
-    Hist --> API3
-    Hist --> Utils
+    Hist --> API3[API3]
+    Hist --> Util
     Stats --> State
-    Stats --> Utils
+    Stats --> Util
     Prof --> State
-    Onb --> Utils
-    Ana --> Utils
+    Onb --> Util
+    Ana --> Util
                 </div>
                 <div class="description">
                     <h3>모듈 의존성 그래프</h3>
@@ -489,36 +458,16 @@ sequenceDiagram
         <div class="diagram-container">
             <div class="diagram-content">
                 <div class="mermaid">
-flowchart TD
-    Start[App Start]
-    Check1{Config Set}
-    GetSession[Get Session]
-    Check2{Session Exists}
-    CheckGuest{Guest Mode}
-    CheckOnb{Onboarding}
-    AuthScreen[Auth Screen]
-    OnbScreen[Onboarding]
-    Choice{Select}
-    Login[Login]
-    SignUp[SignUp]
-    Guest[Guest]
-    Home[Home Ready]
-
-    Start --> Check1
-    Check1 --> GetSession
-    Check1 --> Guest
-    GetSession --> Check2
-    Check2 --> Home
-    Check2 --> CheckGuest
-    CheckGuest --> Home
-    CheckGuest --> CheckOnb
-    CheckOnb --> AuthScreen
-    CheckOnb --> OnbScreen
-    OnbScreen --> AuthScreen
-    AuthScreen --> Choice
-    Choice --> Login
-    Choice --> SignUp
-    Choice --> Guest
+flowchart LR
+    Start[Start] --> Check{Config?}
+    Check -->|Yes| Session[Session]
+    Check -->|No| Onb[Onboarding]
+    Session --> Home[Home]
+    Onb --> Auth[Auth]
+    Auth --> Choice{Type?}
+    Choice -->|Login| Login[Login]
+    Choice -->|SignUp| SignUp[SignUp]
+    Choice -->|Guest| Guest[Guest]
     Login --> Home
     SignUp --> Home
     Guest --> Home

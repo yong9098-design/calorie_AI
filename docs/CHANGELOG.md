@@ -566,7 +566,9 @@ AI 칼로리 트래커 프로젝트 변경 이력
 
 ### 구현 내용
 - **대화형 아키텍처 뷰어** (`docs/architecture/architecture_index.html`): 6개 Mermaid 다이어그램 탭 네비게이션 인터페이스.
-  - 다이어그램 6종: ① 시스템 전체 아키텍처 (graph TD) ② 프론트엔드 모듈 의존성 (graph TD) ③ 화면 상태 흐름 (stateDiagram-v2) ④ 식사 기록 데이터 흐름 (sequenceDiagram) ⑤ 인증 흐름 (flowchart TD) ⑥ AI 에이전트 파이프라인 (flowchart LR).
+  - 다이어그램 6종: ① 시스템 전체 아키텍처 (graph TD) ② 화면 흐름도 (flowchart LR) ③ 모듈 의존성 (flowchart LR) ④ 식사 기록 데이터 흐름 (sequenceDiagram) ⑤ 인증 흐름 (flowchart LR) ⑥ AI 에이전트 파이프라인 (flowchart LR).
+  - **레이아웃 최적화**: 2, 3, 5번 다이어그램을 수직(TD) → 수평(LR) 레이아웃으로 변경하여 세로 높이 대폭 감소.
+  - **노드명 단축**: API/화면/모듈명을 축약 (예: "GET /api/config" → "Config", "Settings" → "Set") → 화살표 텍스트 겹침 제거.
   - 다크/라이트 테마 토글 CSS custom properties 사용.
   - CSS visibility 모델(display: none 대신) 사용으로 모든 다이어그램 Mermaid 초기화 시점에 렌더링 보장.
   - 한국어 다이어그램 설명 + 구간별 범례 표시.
@@ -575,6 +577,7 @@ AI 칼로리 트래커 프로젝트 변경 이력
   - Mermaid 다이어그램 최대 높이 550px + 가로 스크롤 방지 (`overflow: hidden`).
   - 각 탭 설명 텍스트 압축 (핵심 3-4줄만 남김, 글꼴 1-2px 축소).
   - 모든 6개 다이어그램 포함, 동일한 테마 토글 기능.
+  - 2, 3, 5번 다이어그램 LR 레이아웃 적용으로 프리젠테이션 표시 최적화.
 - **재사용 가능 스킬** (`.claude/skills/Mermaid-diagram/SKILL.md`): 향후 프로젝트 아키텍처 시각화 자동화.
   - 다이어그램 타입별 선택 가이드 (graph TD / flowchart / stateDiagram / sequenceDiagram / graphviz).
   - HTML 템플릿 (Mermaid CDN, 탭 네비, 테마 토글 최소 구현).
