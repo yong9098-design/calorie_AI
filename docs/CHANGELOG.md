@@ -1,5 +1,16 @@
 # Changelog
 
+
+## [2026-05-26] output/index.html 업데이트 (커밋: f9b394b)
+
+### 변경 내용
+- 칼로리 트래커 앱 개선
+
+### 파일 정보
+- 파일 크기: 132K
+
+---
+
 AI 칼로리 트래커 프로젝트 변경 이력
 
 ## 작성 규칙
@@ -559,49 +570,3 @@ AI 칼로리 트래커 프로젝트 변경 이력
 - ✅ 음식 저장: 선택 음식 저장 시 `guest_meals` localStorage에 정상 저장 (calories, protein, carbs, fat 정확함)
 - ✅ 식사 기록 표시: 저장 직후 "기록" 탭에서 음식 표시 (영양소 정보 포함)
 - 반복 횟수: 1회 (브라우저 테스트로 확인 완료)
-
----
-
-## [2026-05-26] Mermaid 아키텍처 다이어그램 시각화 및 재사용 가능 스킬 작성
-
-### 구현 내용
-- **대화형 아키텍처 뷰어** (`docs/architecture/architecture_index.html`): 6개 Mermaid 다이어그램 탭 네비게이션 인터페이스.
-  - 다이어그램 6종: ① 시스템 전체 아키텍처 (graph LR) ② 화면 흐름도 (flowchart LR) ③ 모듈 의존성 (flowchart LR) ④ 식사 기록 데이터 흐름 (sequenceDiagram) ⑤ 인증 흐름 (flowchart LR) ⑥ AI 에이전트 파이프라인 (flowchart LR).
-  - **레이아웃 최적화**: 모든 다이어그램을 수평(LR) 레이아웃으로 통일하여 화살표 겹침 제거 및 세로 높이 대폭 감소.
-  - **에지 라벨 추가**: 각 화살표에 액션 설명 (예: "Home →**촬영** → Camera") → 발표 시 흐름 이해도 향상.
-  - **노드명 단축**: API/화면/모듈명을 축약 (예: "GET /api/config" → "Config", "Settings" → "Set").
-  - 다크/라이트 테마 토글 CSS custom properties 사용.
-  - CSS visibility 모델(display: none 대신) 사용으로 모든 다이어그램 Mermaid 초기화 시점에 렌더링 보장.
-  - 한국어 다이어그램 설명 + 구간별 범례 표시.
-- **프레젠테이션 최적화 버전** (`docs/architecture/architecture_index_resize.html`): 단일 화면 표시용 (프리젠테이션 목적).
-  - CSS 축소: container 1200px → 1600px (wider), 모든 padding/margin 30~50% 감소 (예: 24px → 10px).
-  - Mermaid 다이어그램 최대 높이 550px + 가로 스크롤 방지 (`overflow: hidden`).
-  - 각 탭 설명 텍스트 압축 (핵심 3-4줄만 남김, 글꼴 1-2px 축소).
-  - 모든 6개 다이어그램 포함, 동일한 테마 토글 기능.
-  - 에지 라벨 포함하여 프리젠테이션 시 각 흐름의 의미를 명확하게 표현.
-- **재사용 가능 스킬** (`.claude/skills/Mermaid-diagram/SKILL.md`): 향후 프로젝트 아키텍처 시각화 자동화.
-  - 다이어그램 타입별 선택 가이드 (graph TD / flowchart / stateDiagram / sequenceDiagram / graphviz).
-  - HTML 템플릿 (Mermaid CDN, 탭 네비, 테마 토글 최소 구현).
-  - 공통 실수 (긴 노드명 처리, 특수문자 이스케이프, 순환 참조).
-  - Mermaid 문법 치트시트.
-
-### 핵심 로직
-- **CSS 가시성 모델**: 비활성 탭의 다이어그램을 `display: none`이 아닌 `visibility: hidden; height: 0; overflow: hidden`으로 숨김 → Mermaid.js 초기화 시 모든 SVG 노드가 DOM에 존재하므로 render 성공. 탭 클릭 시 `visibility: visible; height: auto`로 전환.
-- **테마 토글**: CSS custom properties `--bg`, `--card`, `--text`, `--sub`, `--border` 사용 → Mermaid 다이어그램 re-render 시에도 색상 자동 적용.
-- **다크 테마 색상 조정**: 배경 #0f172a (더 어두움) + 텍스트 #ffffff (순백) + 보조 #e2e8f0 (더 밝음) → 명도 대비 최대화.
-- **에지 라벨**: 각 다이어그램의 화살표에 한국어 설명 추가 (예: "Home →**촬영**→ Camera") → 프리젠테이션 시 청중이 흐름을 즉시 이해.
-- **프리젠테이션 최적화**: 모든 측정값을 비율 계산으로 축소 (30~50%), Mermaid 생성 다이어그램의 노드명 간소화로 자동 리사이징 (Mermaid 수평 정렬 알고리즘 활용).
-
-### 변경된 파일
-- `docs/architecture/architecture_index.html` — 6개 다이어그램 + 탭 인터페이스 + 다크 테마 + 설명 텍스트
-- `docs/architecture/architecture_index_resize.html` — 프리젠테이션 버전 (축소 CSS, 간결 설명)
-- `.claude/skills/Mermaid-diagram/SKILL.md` — 재사용 스킬 문서 (frontmatter + overview + 단계별 가이드)
-
-### QA 결과
-- ✅ 6개 다이어그램 모두 렌더링 확인 (Syntax Error 해결).
-- ✅ 탭 전환 시 다이어그램 정상 표시 (visibility 모델로 인한 렌더링 보장).
-- ✅ 다크/라이트 테마 토글 시 모든 다이어그램 색상 자동 변경.
-- ✅ 다크 테마 명도 대비 개선 (배경 검은색 → 더 어두운 파랑, 텍스트 밝은 회색 → 순백).
-- ✅ 프리젠테이션 버전에서 모든 다이어그램 단일 화면 렌더링 (스크롤 최소화).
-- 반복 횟수: 2회 (Mermaid 렌더링 버그 → visibility 모델 전환 → 해결).
-- 최종 점수: 9.5/10 (기능성 10/10, UX 10/10, 기술품질 9/10, 완성도 10/10).
