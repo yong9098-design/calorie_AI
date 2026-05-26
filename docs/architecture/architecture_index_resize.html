@@ -291,10 +291,9 @@
         <div class="diagram-container active">
             <div class="diagram-content">
                 <div class="mermaid">
-graph TD
+graph LR
     subgraph Client["🖥️ 클라이언트"]
         B["Browser<br/>SPA"]
-        SW["Service<br/>Worker"]
     end
     subgraph Backend["☁️ API"]
         API1["Config"]
@@ -306,20 +305,22 @@ graph TD
         GM["Gemini"]
         FDB["Food DB"]
     end
-    subgraph Storage["💾 저장소"]
+    subgraph Storage["💾 스토리지"]
         LS["localStorage"]
         IDB["IndexedDB"]
+        SW["Service<br/>Worker"]
     end
 
-    B --> API1
-    B --> API2
-    B --> API3
-    API1 --> SB
-    API2 --> GM
-    API3 --> FDB
-    B --> LS
-    B --> IDB
-    B --> SW
+    B -->|요청| API1
+    B -->|요청| API2
+    B -->|요청| API3
+    API1 -->|연동| SB
+    API2 -->|호출| GM
+    API3 -->|프록시| FDB
+    B -->|저장| LS
+    B -->|저장| IDB
+    B -->|등록| SW
+    SW -->|캐싱| LS
                 </div>
                 <div class="description">
                     <h3>시스템 아키텍처</h3>
@@ -338,19 +339,19 @@ graph TD
             <div class="diagram-content">
                 <div class="mermaid">
 flowchart LR
-    Boot[Boot] --> Onb[Onb]
-    Onb --> Auth[Auth]
-    Auth --> Home[Home]
-    Home --> Camera[Camera]
-    Home --> Search[Search]
-    Home --> Profile[Prof]
-    Home --> Settings[Set]
-    Home --> History[Hist]
-    Home --> Stats[Stats]
-    Camera --> Analyze[Analyze]
-    Analyze --> Edit[Edit]
-    Edit --> Home
-    Search --> Edit
+    Boot[Boot] -->|시작| Onb[Onb]
+    Onb -->|설정| Auth[Auth]
+    Auth -->|인증| Home[Home]
+    Home -->|촬영| Camera[Camera]
+    Home -->|검색| Search[Search]
+    Home -->|프로필| Prof[Prof]
+    Home -->|설정| Set[Set]
+    Home -->|기록| Hist[Hist]
+    Home -->|통계| Stats[Stats]
+    Camera -->|분석| Analyze[Analyze]
+    Analyze -->|수정| Edit[Edit]
+    Edit -->|저장| Home
+    Search -->|선택| Edit
                 </div>
                 <div class="description">
                     <h3>화면 흐름도</h3>
@@ -369,19 +370,19 @@ flowchart LR
             <div class="diagram-content">
                 <div class="mermaid">
 flowchart LR
-    Boot[Boot] --> Init[Init]
-    Init --> State[State]
-    Init --> Auth[Auth]
-    State --> Nav[Nav]
-    Nav --> Home[Home]
-    Nav --> Hist[Hist]
-    Nav --> Stats[Stats]
-    Nav --> Prof[Prof]
-    Nav --> Sets[Set]
-    Home --> Ana[Ana]
-    Ana --> API2[API2]
-    API2 --> State
-    Hist --> API3[API3]
+    Boot[Boot] -->|초기화| Init[Init]
+    Init -->|상태| State[State]
+    Init -->|인증| Auth[Auth]
+    State -->|라우팅| Nav[Nav]
+    Nav -->|홈| Home[Home]
+    Nav -->|기록| Hist[Hist]
+    Nav -->|통계| Stats[Stats]
+    Nav -->|프로필| Prof[Prof]
+    Nav -->|설정| Sets[Set]
+    Home -->|분석| Ana[Ana]
+    Ana -->|API| API2[API2]
+    API2 -->|상태| State
+    Hist -->|API| API3[API3]
                 </div>
                 <div class="description">
                     <h3>모듈 의존성</h3>
