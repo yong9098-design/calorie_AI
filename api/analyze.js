@@ -131,6 +131,30 @@ async function requestGemini({ model, mimeType, data, apiKey }) {
   return { response, json, model: resolvedModel };
 }
 
+async function requestGeminiText({ model, prompt, apiKey }) {
+  const resolvedModel = MODEL_IDS[model] ? model : 'flash';
+  const modelId = MODEL_IDS[resolvedModel];
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${encodeURIComponent(apiKey)}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: model === 'pro' ? 2048 : 1024,
+          thinkingConfig: { thinkingBudget: model === 'pro' ? 256 : 0 },
+        },
+      }),
+    }
+  );
+
+  const json = await response.json().catch(() => ({}));
+  return { response, json, model: resolvedModel };
+}
+
 export default async function handler(req) {
   if (req.method !== 'POST') {
     return jsonResponse({ error: 'Method Not Allowed' }, 405, { Allow: 'POST' });
@@ -150,18 +174,53 @@ export default async function handler(req) {
     return jsonResponse({ error: 'Invalid JSON body' }, 400);
   }
 
+  const authHeader = req.headers.get('authorization') || '';
+  const tokenMatch = authHeader.match(/^Bearer\s+(.+)$/i);
+  const accessToken = tokenMatch ? tokenMatch[1] : null;
+
+  const requestedModel = await getUserGeminiModel(accessToken);
+
+  // 텍스트 전용 식단 분석 모드
+  if (body?.prompt) {
+    try {
+      const apiKeyForModel = requestedModel === 'pro' ? GEMINI_API_KEY_PRO : GEMINI_API_KEY_FLASH;
+      let { response: geminiRes, json: geminiJson, model } = await requestGeminiText({
+        model: requestedModel,
+        prompt: body.prompt,
+        apiKey: apiKeyForModel,
+      });
+
+      if (!geminiRes.ok && requestedModel === 'pro' && [403, 404, 429].includes(geminiRes.status)) {
+        ({ response: geminiRes, json: geminiJson, model } = await requestGeminiText({
+          model: 'flash',
+          prompt: body.prompt,
+          apiKey: GEMINI_API_KEY_FLASH,
+        }));
+      }
+
+      if (!geminiRes.ok) {
+        return jsonResponse({ error: geminiJson?.error?.message || 'Gemini request failed' }, geminiRes.status);
+      }
+
+      const text =
+        geminiJson?.candidates
+          ?.flatMap(c => c?.content?.parts || [])
+          ?.filter(p => typeof p?.text === 'string')
+          ?.map(p => p.text)
+          ?.join('') || '';
+
+      return jsonResponse({ text, model });
+    } catch (error) {
+      return jsonResponse({ error: error.message || 'Unexpected server error' }, 500);
+    }
+  }
+
   const mimeType = body?.image?.mimeType;
   const data = body?.image?.data;
 
   if (!mimeType || !data) {
     return jsonResponse({ error: 'image.mimeType and image.data are required' }, 400);
   }
-
-  const authHeader = req.headers.get('authorization') || '';
-  const tokenMatch = authHeader.match(/^Bearer\s+(.+)$/i);
-  const accessToken = tokenMatch ? tokenMatch[1] : null;
-
-  const requestedModel = await getUserGeminiModel(accessToken);
 
   try {
     const apiKeyForModel = requestedModel === 'pro' ? GEMINI_API_KEY_PRO : GEMINI_API_KEY_FLASH;

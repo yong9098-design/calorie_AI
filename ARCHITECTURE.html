@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cal AI — 아키텍처 다이어그램</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #22c55e;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .diagram-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .diagram-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .diagram-description {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .legend {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .legend-title {
+            font-weight: 600;
+            color: #22c55e;
+            margin-bottom: 8px;
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .tech-item {
+            padding: 10px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .diagram-section {
+                padding: 16px;
+            }
+
+            .legend-items {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Cal AI — 아키텍처 다이어그램</h1>
+            <p>AI 칼로리 트래커 프로젝트 전체 구조 및 컴포넌트 간 의존성</p>
+        </div>
+
+        <!-- 다이어그램 1: 시스템 아키텍처 -->
+        <div class="diagram-section">
+            <div class="diagram-title">1️⃣ 시스템 아키텍처 (System Architecture)</div>
+            <div class="diagram-description">
+                프론트엔드(SPA), 벡엔드(Vercel Edge), 외부 서비스(Supabase, Gemini, 공공 API) 간의 전체 데이터 흐름
+            </div>
+            <div class="mermaid">
+                <pre>
+graph TB
+    subgraph Frontend["🖥️ Frontend Layer (SPA)"]
+        direction LR
+        HTML["📄 index.html<br/>(134KB SPA)"]
+        CSS["🎨 Inline CSS<br/>(Green Theme)"]
+        JS["⚙️ JavaScript<br/>(Auth, UI, Logic)"]
+        SW["⚡ Service Worker<br/>(PWA)"]
+    end
+
+    subgraph API["🔌 Backend APIs (Vercel Edge)"]
+        direction LR
+        Config["GET /api/config<br/>(Env Proxy)"]
+        Analyze["POST /api/analyze<br/>(Gemini Wrapper)"]
+        FoodSearch["GET /api/food-search<br/>(Public Food DB)"]
+    end
+
+    subgraph External["☁️ External Services"]
+        direction LR
+        Supabase["🗄️ Supabase<br/>(Auth, Database)"]
+        Gemini["🤖 Google Gemini<br/>(2.5 Flash/Pro)"]
+        FoodDB["📊 공공 식품 DB API<br/>(식약처)"]
+        Storage["💾 Cloud Storage<br/>(PWA Assets)"]
+    end
+
+    subgraph LocalStorage["💻 Client Storage"]
+        direction LR
+        Auth["🔑 Auth Token<br/>(supabase)"]
+        Prefs["⚙️ Preferences<br/>(theme, etc)"]
+        Cache["📦 Meal Logs<br/>(Offline)"]
+    end
+
+    HTML --> CSS
+    HTML --> JS
+    HTML --> SW
+
+    JS -->|fetch config| Config
+    JS -->|POST image| Analyze
+    JS -->|GET keyword| FoodSearch
+
+    Config -->|read env| Supabase
+    Analyze -->|vision + JSON| Gemini
+    FoodSearch -->|proxy query| FoodDB
+
+    JS -->|auth, meal CRUD| Supabase
+    SW -->|cache assets| Storage
+
+    JS -->|read/write| Auth
+    JS -->|read/write| Prefs
+    JS -->|read/write| Cache
+                </pre>
+            </div>
+            <div class="legend">
+                <div class="legend-title">📌 레이어 설명</div>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4f46e5;"></div>
+                        <span>Frontend: 단일 HTML 파일 + 인라인 CSS/JS</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #22c55e;"></div>
+                        <span>Backend: 3개 Vercel Edge Functions</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f59e0b;"></div>
+                        <span>External: SaaS + 공공 API</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #8b5cf6;"></div>
+                        <span>Local: 오프라인 저장소</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 다이어그램 2: 화면 구조 및 내비게이션 -->
+        <div class="diagram-section">
+            <div class="diagram-title">2️⃣ 화면 흐름도 (Screen Navigation)</div>
+            <div class="diagram-description">
+                앱 내 5개 주요 화면과 사용자 여정(User Journey)
+            </div>
+            <div class="mermaid">
+                <pre>
+graph TD
+    Start["🚀 App Start<br/>localStorage check"]
+    OnboardingCheck{"❓ Onboarding<br/>완료?"}
+
+    Start -->|No| Onboarding["🎯 Onboarding<br/>—Step 1: 신체정보<br/>—Step 2: 활동량<br/>—Step 3: 목표<br/>—Step 4: TDEE 확인"]
+    Onboarding -->|완료| AuthCheck{"❓ 로그인<br/>상태?"}
+
+    Start -->|Yes| AuthCheck
+    AuthCheck -->|No| Auth["🔐 Auth<br/>—로그인 폼<br/>—회원가입<br/>—게스트 모드"]
+    Auth -->|Guest| Home["🏠 Home<br/>—일일 영양 요약<br/>—음식 추가<br/>—더보기 링크"]
+    Auth -->|Signed In| Home
+
+    Home -->|카메라 클릭| Camera["📷 Camera<br/>사진 촬영"]
+    Camera -->|이미지 선택| Analysis["🔍 Analysis<br/>—Gemini 분석<br/>—JSON 결과<br/>—사용자 수정"]
+    Analysis -->|저장| Home
+
+    Home -->|음식 검색| Search["🔎 Food Search<br/>—키워드 입력<br/>—공공 DB 조회<br/>—목록 표시"]
+    Search -->|선택| FoodEdit["✏️ Food Edit<br/>—수량 조정<br/>—영양소 수정<br/>—저장/삭제"]
+    FoodEdit -->|저장| Home
+
+    Home -->|프로필 아이콘| Profile["👤 Profile<br/>—개인정보 조회<br/>—TDEE 수정<br/>—로그아웃"]
+    Profile -->|수정| Home
+    Profile -->|로그아웃| Auth
+
+    Home -->|설정 클릭| Settings["⚙️ Settings<br/>—API Key 입력<br/>—음식 DB 캐시<br/>—앱 정보"]
+    Settings -->|저장| Home
+
+    style Start fill:#f0fdf4,stroke:#22c55e,stroke-width:2px
+    style Onboarding fill:#d1fae5,stroke:#10b981
+    style Auth fill:#fef2f2,stroke:#ef4444
+    style Home fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Camera fill:#fed7aa,stroke:#f59e0b
+    style Analysis fill:#fed7aa,stroke:#f59e0b
+    style Search fill:#e0e7ff,stroke:#4f46e5
+    style FoodEdit fill:#e0e7ff,stroke:#4f46e5
+    style Profile fill:#f3e8ff,stroke:#8b5cf6
+    style Settings fill:#f3e8ff,stroke:#8b5cf6
+                </pre>
+            </div>
+            <div class="legend">
+                <div class="legend-title">🎨 화면 색상 분류</div>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #dcfce7;"></div>
+                        <span>Core Flow (홈 & 조회)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fed7aa;"></div>
+                        <span>이미지 분석 (카메라)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e0e7ff;"></div>
+                        <span>데이터베이스 (검색/편집)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f3e8ff;"></div>
+                        <span>설정 & 프로필</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 다이어그램 3: 모듈 의존성 -->
+        <div class="diagram-section">
+            <div class="diagram-title">3️⃣ 모듈 의존성 그래프 (Module Dependencies)</div>
+            <div class="diagram-description">
+                JavaScript 모듈 간의 의존성 관계 (index.html 내부 구조)
+            </div>
+            <div class="mermaid">
+                <pre>
+graph TB
+    subgraph Core["⚙️ Core Modules"]
+        direction LR
+        App["app.js<br/>(Main Loop)"]
+        State["state.js<br/>(Global)"]
+        Auth["auth.js<br/>(Supabase)"]
+    end
+
+    subgraph Screen["🖼️ Screen Controllers"]
+        direction LR
+        OnboardingCtrl["onboarding.js<br/>(4 Steps)"]
+        HomeCtrl["home.js<br/>(Daily View)"]
+        CameraCtrl["camera.js<br/>(Upload)"]
+        SearchCtrl["search.js<br/>(Food DB)"]
+        ProfileCtrl["profile.js<br/>(User)"]
+        SettingsCtrl["settings.js<br/>(Config)"]
+    end
+
+    subgraph API["🌐 API Services"]
+        direction LR
+        ConfigAPI["configAPI.js<br/>(GET /config)"]
+        AnalysisAPI["analysisAPI.js<br/>(POST /analyze)"]
+        SearchAPI["searchAPI.js<br/>(GET /food-search)"]
+    end
+
+    subgraph Data["📦 Data Layer"]
+        direction LR
+        Supabase["supabaseClient.js<br/>(Auth, DB)"]
+        LocalStore["localStorage<br/>(Cache, Prefs)"]
+        Indexeddb["indexedDB<br/>(Offline)"]
+    end
+
+    subgraph Util["🛠️ Utilities"]
+        direction LR
+        Calc["calculations.js<br/>(TDEE, etc)"]
+        Format["format.js<br/>(Date, Num)"]
+        Validate["validate.js<br/>(Forms)"]
+        Images["imageUtils.js<br/>(Base64)"]
+    end
+
+    subgraph UI["🎨 UI Components"]
+        direction LR
+        Nav["navigation.js<br/>(Bottom Nav)"]
+        Modal["modal.js<br/>(Dialogs)"]
+        Notify["notify.js<br/>(Toast)"]
+        Chart["chart.js<br/>(Ring Chart)"]
+    end
+
+    App --> State
+    App --> Auth
+    App --> OnboardingCtrl
+    App --> HomeCtrl
+
+    OnboardingCtrl --> State
+    OnboardingCtrl --> Calc
+    OnboardingCtrl --> Validate
+
+    HomeCtrl --> State
+    HomeCtrl --> Supabase
+    HomeCtrl --> Chart
+    HomeCtrl --> Nav
+
+    CameraCtrl --> AnalysisAPI
+    CameraCtrl --> Images
+    CameraCtrl --> Modal
+
+    SearchCtrl --> SearchAPI
+    SearchCtrl --> LocalStore
+    SearchCtrl --> Notify
+
+    ProfileCtrl --> State
+    ProfileCtrl --> Supabase
+    ProfileCtrl --> Calc
+
+    SettingsCtrl --> LocalStore
+    SettingsCtrl --> ConfigAPI
+    SettingsCtrl --> Validate
+
+    ConfigAPI --> Supabase
+    AnalysisAPI --> Supabase
+    SearchAPI --> LocalStore
+
+    Auth --> Supabase
+    Auth --> LocalStore
+
+    Calc --> Util
+    Format --> Util
+    Validate --> Util
+    Images --> Util
+                </pre>
+            </div>
+            <div class="legend">
+                <div class="legend-title">📊 모듈 분류</div>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #dbeafe;"></div>
+                        <span>Core: 앱 진입점 및 상태 관리</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fce7f3;"></div>
+                        <span>Screen: 각 화면의 로직 컨트롤러</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f0fdf4;"></div>
+                        <span>API: HTTP 클라이언트</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f5f3ff;"></div>
+                        <span>Data: DB & 스토리지</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 다이어그램 4: 데이터 흐름 (음식 분석) -->
+        <div class="diagram-section">
+            <div class="diagram-title">4️⃣ 데이터 흐름 상세: 음식 사진 분석 (Food Analysis Flow)</div>
+            <div class="diagram-description">
+                사용자가 음식 사진을 촬영하고 AI가 분석하며 DB에 저장되는 전체 과정
+            </div>
+            <div class="mermaid">
+                <pre>
+sequenceDiagram
+    participant User as 👤 사용자
+    participant App as 📱 App<br/>index.html
+    participant Camera as 📷 Camera API
+    participant ImageUtil as 🖼️ Image Utils
+    participant EdgeFunc as 🔌 /api/analyze
+    participant Gemini as 🤖 Google Gemini
+    participant Supabase as 🗄️ Supabase
+    participant LocalDB as 💾 localStorage
+
+    User ->> App: 카메라 버튼 클릭
+    App ->> Camera: 사진 촬영 요청
+    Camera ->> User: 카메라 앱 오픈
+    User ->> Camera: 음식 사진 촬영
+    Camera -->> App: Image Blob
+
+    App ->> ImageUtil: Blob → Base64
+    ImageUtil -->> App: base64String
+    App ->> LocalDB: 임시 저장
+
+    Note over App,LocalDB: 요청 준비
+    App ->> EdgeFunc: POST /api/analyze<br/>{image_base64, model}
+
+    Note over EdgeFunc,Gemini: 분석 실행
+    EdgeFunc ->> Gemini: content-image-base64<br/>+ ANALYSIS_PROMPT
+    Gemini -->> EdgeFunc: {food_name, calories,<br/>protein, carbs, fat,<br/>quantity, components}
+
+    Note over EdgeFunc,Supabase: DB 저장
+    EdgeFunc ->> Supabase: INSERT meal_logs<br/>(분석 결과 저장)
+    Supabase -->> EdgeFunc: {id, created_at}
+
+    EdgeFunc -->> App: {status: 'success',<br/>meal_log_id}
+
+    Note over App,LocalDB: UI 업데이트
+    App ->> LocalDB: 결과 캐시
+    App ->> App: 분석 결과 화면 표시
+    App -->> User: ✅ 완료<br/>(사용자 수정 가능)
+                </pre>
+            </div>
+            <div class="legend">
+                <div class="legend-title">🔄 흐름 요점</div>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #dcfce7;"></div>
+                        <span>Base64 변환 후 전송 (CORS 우회)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fed7aa;"></div>
+                        <span>Gemini 2.5 Flash/Pro 모델 선택 가능</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e0e7ff;"></div>
+                        <span>결과는 JSON Schema로 검증됨</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f3e8ff;"></div>
+                        <span>사용자가 수동으로 수정 가능</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 기술 스택 요약 -->
+        <div class="diagram-section">
+            <div class="diagram-title">🛠️ 기술 스택 요약</div>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <strong>Frontend</strong><br/>
+                    Vanilla JS<br/>
+                    HTML5 (SPA)
+                </div>
+                <div class="tech-item">
+                    <strong>Styling</strong><br/>
+                    Inline CSS<br/>
+                    CSS Grid/Flex
+                </div>
+                <div class="tech-item">
+                    <strong>Storage</strong><br/>
+                    localStorage<br/>
+                    IndexedDB
+                </div>
+                <div class="tech-item">
+                    <strong>Auth</strong><br/>
+                    Supabase Auth<br/>
+                    JWT Token
+                </div>
+                <div class="tech-item">
+                    <strong>Database</strong><br/>
+                    PostgreSQL<br/>(Supabase)
+                </div>
+                <div class="tech-item">
+                    <strong>AI/ML</strong><br/>
+                    Google Gemini<br/>
+                    Vision API
+                </div>
+                <div class="tech-item">
+                    <strong>Backend</strong><br/>
+                    Vercel Edge<br/>
+                    Node.js
+                </div>
+                <div class="tech-item">
+                    <strong>External API</strong><br/>
+                    공공 식품 DB<br/>
+                    (식약처)
+                </div>
+                <div class="tech-item">
+                    <strong>PWA</strong><br/>
+                    Service Worker<br/>
+                    Web Manifest
+                </div>
+                <div class="tech-item">
+                    <strong>CDN</strong><br/>
+                    jsDelivr<br/>
+                    Google Fonts
+                </div>
+            </div>
+        </div>
+
+        <!-- 주요 특징 -->
+        <div class="diagram-section">
+            <div class="diagram-title">✨ 주요 특징</div>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <strong>🎯 단일 파일 SPA</strong><br/>
+                    134KB HTML 파일<br/>
+                    배포 간단
+                </div>
+                <div class="tech-item">
+                    <strong>📱 모바일 최우선</strong><br/>
+                    Bottom Navigation<br/>
+                    Touch-friendly UI
+                </div>
+                <div class="tech-item">
+                    <strong>🔐 게스트 모드</strong><br/>
+                    localStorage 기반<br/>
+                    로그인 불필요
+                </div>
+                <div class="tech-item">
+                    <strong>🤖 AI 분석</strong><br/>
+                    Gemini Vision<br/>
+                    자동 영양 계산
+                </div>
+                <div class="tech-item">
+                    <strong>📊 개인화</strong><br/>
+                    Harris-Benedict TDEE<br/>
+                    목표별 추천
+                </div>
+                <div class="tech-item">
+                    <strong>⚡ 오프라인</strong><br/>
+                    Service Worker<br/>
+                    선택적 캐싱
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>Cal AI Architecture Diagrams — Generated on 2026-05-26</p>
+        <p>Powered by Mermaid.js | Made with ❤️</p>
+    </div>
+
+    <script>
+        // Mermaid 초기화
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'linear'
+            }
+        });
+        mermaid.contentLoaded();
+    </script>
+</body>
+</html>

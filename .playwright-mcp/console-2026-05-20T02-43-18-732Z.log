@@ -1,0 +1,156 @@
+[      35ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[      35ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[      35ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[      36ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5500/api/config:0
+[      37ms] [ERROR] Error: /api/config endpoint not found
+    at http://localhost:5500/output/index.html:957:15 @ http://localhost:5500/output/index.html:1066
+[      43ms] [ERROR] A bad HTTP response code (404) was received when fetching the script. @ :0
+[      58ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5500/manifest.webmanifest:0
+[      58ms] [ERROR] Manifest fetch from http://localhost:5500/manifest.webmanifest failed, code 404 @ http://localhost:5500/output/index.html:0
+[      57ms] Failed to register a ServiceWorker for scope ('http://localhost:5500/') with script ('http://localhost:5500/sw.js'): A bad HTTP response code (404) was received when fetching the script.
+[   35846ms] [LOG] API results count: 0 @ :2
+[   35846ms] [LOG] Found small buttons: 13 @ :11
+[   87524ms] [LOG] After search - API results: 0 @ :11
+[   97240ms] [LOG] searchFoodsFromApi called with q= 피자 @ :4
+[  100032ms] [LOG] searchFoodsFromApi completed, results: 20 @ :7
+[  113942ms] [LOG] First 5 API items: [
+  {
+    "id": 1000,
+    "name": "피자_콤비네이션피자",
+    "qty": "medium"
+  },
+  {
+    "id": 1001,
+    "name": "피자빵",
+    "qty": "medium"
+  },
+  {
+    "id": 1002,
+    "name": "바게트_피자바게트",
+    "qty": "medium"
+  },
+  {
+    "id": 1003,
+    "name": "바게트_피자 바게트",
+    "qty": "medium"
+  },
+  {
+    "id": 1004,
+    "name": "바게트_피자바게트",
+    "qty": "medium"
+  }
+] @ :8
+[  120814ms] [LOG] First item BEFORE click: {id: 1000, qty: medium} @ :3
+[  120815ms] [LOG] Found 33 small buttons, clicking first one @ :10
+[  120919ms] [LOG] First item AFTER click: {id: 1000, qty: medium} @ :16
+[  127972ms] [LOG] Clicking button with onclick: changeQtyDB(1,'small') @ :26
+[  127972ms] [LOG] changeQtyDB called: {id: 1, qtyArg: small, idType: number} @ :4
+[  127973ms] [LOG] Total foods available: 33 @ :7
+[  127973ms] [LOG] Recent foods: 5 Popular: 8 API: 20 @ :8
+[  127973ms] [LOG] Found food: {id: 1, name: 청국장, qtyBefore: small} @ :11
+[  127977ms] [LOG] After change: {id: 1, qtyAfter: small} @ :16
+[  153502ms] [LOG] First 5 small buttons: [
+  {
+    "index": 0,
+    "onclick": "changeQtyDB(1,'small')"
+  },
+  {
+    "index": 1,
+    "onclick": "changeQtyDB(2,'small')"
+  },
+  {
+    "index": 2,
+    "onclick": "changeQtyDB(3,'small')"
+  },
+  {
+    "index": 3,
+    "onclick": "changeQtyDB(4,'small')"
+  },
+  {
+    "index": 4,
+    "onclick": "changeQtyDB(5,'small')"
+  }
+] @ :10
+[  165343ms] [LOG] Clicking button from search results: changeQtyDB(1000,'small') @ :15
+[  165343ms] [LOG] First API item before: {id: 1000, qty: medium} @ :19
+[  165344ms] [LOG] changeQtyDB called: {id: 1000, qtyArg: small, idType: number} @ :4
+[  165344ms] [LOG] Total foods available: 33 @ :7
+[  165344ms] [LOG] Recent foods: 5 Popular: 8 API: 20 @ :8
+[  165344ms] [LOG] Found food: {id: 1000, name: 피자_콤비네이션피자, qtyBefore: medium} @ :11
+[  165347ms] [LOG] After change: {id: 1000, qtyAfter: small} @ :16
+[  165451ms] [LOG] First API item after: {id: 1000, qty: small} @ :27
+[  172598ms] [LOG] Before: small @ :9
+[  172599ms] [LOG] changeQtyDB called: {id: 1000, qtyArg: medium, idType: number} @ :4
+[  172599ms] [LOG] Total foods available: 33 @ :7
+[  172599ms] [LOG] Recent foods: 5 Popular: 8 API: 20 @ :8
+[  172599ms] [LOG] Found food: {id: 1000, name: 피자_콤비네이션피자, qtyBefore: small} @ :11
+[  172603ms] [LOG] After change: {id: 1000, qtyAfter: medium} @ :16
+[  172704ms] [LOG] After: medium @ :15
+[  177523ms] [LOG] changeQtyDB called: {id: 1000, qtyArg: large, idType: number} @ :4
+[  177524ms] [LOG] Total foods available: 33 @ :7
+[  177524ms] [LOG] Recent foods: 5 Popular: 8 API: 20 @ :8
+[  177524ms] [LOG] Found food: {id: 1000, name: 피자_콤비네이션피자, qtyBefore: medium} @ :11
+[  177526ms] [LOG] After change: {id: 1000, qtyAfter: large} @ :16
+[  186471ms] [LOG] Selecting food: 피자_콤비네이션피자 @ :7
+[  186581ms] [LOG] Selected count: 1 @ :15
+[  186581ms] [LOG] Selected foods: {
+  "1000": {
+    "name": "피자_콤비네이션피자",
+    "qty": "large"
+  }
+} @ :16
+[  192806ms] [LOG] Clicking save button @ :3
+[  196066ms] [LOG] Modal still visible: false @ :16
+[  196066ms] [LOG] Meals data: {} @ :17
+[  196066ms] [LOG] Meal logs count: 0 @ :18
+[  201749ms] [LOG] Meal logs: [] @ :5
+[  201749ms] [LOG] Meals: {} @ :6
+[  223278ms] [LOG] isGuestMode(): true @ :3
+[  223279ms] [LOG] guest_meals in localStorage: 1 @ :7
+[  223279ms] [LOG] guest_meals data: [
+  {
+    "id": 1779245191539.5457,
+    "user_id": null,
+    "meal_type": "breakfast",
+    "food_name": "피자_콤비네이션피자",
+    "calories": 712.4,
+    "protein": 27.8,
+    "carbs": 66.4,
+    "fat": 37.3,
+    "quantity": "large",
+    "notes": "",
+    "logged_at": "2026-05-20T02:46:31.539Z",
+    "image_url": null
+  }
+] @ :8
+[  223279ms] [LOG] userMode: guest @ :12
+[  262998ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[  262998ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[  262998ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[  263001ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5500/api/config:0
+[  263002ms] [ERROR] Error: /api/config endpoint not found
+    at http://localhost:5500/output/index.html:957:15 @ http://localhost:5500/output/index.html:1066
+[  263008ms] [ERROR] A bad HTTP response code (404) was received when fetching the script. @ :0
+[  263020ms] Failed to register a ServiceWorker for scope ('http://localhost:5500/') with script ('http://localhost:5500/sw.js'): A bad HTTP response code (404) was received when fetching the script.
+[  263309ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5500/manifest.webmanifest:0
+[  263309ms] [ERROR] Manifest fetch from http://localhost:5500/manifest.webmanifest failed, code 404 @ http://localhost:5500/output/index.html:0
+[  584596ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[  584596ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[  584596ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[  584633ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5500/api/config:0
+[  584639ms] [ERROR] A bad HTTP response code (404) was received when fetching the script. @ :0
+[  584646ms] [ERROR] Error: /api/config endpoint not found
+    at http://localhost:5500/output/index.html:957:15 @ http://localhost:5500/output/index.html:1066
+[  584687ms] Failed to register a ServiceWorker for scope ('http://localhost:5500/') with script ('http://localhost:5500/sw.js'): A bad HTTP response code (404) was received when fetching the script.
+[  584967ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5500/manifest.webmanifest:0
+[  584967ms] [ERROR] Manifest fetch from http://localhost:5500/manifest.webmanifest failed, code 404 @ http://localhost:5500/output/index.html:0
+[  595789ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[  595789ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[  595789ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5500/output/index.html:0
+[  595790ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5500/api/config:0
+[  595791ms] [ERROR] Error: /api/config endpoint not found
+    at http://localhost:5500/output/index.html:957:15 @ http://localhost:5500/output/index.html:1066
+[  595799ms] [ERROR] A bad HTTP response code (404) was received when fetching the script. @ :0
+[  595804ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5500/manifest.webmanifest:0
+[  595804ms] [ERROR] Manifest fetch from http://localhost:5500/manifest.webmanifest failed, code 404 @ http://localhost:5500/output/index.html:0
+[  595804ms] Failed to register a ServiceWorker for scope ('http://localhost:5500/') with script ('http://localhost:5500/sw.js'): A bad HTTP response code (404) was received when fetching the script.

@@ -1,0 +1,75 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e9]:
+      - img [ref=e10]
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: We are investigating a technical issue
+        - generic [ref=e14]:
+          - generic [ref=e15]: ·
+          - generic [ref=e16]:
+            - text: Follow the
+            - link "status page" [ref=e17] [cursor=pointer]:
+              - /url: https://status.supabase.com
+            - text: for updates
+    - generic [ref=e20]:
+      - navigation [ref=e22]:
+        - link "Supabase Logo" [ref=e25] [cursor=pointer]:
+          - /url: https://supabase.com
+          - img "Supabase Logo" [ref=e26]
+        - link "Documentation" [ref=e28] [cursor=pointer]:
+          - /url: https://supabase.com/docs
+          - img [ref=e30]
+          - generic [ref=e33]: Documentation
+      - generic [ref=e34]:
+        - main [ref=e35]:
+          - generic [ref=e36]:
+            - generic [ref=e37]:
+              - heading "Welcome back" [level=1] [ref=e38]
+              - heading "Sign in to your account" [level=2] [ref=e39]
+            - generic [ref=e40]:
+              - button "Continue with GitHub" [ref=e43] [cursor=pointer]:
+                - img [ref=e45]
+                - generic [ref=e48]: Continue with GitHub
+              - link "Continue with SSO" [ref=e51] [cursor=pointer]:
+                - /url: /dashboard/sign-in-sso?returnTo=%2Fproject%2Fstboklbbfbipmqukrahc%2Fsql%2Fnew
+                - img [ref=e53]
+                - generic [ref=e56]: Continue with SSO
+              - generic [ref=e61]: or
+              - generic [ref=e62]:
+                - generic [ref=e64]:
+                  - generic [ref=e67]: Email
+                  - textbox "Email" [ref=e70]:
+                    - /placeholder: you@example.com
+                - generic [ref=e71]:
+                  - generic [ref=e73]:
+                    - generic [ref=e76]: Password
+                    - generic [ref=e79]:
+                      - textbox "Password" [ref=e80]:
+                        - /placeholder: ••••••••
+                      - button "Show password" [ref=e81] [cursor=pointer]:
+                        - img [ref=e83]
+                  - link "Forgot password?" [ref=e86] [cursor=pointer]:
+                    - /url: /dashboard/forgot-password?returnTo=%2Fproject%2Fstboklbbfbipmqukrahc%2Fsql%2Fnew
+                - button "Sign in" [ref=e89] [cursor=pointer]:
+                  - generic [ref=e90]: Sign in
+            - generic [ref=e92]:
+              - text: Don’t have an account?
+              - link "Sign up" [ref=e93] [cursor=pointer]:
+                - /url: /dashboard/sign-up?returnTo=%2Fproject%2Fstboklbbfbipmqukrahc%2Fsql%2Fnew
+          - paragraph [ref=e95]:
+            - text: By continuing, you agree to Supabase’s
+            - link "Terms of Service" [ref=e96] [cursor=pointer]:
+              - /url: https://supabase.com/terms
+            - text: and
+            - link "Privacy Policy" [ref=e97] [cursor=pointer]:
+              - /url: https://supabase.com/privacy
+            - text: ", and to receive periodic emails with updates."
+        - complementary [ref=e98]:
+          - generic [ref=e99]:
+            - generic [ref=e100]: “
+            - blockquote [ref=e101]: It’s fun, feels lightweight, and really quick to spin up user auth and a few tables. Almost too easy! Highly recommend.
+            - link "nerdburn @nerdburn" [ref=e102] [cursor=pointer]:
+              - /url: https://twitter.com/nerdburn/status/1356857261495214085
+              - img "nerdburn" [ref=e103]
+              - generic [ref=e105]: "@nerdburn"
+  - alert [ref=e106]: Supabase

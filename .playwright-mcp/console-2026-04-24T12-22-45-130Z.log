@@ -1,0 +1,84 @@
+[     332ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[     333ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[     333ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  165100ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHistoryData (https://calorie-ai-gamma.vercel.app/:1420:19) @ https://calorie-ai-gamma.vercel.app/:1425
+[  165163ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  165164ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  165164ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  521241ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  521242ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  521242ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  598520ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHomeData (https://calorie-ai-gamma.vercel.app/:1158:19) @ https://calorie-ai-gamma.vercel.app/:1164
+[  598521ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHistoryData (https://calorie-ai-gamma.vercel.app/:1420:19) @ https://calorie-ai-gamma.vercel.app/:1425
+[  598563ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  598564ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  598564ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  599763ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  599764ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  599764ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  600677ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHomeData (https://calorie-ai-gamma.vercel.app/:1158:19) @ https://calorie-ai-gamma.vercel.app/:1164
+[  600715ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  600716ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  600716ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  601630ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHomeData (https://calorie-ai-gamma.vercel.app/:1158:19) @ https://calorie-ai-gamma.vercel.app/:1164
+[  601661ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  601662ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  601662ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  602538ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHomeData (https://calorie-ai-gamma.vercel.app/:1158:19) @ https://calorie-ai-gamma.vercel.app/:1164
+[  602573ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  602574ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  602574ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  603391ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHomeData (https://calorie-ai-gamma.vercel.app/:1158:19) @ https://calorie-ai-gamma.vercel.app/:1164
+[  603424ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  603425ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  603425ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  604297ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHomeData (https://calorie-ai-gamma.vercel.app/:1158:19) @ https://calorie-ai-gamma.vercel.app/:1164
+[  604330ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  604331ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  604331ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  605048ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHomeData (https://calorie-ai-gamma.vercel.app/:1158:19) @ https://calorie-ai-gamma.vercel.app/:1164
+[  605083ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  605084ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  605084ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  605850ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHomeData (https://calorie-ai-gamma.vercel.app/:1158:19) @ https://calorie-ai-gamma.vercel.app/:1164
+[  605879ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  605880ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  605880ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  606815ms] [ERROR] Error: TypeError: Failed to fetch
+    at unwrapSupabase (https://calorie-ai-gamma.vercel.app/:695:11)
+    at loadHomeData (https://calorie-ai-gamma.vercel.app/:1158:19) @ https://calorie-ai-gamma.vercel.app/:1164
+[  606847ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  606848ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  606848ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  815636ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  815637ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  815637ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  838004ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  838005ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  838005ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  847122ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  847123ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[  847123ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[ 1320829ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[ 1320830ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0
+[ 1320830ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://calorie-ai-gamma.vercel.app/:0

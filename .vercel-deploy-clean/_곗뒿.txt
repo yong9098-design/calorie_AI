@@ -1,0 +1,42 @@
+칼로리 계산기를 구현하실 때 다음과 같은 하이브리드 전략을 추천드립니다.
+
+1단계: Gemini 2.5 Flash를 사용해 음식 종류와 대략적인 칼로리를 빠르게 출력 (비용 절감)
+2단계: 사용자가 '상세 영양 성분 분석'이나 '정밀 계산'을 요청할 때만 Gemini 2.5 Pro를 호출 (품질 확보)
+
+API Key 보안 설정 :  제미나이 채팅 확인
+
+터미널에서 index 열기
+cd "c:\Users\hylee\Documents\AI_work\03.Intelligent Automation\Calorie Calculator"
+node server.js
+
+http://127.0.0.1:3000/
+
+
+원인 확인됐습니다. 코드 저장 로직 문제가 아니라, 연결된 Supabase 프로젝트에 테이블이 아직 없습니다.
+
+직접 확인한 결과:
+
+public.profiles: 404 PGRST205
+public.meal_logs: 404 PGRST205
+그래서 저장이 실패한 거고, 앱 쪽에는 더 친절한 오류 문구를 넣었고, 실행용 SQL도 추가해뒀습니다:
+
+docs/supabase_setup.sql
+src/shared/utils.js (line 15)
+해결 방법은 이 순서로 하면 됩니다.
+
+Supabase 대시보드로 이동합니다.
+SQL Editor를 엽니다.
+docs/supabase_setup.sql 내용을 그대로 붙여넣고 실행합니다.
+브라우저에서 앱을 새로고침합니다.
+다시 사진 분석 후 저장을 눌러 확인합니다.
+output/index.html도 다시 빌드해뒀기 때문에, 이제 같은 문제가 나면 영어 원문 대신 “meal_logs 테이블이 없어요”처럼 더 알아보기 쉬운 메시지가 뜹니다.
+
+원하시면 다음 답변에서 Supabase 화면에서 어디를 눌러서 SQL 실행하는지까지 단계별로 아주 짧게 적어드릴게요.
+분석까지 확인했어 분석이후 저장을 클릭했는 데 기록과 통계에 적용이 안되 확인해줘
+코드 저장 로직 문제가 아니라, 연결된 Supabase 프로젝트에 테이블이 아직 없습니다
+
+Supabase 대시보드에서 해당 프로젝트를 엽니다.
+왼쪽 메뉴에서 SQL Editor를 클릭합니다.
+New query를 누릅니다.
+docs/supabase_setup.sql 내용을 전부 복사해서 붙여넣습니다.
+Run을 누른 뒤 앱으로 돌아와 새로고침하고 다시 저장 테스트합니다.

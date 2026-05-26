@@ -1,0 +1,69 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - heading "🏗️ Cal AI — 아키텍처 시각화" [level=1] [ref=e4]
+    - button "🌓 테마 전환" [ref=e6] [cursor=pointer]
+  - generic [ref=e7]:
+    - button "1. 시스템 아키텍처" [ref=e8] [cursor=pointer]
+    - button "2. 화면 흐름" [ref=e9] [cursor=pointer]
+    - button "3. 모듈 의존성" [ref=e10] [cursor=pointer]
+    - button "4. 음식 분석 흐름" [active] [ref=e11] [cursor=pointer]
+    - button "5. 인증 흐름" [ref=e12] [cursor=pointer]
+    - button "6. AI 에이전트 파이프라인" [ref=e13] [cursor=pointer]
+  - generic [ref=e493]:
+    - document [ref=e495]:
+      - generic [ref=e498]: localStorage
+      - generic [ref=e501]: Supabase
+      - generic [ref=e504]: Gemini API
+      - generic [ref=e507]: /api/analyze
+      - generic [ref=e510]: 프론트엔드
+      - generic [ref=e513]: 사용자
+      - generic [ref=e517]: localStorage
+      - generic [ref=e521]: Supabase
+      - generic [ref=e525]: Gemini API
+      - generic [ref=e529]: /api/analyze
+      - generic [ref=e533]: 프론트엔드
+      - generic [ref=e537]: 사용자
+      - generic [ref=e538]: 📷 카메라 버튼 클릭
+      - generic [ref=e539]: 사진 촬영 / 갤러리 선택
+      - generic [ref=e541]: Base64 변환
+      - generic [ref=e543]: "POST {image_base64, model}"
+      - generic [ref=e544]: Vision Input + 분석 프롬프트
+      - generic [ref=e545]: JSON 응답 (음식명, 칼로리, 영양소)
+      - generic [ref=e546]: INSERT meal_logs
+      - generic [ref=e547]: "{id, created_at, ...}"
+      - generic [ref=e548]: 분석 결과 반환
+      - generic [ref=e549]: 결과 캐싱
+      - generic [ref=e550]: ✏️ 분석 결과 표시 (수정 가능)
+      - generic [ref=e551]: 값 수정 후 저장
+      - generic [ref=e552]: UPDATE meal_logs
+      - generic [ref=e553]: 성공
+      - generic [ref=e554]: ✅ 저장 완료
+    - generic [ref=e555]:
+      - heading "음식 분석 데이터 흐름" [level=3] [ref=e556]
+      - paragraph [ref=e557]: 사진 촬영부터 DB 저장까지의 전체 과정을 시퀀스 다이어그램으로 표현합니다.
+      - list [ref=e558]:
+        - listitem [ref=e559]:
+          - strong [ref=e560]: 단계 1
+          - text: ": 사용자가 카메라로 음식 사진 촬영 또는 갤러리에서 선택"
+        - listitem [ref=e561]:
+          - strong [ref=e562]: 단계 2
+          - text: ": 프론트엔드에서 이미지를 Base64로 인코딩해 API에 전송"
+        - listitem [ref=e563]:
+          - strong [ref=e564]: 단계 3
+          - text: ": Edge Function이 Gemini API 호출 (Vision Input + 한국어 프롬프트)"
+        - listitem [ref=e565]:
+          - strong [ref=e566]: 단계 4
+          - text: ": Gemini가 JSON 형식으로 음식명, 칼로리, 단백질, 탄수, 지방 반환"
+        - listitem [ref=e567]:
+          - strong [ref=e568]: 단계 5
+          - text: ": Edge Function이 Supabase에 meal_logs 테이블 INSERT"
+        - listitem [ref=e569]:
+          - strong [ref=e570]: 단계 6
+          - text: ": 프론트엔드가 결과를 localStorage에 캐싱하고 사용자에게 표시"
+        - listitem [ref=e571]:
+          - strong [ref=e572]: 단계 7
+          - text: ": 사용자가 필요시 값 수정 후 최종 저장"
+  - generic [ref=e170]:
+    - paragraph [ref=e171]: Cal AI Architecture Documentation
+    - paragraph [ref=e172]: Generated on 2026-05-26 | Framework-agnostic Design
+    - paragraph [ref=e173]: 다이어그램을 마우스로 드래그하면 이동하고 휠로 확대/축소할 수 있습니다.

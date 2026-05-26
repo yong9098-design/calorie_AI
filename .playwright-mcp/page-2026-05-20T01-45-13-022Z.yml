@@ -1,0 +1,25 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]: 🥗 Cal AI
+    - generic [ref=e6]: 사진으로 시작하는 칼로리 관리
+  - generic [ref=e12]:
+    - heading "기본 정보를 알려주세요" [level=2] [ref=e13]
+    - paragraph [ref=e14]: 칼로리 목표 계산에 사용돼요
+    - generic [ref=e15]:
+      - generic [ref=e16] [cursor=pointer]:
+        - generic [ref=e17]: 👨
+        - generic [ref=e18]: 남성
+      - generic [ref=e19] [cursor=pointer]:
+        - generic [ref=e20]: 👩
+        - generic [ref=e21]: 여성
+    - generic [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]: 나이
+        - spinbutton [ref=e25]: "30"
+      - generic [ref=e26]:
+        - generic [ref=e27]: 키 (cm)
+        - spinbutton [ref=e28]: "170"
+      - generic [ref=e29]:
+        - generic [ref=e30]: 몸무게 (kg)
+        - spinbutton [active] [ref=e31]: "70"
+    - button "다음" [ref=e33] [cursor=pointer]

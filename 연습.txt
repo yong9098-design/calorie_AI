@@ -12,31 +12,77 @@ node server.js
 http://127.0.0.1:3000/
 
 
-원인 확인됐습니다. 코드 저장 로직 문제가 아니라, 연결된 Supabase 프로젝트에 테이블이 아직 없습니다.
+로그인 이후에 다시 https://calorie-ai-gamma.vercel.app/에 접속하면 #### Step 1: 신체 정보 입력 창이 약 0.5간 보이고 홈 창으로 진입함. 개선해줘, 개선 방안만 알려줘
 
-직접 확인한 결과:
 
-public.profiles: 404 PGRST205
-public.meal_logs: 404 PGRST205
-그래서 저장이 실패한 거고, 앱 쪽에는 더 친절한 오류 문구를 넣었고, 실행용 SQL도 추가해뒀습니다:
+현재 워크스페이스의 `Calorie Calculator` 프로젝트에서 아래 2가지 이슈를 실제로 수정해줘. 분석만 하지 말고 코드 변경, 검증, 변경 요약까지 해줘.
 
-docs/supabase_setup.sql
-src/shared/utils.js (line 15)
-해결 방법은 이 순서로 하면 됩니다.
+프로젝트/맥락
+- 배포 URL: `https://calorie-ai-gamma.vercel.app/`
+- 현재 앱은 사실상 `output/index.html` 중심 구조다.
+- 관련 파일:
+  - `output/index.html`
+  - `api/config.js`
+  - `docs/supabase_setup.sql`
+- 기존 확인 내용:
+  - 로그인 후 재접속하면 `Step 1: 신체 정보 입력` 화면이 약 0.5초 보였다가 홈으로 이동한다.
+  - 기록 탭에서 식사 기록 로딩 시 런타임 딜레이가 느껴진다.
+  - `meal_logs(user_id, logged_at desc)` 인덱스는 이미 있다.
+  - live 측정상 첫 요청 지연이 일부 존재했다.
+    - `/api/config` 1회차 TTFB 약 0.84s, 2회차 약 0.30s
+    - Supabase REST 1회차 TTFB 약 0.75s, 2회차 약 0.16s
+  - 다만 Supabase paused project(540)라고 단정할 근거는 아직 없다.
 
-Supabase 대시보드로 이동합니다.
-SQL Editor를 엽니다.
-docs/supabase_setup.sql 내용을 그대로 붙여넣고 실행합니다.
-브라우저에서 앱을 새로고침합니다.
-다시 사진 분석 후 저장을 눌러 확인합니다.
-output/index.html도 다시 빌드해뒀기 때문에, 이제 같은 문제가 나면 영어 원문 대신 “meal_logs 테이블이 없어요”처럼 더 알아보기 쉬운 메시지가 뜹니다.
+요청 1
+- 로그인된 사용자가 새로고침하거나 재접속할 때 온보딩 `Step 1` 화면이 잠깐 보이는 문제를 없애줘.
+- 현재 원인 후보:
+  - `screen-onboarding`가 기본 `active` 상태로 먼저 렌더됨
+  - 이후 `initApp()`에서 `/api/config` -> `getSession()` -> `loadProfile()` 후 홈으로 전환됨
+- 원하는 방향:
+  - 앱 부팅 중에는 중립적인 splash/loading 상태만 보이게 하고, 인증/세션 판별 후에만 실제 화면을 렌더
+  - 인증 사용자의 경우 온보딩 플래시가 절대 보이지 않게 처리
+  - 게스트/비로그인/온보딩 미완료 플로우는 유지
+  - cold start나 첫 요청 지연이 있더라도 UI가 잘못된 화면을 먼저 보여주지 않게 처리
 
-원하시면 다음 답변에서 Supabase 화면에서 어디를 눌러서 SQL 실행하는지까지 단계별로 아주 짧게 적어드릴게요.
-분석까지 확인했어 분석이후 저장을 클릭했는 데 기록과 통계에 적용이 안되 확인해줘
-코드 저장 로직 문제가 아니라, 연결된 Supabase 프로젝트에 테이블이 아직 없습니다
+요청 2
+- 기록 탭 식사 기록 로딩 체감을 개선해줘.
+- 현재 원인 후보:
+  - 기록 탭이 `preloadPromise`를 기다림
+  - 캐시 없으면 날짜별로 다시 직접 쿼리
+  - `select('*')`로 불필요한 컬럼까지 로딩
+  - `image_url`에 base64 이미지가 들어가서 payload가 큼
+  - `notes`도 리스트 조회에 불필요하게 같이 내려옴
+  - 날짜 이동 시 디바운스 150ms
+- 원하는 방향:
+  - 기록 탭 진입 시 가능한 빨리 화면이 보이도록 구조 개선
+  - `preloadPromise` 대기 때문에 기록 탭이 막히지 않게 조정
+  - 리스트 조회는 필요한 컬럼만 가져오도록 최소화
+  - 첫 렌더 체감을 개선하고, 네트워크/파싱 비용을 줄여줘
+  - 기존 기능 회귀 없이 수정
+- Supabase first-hit latency는 일부 있을 수 있으니, 그것을 고려하되 앱 구조상 병목도 같이 개선해줘.
 
-Supabase 대시보드에서 해당 프로젝트를 엽니다.
-왼쪽 메뉴에서 SQL Editor를 클릭합니다.
-New query를 누릅니다.
-docs/supabase_setup.sql 내용을 전부 복사해서 붙여넣습니다.
-Run을 누른 뒤 앱으로 돌아와 새로고침하고 다시 저장 테스트합니다.
+참고 코드 위치
+- 초기화/세션:
+  - `output/index.html`의 `initApp`, `loadRuntimeConfig`, `ensureSupabaseClient`, `loadProfile`
+- 기록 탭:
+  - `preloadMealData`, `loadHistoryData`, `renderHistory`
+- 저장 구조:
+  - `saveMeal`에서 `image_url`, `notes` 저장 방식 확인
+- warm-up:
+  - `/api/config` 사전 fetch 코드 확인
+
+작업 방식
+- 먼저 현재 코드를 읽고 원인을 확인한 뒤 바로 수정해줘.
+- 필요하면 구조를 조금 정리해도 된다.
+- 불필요한 대규모 리팩토링은 하지 말고, 이번 2가지 문제 해결에 집중해줘.
+- 수정 후에는 아래 형식으로 결과를 알려줘.
+  1. 무엇을 바꿨는지
+  2. 어떤 파일을 바꿨는지
+  3. 왜 이 방식이 문제를 해결하는지
+  4. 어떤 검증을 했는지
+  5. 남아 있는 리스크가 있는지
+
+중요
+- “개선 방안만” 말하지 말고 실제로 코드 수정까지 해줘.
+- 기존 사용자 흐름을 깨지 말아줘.
+- 가능하면 로컬에서 재현/검증까지 해줘.

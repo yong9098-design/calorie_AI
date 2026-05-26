@@ -1,0 +1,5 @@
+[     639ms] [ERROR] Error: <g> attribute transform: Expected number, "translate(undefined, NaN)". @ https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js:5
+[     639ms] [ERROR] Error: <g> attribute transform: Expected number, "translate(undefined, NaN)". @ https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js:5
+[     641ms] [ERROR] Error: <g> attribute transform: Expected number, "translate(undefined, NaN)". @ https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js:86
+[     641ms] [ERROR] Error: <g> attribute transform: Expected number, "translate(undefined, NaN)". @ https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js:86
+[     675ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:8888/favicon.ico:0

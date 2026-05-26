@@ -1,0 +1,67 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - heading "🏗️ Cal AI — 아키텍처 시각화" [level=1] [ref=e4]
+    - button "🌓 테마 전환" [ref=e6] [cursor=pointer]
+  - generic [ref=e7]:
+    - button "1. 시스템 아키텍처" [ref=e8] [cursor=pointer]
+    - button "2. 화면 흐름" [active] [ref=e9] [cursor=pointer]
+    - button "3. 모듈 의존성" [ref=e10] [cursor=pointer]
+    - button "4. 음식 분석 흐름" [ref=e11] [cursor=pointer]
+    - button "5. 인증 흐름" [ref=e12] [cursor=pointer]
+    - button "6. AI 에이전트 파이프라인" [ref=e13] [cursor=pointer]
+  - generic [ref=e175]:
+    - img [ref=e178]:
+      - generic [ref=e180]:
+        - generic:
+          - generic [ref=e188]: 로그인
+          - generic [ref=e189]: 회원가입
+          - generic [ref=e190]: 비회원
+        - generic [ref=e191]:
+          - generic [ref=e194]: 부팅
+          - generic [ref=e198]:
+            - text: 온보딩
+            - text: (4단계)
+          - generic [ref=e201]: 인증 화면
+          - generic [ref=e204]: 홈 화면
+          - generic [ref=e208]:
+            - text: 카메라
+            - text: 사진 촬영
+          - generic [ref=e212]:
+            - text: 음식 검색
+            - text: 공공DB
+          - generic [ref=e215]: 프로필 설정
+          - generic [ref=e218]: 앱 설정
+          - generic [ref=e221]: 식단 기록
+          - generic [ref=e224]: 통계
+          - generic [ref=e228]:
+            - text: 분석 중
+            - text: Gemini API
+          - generic [ref=e232]:
+            - text: 결과 수정
+            - text: 및 저장
+      - generic [ref=e233]:
+        - generic [ref=e240]: Syntax error in text
+        - generic [ref=e241]: mermaid version 10.9.6
+    - generic [ref=e242]:
+      - heading "화면 흐름도" [level=3] [ref=e243]
+      - paragraph [ref=e244]: 사용자가 앱을 시작해서 음식을 기록하고 관리하는 전체 경로를 보여줍니다.
+      - list [ref=e245]:
+        - listitem [ref=e246]:
+          - strong [ref=e247]: 온보딩
+          - text: ": 첫 실행 시 신체정보, 활동량, 목표, TDEE 설정 (4단계)"
+        - listitem [ref=e248]:
+          - strong [ref=e249]: 인증
+          - text: ": 로그인, 회원가입, 또는 비회원 모드 선택"
+        - listitem [ref=e250]:
+          - strong [ref=e251]: 홈
+          - text: ": 일일 영양 요약, 음식 목록, 네비게이션 허브"
+        - listitem [ref=e252]:
+          - strong [ref=e253]: 카메라
+          - text: ": 사진 촬영 → Gemini 분석 → 결과 수정 → 저장"
+        - listitem [ref=e254]:
+          - strong [ref=e255]: 검색
+          - text: ": 공공 DB에서 음식 검색 → 영양정보 조정 → 저장"
+  - generic [ref=e170]:
+    - paragraph [ref=e171]: Cal AI Architecture Documentation
+    - paragraph [ref=e172]: Generated on 2026-05-26 | Framework-agnostic Design
+    - paragraph [ref=e173]: 다이어그램을 마우스로 드래그하면 이동하고 휠로 확대/축소할 수 있습니다.

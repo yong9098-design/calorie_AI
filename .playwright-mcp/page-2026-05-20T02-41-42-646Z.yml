@@ -1,0 +1,471 @@
+- generic [ref=e2]:
+  - generic [ref=e34]:
+    - generic [ref=e35]:
+      - heading "기록" [level=1] [ref=e36]
+      - generic [ref=e37]:
+        - button "🗃 음식DB" [ref=e38] [cursor=pointer]
+        - button "추가" [ref=e39] [cursor=pointer]:
+          - img [ref=e40]
+          - text: 추가
+    - generic [ref=e41]:
+      - button [ref=e42] [cursor=pointer]:
+        - img [ref=e43]
+      - generic [ref=e45]: 5월 20일 (수)
+      - button [ref=e46] [cursor=pointer]:
+        - img [ref=e47]
+    - generic [ref=e50]:
+      - generic [ref=e51]: 📋
+      - generic [ref=e52]: 이 날 식사 기록이 없어요
+  - navigation [ref=e53]:
+    - button "홈" [ref=e54] [cursor=pointer]:
+      - img [ref=e55]
+      - text: 홈
+    - button "기록" [ref=e58] [cursor=pointer]:
+      - img [ref=e59]
+      - text: 기록
+    - button "통계" [ref=e61] [cursor=pointer]:
+      - img [ref=e62]
+      - text: 통계
+    - button "설정" [ref=e63] [cursor=pointer]:
+      - img [ref=e64]
+      - text: 설정
+  - generic [ref=e68]:
+    - generic [ref=e70]:
+      - text: 🗃 음식 데이터베이스
+      - button [ref=e71] [cursor=pointer]:
+        - img [ref=e72]
+    - generic [ref=e75]:
+      - generic [ref=e76]:
+        - img [ref=e77]
+        - textbox "음식 검색..." [ref=e80]: 피자
+      - generic [ref=e81]:
+        - generic [ref=e528]:
+          - checkbox [ref=e529] [cursor=pointer]
+          - generic [ref=e530]:
+            - generic [ref=e532]: 피자_콤비네이션피자
+            - generic [ref=e533]:
+              - button "작음" [ref=e534] [cursor=pointer]
+              - button "중간" [ref=e535] [cursor=pointer]
+              - button "큼" [ref=e536] [cursor=pointer]
+            - generic [ref=e537]:
+              - generic [ref=e538]:
+                - generic [ref=e539]: 🔥
+                - generic [ref=e540]: 548Cal
+              - generic [ref=e541]:
+                - generic [ref=e542]: 💪
+                - generic [ref=e543]: 21.4g
+              - generic [ref=e544]:
+                - generic [ref=e545]: 🌾
+                - generic [ref=e546]: 51.1g
+              - generic [ref=e547]:
+                - generic [ref=e548]: 🫒
+                - generic [ref=e549]: 28.7g
+        - generic [ref=e550]:
+          - checkbox [ref=e551] [cursor=pointer]
+          - generic [ref=e552]:
+            - generic [ref=e554]: 피자빵
+            - generic [ref=e555]:
+              - button "작음" [ref=e556] [cursor=pointer]
+              - button "중간" [ref=e557] [cursor=pointer]
+              - button "큼" [ref=e558] [cursor=pointer]
+            - generic [ref=e559]:
+              - generic [ref=e560]:
+                - generic [ref=e561]: 🔥
+                - generic [ref=e562]: 596Cal
+              - generic [ref=e563]:
+                - generic [ref=e564]: 💪
+                - generic [ref=e565]: 17.7g
+              - generic [ref=e566]:
+                - generic [ref=e567]: 🌾
+                - generic [ref=e568]: 63.5g
+              - generic [ref=e569]:
+                - generic [ref=e570]: 🫒
+                - generic [ref=e571]: 30.1g
+        - generic [ref=e572]:
+          - checkbox [ref=e573] [cursor=pointer]
+          - generic [ref=e574]:
+            - generic [ref=e576]: 바게트_피자바게트
+            - generic [ref=e577]:
+              - button "작음" [ref=e578] [cursor=pointer]
+              - button "중간" [ref=e579] [cursor=pointer]
+              - button "큼" [ref=e580] [cursor=pointer]
+            - generic [ref=e581]:
+              - generic [ref=e582]:
+                - generic [ref=e583]: 🔥
+                - generic [ref=e584]: 528.2Cal
+              - generic [ref=e585]:
+                - generic [ref=e586]: 💪
+                - generic [ref=e587]: 24.8g
+              - generic [ref=e588]:
+                - generic [ref=e589]: 🌾
+                - generic [ref=e590]: 0.0g
+              - generic [ref=e591]:
+                - generic [ref=e592]: 🫒
+                - generic [ref=e593]: 0.0g
+        - generic [ref=e594]:
+          - checkbox [ref=e595] [cursor=pointer]
+          - generic [ref=e596]:
+            - generic [ref=e598]: 바게트_피자 바게트
+            - generic [ref=e599]:
+              - button "작음" [ref=e600] [cursor=pointer]
+              - button "중간" [ref=e601] [cursor=pointer]
+              - button "큼" [ref=e602] [cursor=pointer]
+            - generic [ref=e603]:
+              - generic [ref=e604]:
+                - generic [ref=e605]: 🔥
+                - generic [ref=e606]: 475.2Cal
+              - generic [ref=e607]:
+                - generic [ref=e608]: 💪
+                - generic [ref=e609]: 12.0g
+              - generic [ref=e610]:
+                - generic [ref=e611]: 🌾
+                - generic [ref=e612]: 0.0g
+              - generic [ref=e613]:
+                - generic [ref=e614]: 🫒
+                - generic [ref=e615]: 0.0g
+        - generic [ref=e616]:
+          - checkbox [ref=e617] [cursor=pointer]
+          - generic [ref=e618]:
+            - generic [ref=e620]: 바게트_피자바게트
+            - generic [ref=e621]:
+              - button "작음" [ref=e622] [cursor=pointer]
+              - button "중간" [ref=e623] [cursor=pointer]
+              - button "큼" [ref=e624] [cursor=pointer]
+            - generic [ref=e625]:
+              - generic [ref=e626]:
+                - generic [ref=e627]: 🔥
+                - generic [ref=e628]: 475.2Cal
+              - generic [ref=e629]:
+                - generic [ref=e630]: 💪
+                - generic [ref=e631]: 13.0g
+              - generic [ref=e632]:
+                - generic [ref=e633]: 🌾
+                - generic [ref=e634]: 0.0g
+              - generic [ref=e635]:
+                - generic [ref=e636]: 🫒
+                - generic [ref=e637]: 0.0g
+        - generic [ref=e638]:
+          - checkbox [ref=e639] [cursor=pointer]
+          - generic [ref=e640]:
+            - generic [ref=e642]: 버거_페퍼로니피자 치킨 버거
+            - generic [ref=e643]:
+              - button "작음" [ref=e644] [cursor=pointer]
+              - button "중간" [ref=e645] [cursor=pointer]
+              - button "큼" [ref=e646] [cursor=pointer]
+            - generic [ref=e647]:
+              - generic [ref=e648]:
+                - generic [ref=e649]: 🔥
+                - generic [ref=e650]: 592.8Cal
+              - generic [ref=e651]:
+                - generic [ref=e652]: 💪
+                - generic [ref=e653]: 30.0g
+              - generic [ref=e654]:
+                - generic [ref=e655]: 🌾
+                - generic [ref=e656]: 41.0g
+              - generic [ref=e657]:
+                - generic [ref=e658]: 🫒
+                - generic [ref=e659]: 34.0g
+        - generic [ref=e660]:
+          - checkbox [ref=e661] [cursor=pointer]
+          - generic [ref=e662]:
+            - generic [ref=e664]: 베이글_플레인 베이글피자
+            - generic [ref=e665]:
+              - button "작음" [ref=e666] [cursor=pointer]
+              - button "중간" [ref=e667] [cursor=pointer]
+              - button "큼" [ref=e668] [cursor=pointer]
+            - generic [ref=e669]:
+              - generic [ref=e670]:
+                - generic [ref=e671]: 🔥
+                - generic [ref=e672]: 215.1Cal
+              - generic [ref=e673]:
+                - generic [ref=e674]: 💪
+                - generic [ref=e675]: 7.0g
+              - generic [ref=e676]:
+                - generic [ref=e677]: 🌾
+                - generic [ref=e678]: 0.0g
+              - generic [ref=e679]:
+                - generic [ref=e680]: 🫒
+                - generic [ref=e681]: 0.0g
+        - generic [ref=e682]:
+          - checkbox [ref=e683] [cursor=pointer]
+          - generic [ref=e684]:
+            - generic [ref=e686]: 베이글_콘치즈피자 베이글
+            - generic [ref=e687]:
+              - button "작음" [ref=e688] [cursor=pointer]
+              - button "중간" [ref=e689] [cursor=pointer]
+              - button "큼" [ref=e690] [cursor=pointer]
+            - generic [ref=e691]:
+              - generic [ref=e692]:
+                - generic [ref=e693]: 🔥
+                - generic [ref=e694]: 325.4Cal
+              - generic [ref=e695]:
+                - generic [ref=e696]: 💪
+                - generic [ref=e697]: 12.0g
+              - generic [ref=e698]:
+                - generic [ref=e699]: 🌾
+                - generic [ref=e700]: 41.0g
+              - generic [ref=e701]:
+                - generic [ref=e702]: 🫒
+                - generic [ref=e703]: 13.0g
+        - generic [ref=e704]:
+          - checkbox [ref=e705] [cursor=pointer]
+          - generic [ref=e706]:
+            - generic [ref=e708]: 샌드위치_페퍼로니 피자 샌드위치
+            - generic [ref=e709]:
+              - button "작음" [ref=e710] [cursor=pointer]
+              - button "중간" [ref=e711] [cursor=pointer]
+              - button "큼" [ref=e712] [cursor=pointer]
+            - generic [ref=e713]:
+              - generic [ref=e714]:
+                - generic [ref=e715]: 🔥
+                - generic [ref=e716]: 430.5Cal
+              - generic [ref=e717]:
+                - generic [ref=e718]: 💪
+                - generic [ref=e719]: 20.0g
+              - generic [ref=e720]:
+                - generic [ref=e721]: 🌾
+                - generic [ref=e722]: 0.0g
+              - generic [ref=e723]:
+                - generic [ref=e724]: 🫒
+                - generic [ref=e725]: 0.0g
+        - generic [ref=e726]:
+          - checkbox [ref=e727] [cursor=pointer]
+          - generic [ref=e728]:
+            - generic [ref=e730]: 와플_불고기피자 와플
+            - generic [ref=e731]:
+              - button "작음" [ref=e732] [cursor=pointer]
+              - button "중간" [ref=e733] [cursor=pointer]
+              - button "큼" [ref=e734] [cursor=pointer]
+            - generic [ref=e735]:
+              - generic [ref=e736]:
+                - generic [ref=e737]: 🔥
+                - generic [ref=e738]: 714.8Cal
+              - generic [ref=e739]:
+                - generic [ref=e740]: 💪
+                - generic [ref=e741]: 17.4g
+              - generic [ref=e742]:
+                - generic [ref=e743]: 🌾
+                - generic [ref=e744]: 0.0g
+              - generic [ref=e745]:
+                - generic [ref=e746]: 🫒
+                - generic [ref=e747]: 0.0g
+        - generic [ref=e748]:
+          - checkbox [ref=e749] [cursor=pointer]
+          - generic [ref=e750]:
+            - generic [ref=e752]: 와플_맥치플 맥앤치즈피자 와플
+            - generic [ref=e753]:
+              - button "작음" [ref=e754] [cursor=pointer]
+              - button "중간" [ref=e755] [cursor=pointer]
+              - button "큼" [ref=e756] [cursor=pointer]
+            - generic [ref=e757]:
+              - generic [ref=e758]:
+                - generic [ref=e759]: 🔥
+                - generic [ref=e760]: 481.6Cal
+              - generic [ref=e761]:
+                - generic [ref=e762]: 💪
+                - generic [ref=e763]: 13.0g
+              - generic [ref=e764]:
+                - generic [ref=e765]: 🌾
+                - generic [ref=e766]: 62.0g
+              - generic [ref=e767]:
+                - generic [ref=e768]: 🫒
+                - generic [ref=e769]: 0.0g
+        - generic [ref=e770]:
+          - checkbox [ref=e771] [cursor=pointer]
+          - generic [ref=e772]:
+            - generic [ref=e774]: 와플_베치플 베이직치즈피자 와플
+            - generic [ref=e775]:
+              - button "작음" [ref=e776] [cursor=pointer]
+              - button "중간" [ref=e777] [cursor=pointer]
+              - button "큼" [ref=e778] [cursor=pointer]
+            - generic [ref=e779]:
+              - generic [ref=e780]:
+                - generic [ref=e781]: 🔥
+                - generic [ref=e782]: 556.8Cal
+              - generic [ref=e783]:
+                - generic [ref=e784]: 💪
+                - generic [ref=e785]: 23.0g
+              - generic [ref=e786]:
+                - generic [ref=e787]: 🌾
+                - generic [ref=e788]: 59.0g
+              - generic [ref=e789]:
+                - generic [ref=e790]: 🫒
+                - generic [ref=e791]: 0.0g
+        - generic [ref=e792]:
+          - checkbox [ref=e793] [cursor=pointer]
+          - generic [ref=e794]:
+            - generic [ref=e796]: 와플_불치플 불고기치즈피자 와플
+            - generic [ref=e797]:
+              - button "작음" [ref=e798] [cursor=pointer]
+              - button "중간" [ref=e799] [cursor=pointer]
+              - button "큼" [ref=e800] [cursor=pointer]
+            - generic [ref=e801]:
+              - generic [ref=e802]:
+                - generic [ref=e803]: 🔥
+                - generic [ref=e804]: 489.6Cal
+              - generic [ref=e805]:
+                - generic [ref=e806]: 💪
+                - generic [ref=e807]: 22.0g
+              - generic [ref=e808]:
+                - generic [ref=e809]: 🌾
+                - generic [ref=e810]: 58.0g
+              - generic [ref=e811]:
+                - generic [ref=e812]: 🫒
+                - generic [ref=e813]: 0.0g
+        - generic [ref=e814]:
+          - checkbox [ref=e815] [cursor=pointer]
+          - generic [ref=e816]:
+            - generic [ref=e818]: 크로켓(고로케)_피자 고로케
+            - generic [ref=e819]:
+              - button "작음" [ref=e820] [cursor=pointer]
+              - button "중간" [ref=e821] [cursor=pointer]
+              - button "큼" [ref=e822] [cursor=pointer]
+            - generic [ref=e823]:
+              - generic [ref=e824]:
+                - generic [ref=e825]: 🔥
+                - generic [ref=e826]: 263.7Cal
+              - generic [ref=e827]:
+                - generic [ref=e828]: 💪
+                - generic [ref=e829]: 7.0g
+              - generic [ref=e830]:
+                - generic [ref=e831]: 🌾
+                - generic [ref=e832]: 0.0g
+              - generic [ref=e833]:
+                - generic [ref=e834]: 🫒
+                - generic [ref=e835]: 0.0g
+        - generic [ref=e836]:
+          - checkbox [ref=e837] [cursor=pointer]
+          - generic [ref=e838]:
+            - generic [ref=e840]: 크로켓(고로케)_불고기피자 고로케
+            - generic [ref=e841]:
+              - button "작음" [ref=e842] [cursor=pointer]
+              - button "중간" [ref=e843] [cursor=pointer]
+              - button "큼" [ref=e844] [cursor=pointer]
+            - generic [ref=e845]:
+              - generic [ref=e846]:
+                - generic [ref=e847]: 🔥
+                - generic [ref=e848]: 277Cal
+              - generic [ref=e849]:
+                - generic [ref=e850]: 💪
+                - generic [ref=e851]: 4.5g
+              - generic [ref=e852]:
+                - generic [ref=e853]: 🌾
+                - generic [ref=e854]: 0.0g
+              - generic [ref=e855]:
+                - generic [ref=e856]: 🫒
+                - generic [ref=e857]: 0.0g
+        - generic [ref=e858]:
+          - checkbox [ref=e859] [cursor=pointer]
+          - generic [ref=e860]:
+            - generic [ref=e862]: 크로켓(고로케)_피자고로케
+            - generic [ref=e863]:
+              - button "작음" [ref=e864] [cursor=pointer]
+              - button "중간" [ref=e865] [cursor=pointer]
+              - button "큼" [ref=e866] [cursor=pointer]
+            - generic [ref=e867]:
+              - generic [ref=e868]:
+                - generic [ref=e869]: 🔥
+                - generic [ref=e870]: 286Cal
+              - generic [ref=e871]:
+                - generic [ref=e872]: 💪
+                - generic [ref=e873]: 8.0g
+              - generic [ref=e874]:
+                - generic [ref=e875]: 🌾
+                - generic [ref=e876]: 0.0g
+              - generic [ref=e877]:
+                - generic [ref=e878]: 🫒
+                - generic [ref=e879]: 0.0g
+        - generic [ref=e880]:
+          - checkbox [ref=e881] [cursor=pointer]
+          - generic [ref=e882]:
+            - generic [ref=e884]: 타르트_쉬림프 피자 타르트
+            - generic [ref=e885]:
+              - button "작음" [ref=e886] [cursor=pointer]
+              - button "중간" [ref=e887] [cursor=pointer]
+              - button "큼" [ref=e888] [cursor=pointer]
+            - generic [ref=e889]:
+              - generic [ref=e890]:
+                - generic [ref=e891]: 🔥
+                - generic [ref=e892]: 140Cal
+              - generic [ref=e893]:
+                - generic [ref=e894]: 💪
+                - generic [ref=e895]: 3.0g
+              - generic [ref=e896]:
+                - generic [ref=e897]: 🌾
+                - generic [ref=e898]: 0.0g
+              - generic [ref=e899]:
+                - generic [ref=e900]: 🫒
+                - generic [ref=e901]: 0.0g
+        - generic [ref=e902]:
+          - checkbox [ref=e903] [cursor=pointer]
+          - generic [ref=e904]:
+            - generic [ref=e906]: 토스트_페퍼로니 피자 토스트
+            - generic [ref=e907]:
+              - button "작음" [ref=e908] [cursor=pointer]
+              - button "중간" [ref=e909] [cursor=pointer]
+              - button "큼" [ref=e910] [cursor=pointer]
+            - generic [ref=e911]:
+              - generic [ref=e912]:
+                - generic [ref=e913]: 🔥
+                - generic [ref=e914]: 479.4Cal
+              - generic [ref=e915]:
+                - generic [ref=e916]: 💪
+                - generic [ref=e917]: 21.0g
+              - generic [ref=e918]:
+                - generic [ref=e919]: 🌾
+                - generic [ref=e920]: 0.0g
+              - generic [ref=e921]:
+                - generic [ref=e922]: 🫒
+                - generic [ref=e923]: 0.0g
+        - generic [ref=e924]:
+          - checkbox [ref=e925] [cursor=pointer]
+          - generic [ref=e926]:
+            - generic [ref=e928]: 토스트_피자토스트
+            - generic [ref=e929]:
+              - button "작음" [ref=e930] [cursor=pointer]
+              - button "중간" [ref=e931] [cursor=pointer]
+              - button "큼" [ref=e932] [cursor=pointer]
+            - generic [ref=e933]:
+              - generic [ref=e934]:
+                - generic [ref=e935]: 🔥
+                - generic [ref=e936]: 284.9Cal
+              - generic [ref=e937]:
+                - generic [ref=e938]: 💪
+                - generic [ref=e939]: 14.0g
+              - generic [ref=e940]:
+                - generic [ref=e941]: 🌾
+                - generic [ref=e942]: 0.0g
+              - generic [ref=e943]:
+                - generic [ref=e944]: 🫒
+                - generic [ref=e945]: 0.0g
+        - generic [ref=e946]:
+          - checkbox [ref=e947] [cursor=pointer]
+          - generic [ref=e948]:
+            - generic [ref=e950]: 피자_샘스테이크 피자 골드스윗 (R)
+            - generic [ref=e951]:
+              - button "작음" [ref=e952] [cursor=pointer]
+              - button "중간" [ref=e953] [cursor=pointer]
+              - button "큼" [ref=e954] [cursor=pointer]
+            - generic [ref=e955]:
+              - generic [ref=e956]:
+                - generic [ref=e957]: 🔥
+                - generic [ref=e958]: 2299Cal
+              - generic [ref=e959]:
+                - generic [ref=e960]: 💪
+                - generic [ref=e961]: 120.0g
+              - generic [ref=e962]:
+                - generic [ref=e963]: 🌾
+                - generic [ref=e964]: 0.0g
+              - generic [ref=e965]:
+                - generic [ref=e966]: 🫒
+                - generic [ref=e967]: 0.0g
+    - generic [ref=e522]:
+      - generic [ref=e523]:
+        - generic [ref=e524]: "선택된 음식: 0개"
+        - combobox [ref=e525]:
+          - option "🍳 아침" [selected]
+          - option "🍱 점심"
+          - option "🍽️ 저녁"
+          - option "🍪 간식"
+      - button "저장" [disabled] [ref=e526]
+      - button "취소" [ref=e527] [cursor=pointer]

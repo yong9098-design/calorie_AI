@@ -1,0 +1,77 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - heading "🏗️ Cal AI — 아키텍처 시각화" [level=1] [ref=e4]
+    - button "🌓 테마 전환" [active] [ref=e6] [cursor=pointer]
+  - generic [ref=e7]:
+    - button "1. 시스템 아키텍처" [ref=e8] [cursor=pointer]
+    - button "2. 화면 흐름" [ref=e9] [cursor=pointer]
+    - button "3. 모듈 의존성" [ref=e10] [cursor=pointer]
+    - button "4. 음식 분석 흐름" [ref=e11] [cursor=pointer]
+    - button "5. 인증 흐름" [ref=e12] [cursor=pointer]
+    - button "6. AI 에이전트 파이프라인" [ref=e13] [cursor=pointer]
+  - generic [ref=e486]:
+    - document [ref=e488]:
+      - generic [ref=e490]:
+        - generic [ref=e491]:
+          - generic [ref=e494]: ③ Evaluator 서브에이전트
+          - generic [ref=e497]: ② Generator 서브에이전트
+          - generic [ref=e500]: ① Planner 서브에이전트
+        - generic:
+          - generic [ref=e509]: 합격
+          - generic [ref=e510]: 불합격
+          - generic [ref=e511]: 피드백 반영
+        - generic [ref=e512]:
+          - generic [ref=e515]: docs/SPEC.md 검증
+          - generic [ref=e518]: output/index.html 검수
+          - generic [ref=e521]: evaluation_criteria.md 채점
+          - generic [ref=e524]: docs/QA_REPORT.md 생성
+          - generic [ref=e527]: docs/SPEC.md 읽기
+          - generic [ref=e530]: 코드 구현
+          - generic [ref=e533]: output/index.html 생성
+          - generic [ref=e536]: docs/SELF_CHECK.md 작성
+          - generic [ref=e539]: docs/PRD.md 읽기
+          - generic [ref=e542]: 화면 설계서 작성
+          - generic [ref=e545]: docs/SPEC.md 생성
+          - generic [ref=e549]:
+            - text: 👤 사용자 요청
+            - text: (기능 구현)
+          - generic [ref=e553]:
+            - text: 평가
+            - text: 결과
+          - generic [ref=e557]:
+            - text: ❌ 불합격
+            - text: 또는
+            - text: 조건부 합격
+            - text: (최대 3회)
+          - generic [ref=e560]: ✅ 합격
+          - generic [ref=e564]:
+            - text: 🎉 완료 보고
+            - text: CHANGELOG.md 업데이트
+    - generic [ref=e565]:
+      - heading "AI 에이전트 파이프라인 (프로젝트 관리)" [level=3] [ref=e566]
+      - paragraph [ref=e567]: 칼로리 트래커를 자동으로 생성하는 3-Agent 하네스 구조입니다. 개발 요청이 들어오면 이 파이프라인을 따라 진행됩니다.
+      - list [ref=e568]:
+        - listitem [ref=e569]:
+          - strong [ref=e570]: ① Planner
+          - text: ": PRD 읽기 → SPEC.md 설계서 작성 (기능, UI, 데이터 흐름 정의)"
+        - listitem [ref=e571]:
+          - strong [ref=e572]: ② Generator
+          - text: ": SPEC 기반으로 HTML/CSS/JS 코드 구현 → index.html 생성"
+        - listitem [ref=e573]:
+          - strong [ref=e574]: ③ Evaluator
+          - text: ": SPEC과 코드 검증 → evaluation_criteria.md 기준으로 채점"
+        - listitem [ref=e575]:
+          - strong [ref=e576]: 평가 결과
+          - text: ": 합격 → 완료 / 불합격 → Generator로 피드백 반영 (최대 3회 반복)"
+        - listitem [ref=e577]:
+          - strong [ref=e578]: 완료
+          - text: ": 합격 후 CHANGELOG.md에 기능, 기술, 파일 변경사항 기록"
+      - generic [ref=e579]:
+        - generic [ref=e580]: Planning
+        - generic [ref=e582]: Generation
+        - generic [ref=e584]: Evaluation
+        - generic [ref=e586]: Success
+  - generic [ref=e170]:
+    - paragraph [ref=e171]: Cal AI Architecture Documentation
+    - paragraph [ref=e172]: Generated on 2026-05-26 | Framework-agnostic Design
+    - paragraph [ref=e173]: 다이어그램을 마우스로 드래그하면 이동하고 휠로 확대/축소할 수 있습니다.

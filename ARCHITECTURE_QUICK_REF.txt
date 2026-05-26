@@ -1,0 +1,285 @@
+================================================================================
+              Cal AI — 아키텍처 빠른 참조 (Quick Reference)
+================================================================================
+
+📊 프로젝트 구조
+================================================================================
+
+    Frontend (SPA)              Backend APIs                External Services
+    ──────────────              ────────────                ──────────────────
+
+    index.html (134KB)          /api/config                 ☁️  Supabase
+    ├─ Inline CSS               ├─ Env proxy                   ├─ Auth
+    ├─ Inline JS                │                              ├─ PostgreSQL
+    └─ Service Worker           /api/analyze                   └─ Storage
+                                ├─ Gemini wrapper
+                                │  (Flash/Pro)             🤖  Google Gemini
+                                │                             ├─ Vision API
+                                /api/food-search              └─ JSON Schema
+                                └─ 식약처 DB proxy
+                                                            📊  공공 식품 DB
+                                                               (식약처 API)
+
+
+🎯 화면 네비게이션
+================================================================================
+
+    앱 시작
+       ↓
+    ┌──────────────────────────────────────────┐
+    │ 온보딩 필요한가?                         │
+    └──────────────────────────────────────────┘
+       No↓                              Yes↓
+         │                              4-Step Onboarding
+         ├─ Step 1: 신체정보 (BMI 계산 기초)
+         ├─ Step 2: 활동량 (TDEE 계산용)
+         ├─ Step 3: 목표 (칼로리 조정)
+         └─ Step 4: TDEE 확인
+           ↓
+    ┌──────────────────────────────────────────┐
+    │ 로그인 상태?                             │
+    └──────────────────────────────────────────┘
+       No↓                              Yes↓
+         │                              바로 홈으로
+    로그인 화면
+    ├─ 이메일/비번 입력
+    ├─ 회원가입
+    └─ 게스트 모드 (localStorage 기반)
+       ↓
+    🏠 Home Screen
+    ├─ 📊 일일 영양 요약 (Ring Chart)
+    ├─ 🍽️  추가된 음식 목록
+    └─ Bottom Navigation
+       ├─ 🏠 Home
+       ├─ 📷 Camera
+       ├─ 🔎 Search
+       ├─ 👤 Profile
+       └─ ⚙️  Settings
+
+
+🔄 음식 사진 분석 흐름
+================================================================================
+
+    사용자 행동                   App 내부                      외부 서비스
+    ──────────────                ────────                      ──────────
+
+    사진 촬영                     1. Camera API 호출
+         ↓                            ↓
+    사진 선택                     2. Blob 수신
+         ↓                            ↓
+    "분석" 클릭                   3. Base64 변환
+         ↓                            ↓
+                                 4. POST /api/analyze ──────→ Vercel Edge Function
+                                    {image_base64}                   ↓
+                                       ↑←──────────────── POST Gemini API
+                                    응답                           (Vision)
+                                       ↓←──────────────── JSON 응답
+                                 5. JSON 파싱                   + Schema 검증
+                                 6. localStorage 캐시
+                                 7. UI 표시
+                                       ↓
+    결과 화면 표시                8. 사용자 수정 가능
+         ↓                            ↓
+    "저장" 클릭                   9. DB INSERT ────────────→  Supabase
+         ↓                            ↓                        (meal_logs)
+    저장 완료                     10. 홈 복귀
+
+
+⚙️  모듈 의존성 (간단 버전)
+================================================================================
+
+    Core (상태 & 인증)
+    │
+    ├─ app.js
+    │  ├─ state.js (전역 상태)
+    │  └─ auth.js (Supabase)
+    │
+    Screen Controllers (각 화면)
+    │
+    ├─ onboarding.js
+    │  ├─ calculations.js (TDEE)
+    │  └─ validate.js (폼)
+    │
+    ├─ home.js
+    │  ├─ chart.js (Ring Chart)
+    │  └─ navigation.js (Bottom Nav)
+    │
+    ├─ camera.js
+    │  ├─ analysisAPI.js → /api/analyze
+    │  └─ imageUtils.js (Base64)
+    │
+    ├─ search.js
+    │  ├─ searchAPI.js → /api/food-search
+    │  └─ localStorage (캐시)
+    │
+    ├─ profile.js
+    │  ├─ supabaseClient.js (DB)
+    │  └─ calculations.js (TDEE 수정)
+    │
+    └─ settings.js
+       ├─ configAPI.js → /api/config
+       ├─ localStorage (API Key 저장)
+       └─ validate.js (입력 검증)
+
+
+💾 데이터 저장소
+================================================================================
+
+    Frontend Storage (Client-side)
+    ┌─────────────────────────────────────┐
+    │ localStorage                        │
+    ├─────────────────────────────────────┤
+    │ • supabase_auth_token               │
+    │ • user_preferences (theme, etc)     │
+    │ • api_keys (Supabase, Gemini, etc)  │
+    │ • meal_cache (오프라인)             │
+    │ • onboarding_complete (flag)        │
+    └─────────────────────────────────────┘
+
+    Server-side Storage (Database)
+    ┌─────────────────────────────────────┐
+    │ Supabase PostgreSQL                 │
+    ├─────────────────────────────────────┤
+    │ Tables:                             │
+    │ • auth.users (인증)                 │
+    │ • profiles (개인정보, TDEE)         │
+    │ • meal_logs (음식 기록)             │
+    │ • ingredients (검색 캐시)           │
+    └─────────────────────────────────────┘
+
+
+🔑 API 엔드포인트
+================================================================================
+
+    GET /api/config
+    ├─ Purpose: Supabase URL/Key 조회 (환경 변수 프록시)
+    ├─ Auth: 필요 없음 (공개)
+    └─ Response: {supabaseUrl, supabaseAnonKey}
+
+    POST /api/analyze
+    ├─ Purpose: Gemini 음식 분석
+    ├─ Auth: Optional (사용자 모델 선택용)
+    ├─ Body: {image_base64: string, model?: 'flash'|'pro'}
+    └─ Response: {food_name, calories, protein, carbs, fat, quantity, components}
+
+    GET /api/food-search
+    ├─ Purpose: 공공 식품 DB 검색 프록시
+    ├─ Query: ?q=<음식명>&page=1&rows=10
+    └─ Response: [{id, name, calories, protein, carbs, fat, ...}]
+
+
+🛠️  기술 스택 요약
+================================================================================
+
+    Frontend Framework      | Vanilla JavaScript (Framework-less)
+    HTML/CSS               | HTML5 + Inline CSS (Grid/Flex)
+    UI Components          | Custom (no external lib)
+    ─────────────────────────────────────────────────
+    State Management       | In-memory object + localStorage
+    Storage                | localStorage + IndexedDB (optional)
+    ─────────────────────────────────────────────────
+    Authentication         | Supabase Auth (JWT)
+    Database               | PostgreSQL (Supabase)
+    Cloud Functions        | Vercel Edge Functions (Node.js)
+    ─────────────────────────────────────────────────
+    AI/Vision              | Google Gemini 2.5 (Flash/Pro)
+    Image Processing       | Canvas API (Base64)
+    ─────────────────────────────────────────────────
+    External Data          | 식약처 식품영양성분DB API
+    CDN Resources          | jsDelivr (Supabase SDK)
+    Fonts                  | Google Fonts (Noto Sans KR, Inter)
+    ─────────────────────────────────────────────────
+    PWA                    | Service Worker + Web Manifest
+    Deployment             | Vercel (Edge + Static)
+
+
+✨ 주요 특징
+================================================================================
+
+    ✓ 단일 파일 SPA (134KB)
+      └─ 배포 간단, 로딩 빠름
+
+    ✓ 모바일 최우선 (Bottom Nav, Touch-friendly)
+      └─ 430px max-width (앱처럼 느낌)
+
+    ✓ 게스트 모드 (localStorage 기반)
+      └─ 회원가입 불필요, DB 없이 사용 가능
+
+    ✓ AI 분석 (Gemini Vision)
+      └─ Base64 이미지, JSON Schema 검증
+
+    ✓ 개인화 (Harris-Benedict TDEE)
+      └─ 목표별 칼로리 자동 계산
+
+    ✓ 오프라인 지원 (Service Worker)
+      └─ PWA 설치 가능, 선택적 캐싱
+
+    ✓ 공공 데이터 통합 (식약처 DB)
+      └─ 800+ 음식 데이터 검색 가능
+
+
+📁 프로젝트 파일 구조
+================================================================================
+
+    Calorie Calculator/
+    │
+    ├── output/
+    │   ├── index.html           ← 실제 앱 (134KB SPA)
+    │   ├── manifest.webmanifest ← PWA 설정
+    │   ├── sw.js                ← Service Worker
+    │   └── icons/               ← PWA 아이콘 (192x192, 512x512)
+    │
+    ├── api/
+    │   ├── config.js            ← GET /api/config
+    │   ├── analyze.js           ← POST /api/analyze
+    │   ├── food-search.js       ← GET /api/food-search
+    │   └── _env.js              ← 환경 변수 헬퍼
+    │
+    ├── docs/
+    │   ├── SPEC.md              ← 화면 설계서 (v2)
+    │   ├── CHANGELOG.md         ← 변경 이력
+    │   ├── QA_REPORT.md         ← 최종 QA 결과
+    │   └── PRD.md               ← 제품 요구사항
+    │
+    ├── ARCHITECTURE.html        ← 이 다이어그램 (인터랙티브) ⭐
+    ├── ARCHITECTURE_GUIDE.md    ← 상세 설명 문서 ⭐
+    ├── ARCHITECTURE_QUICK_REF.txt ← 빠른 참조 (이 파일)
+    │
+    ├── package.json
+    ├── vercel.json
+    └── README.md
+
+
+🚀 빠른 시작
+================================================================================
+
+    1️⃣  ARCHITECTURE.html을 브라우저에서 열기
+        → 4개의 인터랙티브 Mermaid 다이어그램 확인
+
+    2️⃣  ARCHITECTURE_GUIDE.md 읽기
+        → 각 다이어그램의 상세 설명 이해
+
+    3️⃣  output/index.html 브라우저에서 열기
+        → 실제 애플리케이션 실행
+
+    4️⃣  설정 탭에서 API Key 입력
+        → Supabase URL/Key, Gemini API Key, 식품 DB API Key
+
+    5️⃣  홈 탭에서 음식 사진 촬영
+        → AI가 자동 분석, 영양소 확인
+
+
+💡 팁
+================================================================================
+
+    • 다이어그램에서 마우스로 드래그하여 확대/축소 가능
+    • 모든 모던 브라우저 지원 (Chrome, Firefox, Edge, Safari)
+    • 오프라인에서도 ARCHITECTURE.html 열 수 있음 (Mermaid CDN 캐시됨)
+    • 구글 크롬 DevTools에서 네트워크 탭으로 API 호출 추적 가능
+
+
+================================================================================
+Generated: 2026-05-26
+Framework: Mermaid.js (v10)
+Author: AI Code Agent
+================================================================================

@@ -1,0 +1,47 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - heading "오늘 식단" [level=1] [ref=e5]
+      - generic [ref=e6]: 5월 20일 (수)
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - img [ref=e9]
+        - generic [ref=e12]:
+          - generic [ref=e13]: "0"
+          - generic [ref=e14]: kcal 섭취
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]: "916"
+          - generic [ref=e18]: 목표 kcal
+        - generic [ref=e19]:
+          - generic [ref=e20]: "916"
+          - generic [ref=e21]: 남은 칼로리
+    - generic [ref=e22]:
+      - generic [ref=e24]:
+        - generic [ref=e25]: 단백질
+        - generic [ref=e26]: 0g / 69g
+      - generic [ref=e29]:
+        - generic [ref=e30]: 탄수화물
+        - generic [ref=e31]: 0g / 103g
+      - generic [ref=e34]:
+        - generic [ref=e35]: 지방
+        - generic [ref=e36]: 0g / 25g
+    - generic [ref=e39]:
+      - generic [ref=e40]: 🍽️
+      - generic [ref=e41]: 오늘 기록된 식사가 없어요
+      - generic [ref=e42]: 📸 카메라 버튼을 눌러 음식을 찍어보세요
+  - navigation [ref=e43]:
+    - button "홈" [ref=e44] [cursor=pointer]:
+      - img [ref=e45]
+      - text: 홈
+    - button "기록" [ref=e48] [cursor=pointer]:
+      - img [ref=e49]
+      - text: 기록
+    - button "통계" [ref=e51] [cursor=pointer]:
+      - img [ref=e52]
+      - text: 통계
+    - button "설정" [ref=e53] [cursor=pointer]:
+      - img [ref=e54]
+      - text: 설정
+  - button "음식 분석" [ref=e57] [cursor=pointer]:
+    - img [ref=e58]

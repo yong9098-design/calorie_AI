@@ -1,0 +1,75 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - heading "🏗️ Cal AI — 아키텍처 시각화" [level=1] [ref=e4]
+    - button "🌓 테마 전환" [ref=e6] [cursor=pointer]
+  - generic [ref=e7]:
+    - button "1. 시스템 아키텍처" [ref=e8] [cursor=pointer]
+    - button "2. 화면 흐름" [active] [ref=e9] [cursor=pointer]
+    - button "3. 모듈 의존성" [ref=e10] [cursor=pointer]
+    - button "4. 음식 분석 흐름" [ref=e11] [cursor=pointer]
+    - button "5. 인증 흐름" [ref=e12] [cursor=pointer]
+    - button "6. AI 에이전트 파이프라인" [ref=e13] [cursor=pointer]
+  - generic [ref=e175]:
+    - img [ref=e178]:
+      - generic [ref=e180]:
+        - generic:
+          - generic [ref=e183]: 첫 실행
+          - generic [ref=e184]: 온보딩 완료
+          - generic [ref=e185]: 이미 로그인
+          - generic [ref=e186]: Step 1~4
+          - generic [ref=e187]: 완료
+          - generic [ref=e188]: 로그인/회원가입
+          - generic [ref=e189]: 비회원 시작
+          - generic [ref=e190]: 사진 촬영
+          - generic [ref=e191]: 음식 검색
+          - generic [ref=e192]: 프로필
+          - generic [ref=e193]: 설정
+          - generic [ref=e194]: 식단 기록
+          - generic [ref=e195]: 통계
+          - generic [ref=e196]: 분석 중
+          - generic [ref=e197]: 결과 수정
+          - generic [ref=e198]: 저장
+          - generic [ref=e199]: 영양정보 조정
+          - generic [ref=e200]: 저장
+          - generic [ref=e201]: 완료
+          - generic [ref=e202]: 뒤로가기
+          - generic [ref=e203]: 뒤로가기
+        - generic [ref=e204]:
+          - generic [ref=e209]: Boot
+          - generic [ref=e212]: Onboarding
+          - generic [ref=e215]: Auth
+          - generic [ref=e218]: Home
+          - generic [ref=e221]: Camera
+          - generic [ref=e224]: Search
+          - generic [ref=e227]: Profile
+          - generic [ref=e230]: Settings
+          - generic [ref=e233]: History
+          - generic [ref=e236]: Stats
+          - generic [ref=e239]: Analyze
+          - generic [ref=e242]: EditMeal
+      - generic [ref=e243]:
+        - generic [ref=e250]: Syntax error in text
+        - generic [ref=e251]: mermaid version 10.9.6
+    - generic [ref=e252]:
+      - heading "화면 흐름도" [level=3] [ref=e253]
+      - paragraph [ref=e254]: 사용자가 앱을 시작해서 음식을 기록하고 관리하는 전체 경로를 보여줍니다.
+      - list [ref=e255]:
+        - listitem [ref=e256]:
+          - strong [ref=e257]: 온보딩
+          - text: ": 첫 실행 시 신체정보, 활동량, 목표, TDEE 설정 (4단계)"
+        - listitem [ref=e258]:
+          - strong [ref=e259]: 인증
+          - text: ": 로그인, 회원가입, 또는 비회원 모드 선택"
+        - listitem [ref=e260]:
+          - strong [ref=e261]: 홈
+          - text: ": 일일 영양 요약, 음식 목록, 네비게이션 허브"
+        - listitem [ref=e262]:
+          - strong [ref=e263]: 카메라
+          - text: ": 사진 촬영 → Gemini 분석 → 결과 수정 → 저장"
+        - listitem [ref=e264]:
+          - strong [ref=e265]: 검색
+          - text: ": 공공 DB에서 음식 검색 → 영양정보 조정 → 저장"
+  - generic [ref=e170]:
+    - paragraph [ref=e171]: Cal AI Architecture Documentation
+    - paragraph [ref=e172]: Generated on 2026-05-26 | Framework-agnostic Design
+    - paragraph [ref=e173]: 다이어그램을 마우스로 드래그하면 이동하고 휠로 확대/축소할 수 있습니다.

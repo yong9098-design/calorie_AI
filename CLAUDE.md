@@ -5,6 +5,26 @@ Planner → Generator → Evaluator 파이프라인으로 동작합니다.
 
 ---
 
+## GitHub 접속 우회 규칙
+
+이 환경에서는 방화벽 또는 네트워크 정책 때문에 `github.com:443` 기본 연결이 실패할 수 있습니다. GitHub fetch, pull, push, ls-remote 등 GitHub 원격 접속을 하기 전에 전역 Git 설정의 우회 IP를 우선 사용합니다.
+
+현재 권장 설정:
+
+```bash
+git config --global http.curloptResolve github.com:443:140.82.112.3
+```
+
+접속 확인:
+
+```bash
+git ls-remote origin HEAD
+```
+
+실패하면 `Test-NetConnection <후보 IP> -Port 443`으로 열려 있는 GitHub IP를 찾은 뒤 `http.curloptResolve` 값을 갱신합니다. 최근 동작 확인 후보는 `140.82.112.3`, `140.82.113.3`, `140.82.114.3`입니다.
+
+---
+
 ## 실행 흐름
 
 사용자가 개발 요청을 주면, 아래 순서대로 서브에이전트를 호출합니다.
@@ -13,14 +33,14 @@ Planner → Generator → Evaluator 파이프라인으로 동작합니다.
 [사용자 요청]
        ↓
   ① Planner 서브에이전트
-     → PRD.md 읽기 → SPEC.md 생성
+     → docs/PRD.md 읽기 → docs/SPEC.md 생성
        ↓
   ② Generator 서브에이전트
-     → SPEC.md 기반으로 output/index.html 생성
-     → SELF_CHECK.md 작성
+     → docs/SPEC.md 기반으로 output/index.html 생성
+     → docs/SELF_CHECK.md 작성
        ↓
   ③ Evaluator 서브에이전트
-     → output/index.html 검수 → QA_REPORT.md 작성
+     → output/index.html 검수 → docs/QA_REPORT.md 작성
        ↓
   ④ 판정 확인
      → 합격: 완료 보고
@@ -49,7 +69,7 @@ agents/evaluation_criteria.md 파일도 읽고 참고하라.
 docs/PRD.md 파일을 읽어라. 이것이 제품 요구사항이다.
 
 PRD의 MVP 기능을 기반으로 상세 화면 설계서를 작성하라.
-결과를 SPEC.md 파일로 저장하라.
+결과를 docs/SPEC.md 파일로 저장하라.
 ```
 
 ### 단계 2: Generator 호출
@@ -58,7 +78,7 @@ PRD의 MVP 기능을 기반으로 상세 화면 설계서를 작성하라.
 ```
 agents/generator.md 파일을 읽고, 그 지시를 따라라.
 agents/evaluation_criteria.md 파일도 읽고 참고하라.
-SPEC.md 파일을 읽고, 칼로리 트래커 앱 전체를 한 번에 구현하라.
+docs/SPEC.md 파일을 읽고, 칼로리 트래커 앱 전체를 한 번에 구현하라.
 
 반드시:
 - Supabase JS CDN을 포함하라
@@ -67,20 +87,20 @@ SPEC.md 파일을 읽고, 칼로리 트래커 앱 전체를 한 번에 구현하
 - 모바일 퍼스트, Bottom Navigation 포함
 
 결과를 output/index.html 파일로 저장하라.
-완료 후 SELF_CHECK.md를 작성하라.
+완료 후 docs/SELF_CHECK.md를 작성하라.
 ```
 
 **피드백 반영 시 (2회차 이상)**:
 ```
 agents/generator.md 파일을 읽고, 그 지시를 따라라.
 agents/evaluation_criteria.md 파일도 읽고 참고하라.
-SPEC.md 파일을 읽어라.
+docs/SPEC.md 파일을 읽어라.
 output/index.html 파일을 읽어라. 이것이 현재 코드다.
-QA_REPORT.md 파일을 읽어라. 이것이 QA 피드백이다.
+docs/QA_REPORT.md 파일을 읽어라. 이것이 QA 피드백이다.
 
 QA 피드백의 "구체적 개선 지시"를 모두 반영하여 output/index.html을 수정하라.
 "방향 판단"이 "완전히 다른 접근 시도"이면 앱 구조 자체를 바꿔라.
-완료 후 SELF_CHECK.md를 업데이트하라.
+완료 후 docs/SELF_CHECK.md를 업데이트하라.
 ```
 
 ### 단계 3: Evaluator 호출
@@ -88,22 +108,22 @@ QA 피드백의 "구체적 개선 지시"를 모두 반영하여 output/index.ht
 ```
 agents/evaluator.md 파일을 읽고, 그 지시를 따라라.
 agents/evaluation_criteria.md 파일을 읽어라. 이것이 채점 기준이다.
-SPEC.md 파일을 읽어라. 이것이 설계서다.
+docs/SPEC.md 파일을 읽어라. 이것이 설계서다.
 output/index.html 파일을 읽어라. 이것이 검수 대상이다.
 
 검수 절차:
 1. output/index.html의 코드를 분석하라
-2. SPEC.md의 각 기능이 코드로 구현되었는지 확인하라
+2. docs/SPEC.md의 각 기능이 코드로 구현되었는지 확인하라
 3. evaluation_criteria.md에 따라 4개 항목을 채점하라
 4. 최종 판정(합격/조건부/불합격)을 내려라
 5. 불합격 또는 조건부 시, 구체적 개선 지시를 작성하라
 
-결과를 QA_REPORT.md 파일로 저장하라.
+결과를 docs/QA_REPORT.md 파일로 저장하라.
 ```
 
 ### 단계 4: 판정 확인
 
-QA_REPORT.md를 읽고 판정을 확인합니다.
+docs/QA_REPORT.md를 읽고 판정을 확인합니다.
 
 - **합격** → 사용자에게 완료 보고. output/index.html 사용 방법 안내.
 - **조건부 합격** 또는 **불합격** → 단계 2로 돌아가 피드백 반영.
@@ -149,7 +169,7 @@ QA_REPORT.md를 읽고 판정을 확인합니다.
 
 ## [필수] CHANGELOG 자동 업데이트 규칙
 
-**모든 기능 구현이 완료될 때마다 반드시 `docs/CHANGELOG.md`를 업데이트하라.**
+**모든 기능 구현이 완료될 때마다 반드시 `CHANGELOG.md`를 업데이트하라.**
 
 해당 시점: Evaluator가 "합격" 판정을 내린 직후, 또는 사용자가 구현 완료를 확인한 시점.
 
@@ -174,7 +194,7 @@ QA_REPORT.md를 읽고 판정을 확인합니다.
 ### 작성 원칙
 - 전문적이고 기술적인 한국어 톤 사용
 - 미래에 코드를 처음 보는 개발자가 흐름을 파악할 수 있는 수준으로 작성
-- `docs/` 디렉토리가 없으면 생성 후 작성
+- 파일이 루트에 없으면 아래 헤더로 신규 생성
 - 파일이 없으면 아래 헤더로 신규 생성:
   ```markdown
   # Changelog
