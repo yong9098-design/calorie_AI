@@ -589,6 +589,8 @@ AI 칼로리 트래커 프로젝트 변경 이력
 - **CSS 가시성 모델**: 비활성 탭의 다이어그램을 `display: none`이 아닌 `visibility: hidden; height: 0; overflow: hidden`으로 숨김 → Mermaid.js 초기화 시 모든 SVG 노드가 DOM에 존재하므로 render 성공. 탭 클릭 시 `visibility: visible; height: auto`로 전환.
 - **테마 토글**: CSS custom properties `--bg`, `--card`, `--text`, `--sub`, `--border` 사용 → Mermaid 다이어그램 re-render 시에도 색상 자동 적용.
 - **다크 테마 색상 조정**: 배경 #0f172a (더 어두움) + 텍스트 #ffffff (순백) + 보조 #e2e8f0 (더 밝음) → 명도 대비 최대화.
+- **에지 라벨**: 각 다이어그램의 화살표에 한국어 설명 추가 (예: "Home →**촬영**→ Camera") → 프리젠테이션 시 청중이 흐름을 즉시 이해.
+- **용어 범례**: 각 다이어그램 우측 하단에 `.legend` 섹션 추가 → 모든 노드와 약자의 의미를 명시.
 - **프리젠테이션 최적화**: 모든 측정값을 비율 계산으로 축소 (30~50%), Mermaid 생성 다이어그램의 노드명 간소화로 자동 리사이징 (Mermaid 수평 정렬 알고리즘 활용).
 
 ### 변경된 파일
