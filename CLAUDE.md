@@ -4,40 +4,100 @@
 
 ---
 
-## 📊 12단계 실행 흐름
+## 대상 런타임
+
+**target runtime**: Claude Code
+
+---
+
+## ⚠️ 정체성
+
+### 허용 (✅)
+
+- 칼로리 트래커 웹 앱 자동 생성 및 개선
+- PRD/SPEC 기반 3-Agent 하네스 실행 (Planner → Generator → Evaluator)
+- QA 반복 및 피드백 반영 (최대 3회)
+- design.md 기반 Warm Visual 디자인 시스템 적용
+
+### 금지 (❌)
+
+- 칼로리 트래커 외 다른 앱 생성
+- docs/ 외 경로에 기획 문서 생성
+- design.md 미참조 구현
+- Generator와 Evaluator를 동일한 서브에이전트로 호출
+
+---
+
+## 핵심 원칙
+
+| 원칙 | 설명 |
+|------|------|
+| **Design.md 우선 준수** | 구현 전 design.md 필수 참고 (색, 그림자, 라운드, 모션, 컴포넌트 명세) |
+| **에이전트 분리** | Generator ≠ Evaluator (다른 서브에이전트로 호출) — "만드는 AI와 평가하는 AI" 분리 |
+| **파일 확인** | 각 단계 완료 후 산출물 존재 확인 후 다음 단계 진행 |
+| **반복 제한** | FAIL/조건부 시 최대 3회 반복 (3회 후 현재 상태로 완료 + 이슈 보고) |
+| **agents/ 참고** | 각 에이전트 상세 지시사항은 agents/ 폴더 파일 참고 |
+
+---
+
+## 폴더 구조
+
+```
+Calorie Calculator/
+├── CLAUDE.md              # 이 파일 — 하네스 마스터 가이드
+├── CHANGELOG.md           # 기능 구현 이력 (매 QA 합격 시 업데이트)
+├── design.md              # Warm Visual 디자인 시스템 (필수)
+├── agents/                # 에이전트 지시사항
+│   ├── planner.md         # Planner 에이전트 (설계 전문)
+│   ├── generator.md       # Generator 에이전트 (구현 전문)
+│   ├── evaluator.md       # Evaluator 에이전트 (검증 전문)
+│   └── evaluation_criteria.md  # QA 평가 기준
+├── docs/                  # 기획·설계·QA 문서
+│   ├── PRD.md             # 제품 요구사항 정의
+│   ├── SPEC.md            # 기술 명세서
+│   ├── USER_REQUEST.md    # 사용자 요청 원문
+│   ├── SELF_CHECK.md      # Generator 자체 검점
+│   └── QA_REPORT.md       # Evaluator QA 보고서
+└── output/                # 최종 산출물
+    └── index.html         # 완성된 웹 앱
+```
+
+---
+
+## 워크플로우 (12단계 실행 흐름)
 
 ### **① 사용자 요청**
 - **입력**: 칼로리 계산 앱 구현 요청
 - **산출**: 
-- **우측 설명**: 칼로리 계산 앱 구현
+- **설명**: 칼로리 계산 앱 구현
 
 ### **② docs/USER_REQUEST.md 작성**
 - **역할**: 사용자 요청 원문을 파일로 저장
 - **산출**: `docs/USER_REQUEST.md`
-- **우측 설명**: 사용자 요청 원문을 파일로 저장
+- **설명**: 사용자 요청 원문을 파일로 저장
 
 ### **③ PRD Builder Skill 실행** 
 - **역할**: 요구사항 분석 및 정제
 - **산출**: PRD 초안
-- **우측 설명**: 요구사항 분석 및 정제
+- **설명**: 요구사항 분석 및 정제
 
 ### **④ docs/PRD.md 생성/확정**
 - **역할**: 요구사항 기초 문서 확정
 - **산출**: `docs/PRD.md`
-- **우측 설명**: 요구사항 기초 문서 확정
+- **설명**: 요구사항 기초 문서 확정
 
 ---
 
 ### **⑤ Planner Agent 실행** ⭐ (agents/planner.md 참고)
-- **입력**: `docs/PRD.md` + `design.md` (Warm Visual 디자인 시스템)
+- **입력**: `docs/PRD.md` + `design.md` 
 - **역할**: PRD와 디자인 시스템을 기반으로 상세 설계 및 명세 작성
 - **산출**: 설계서, 명세서 작성 (디자인 시스템 반영)
-- **우측 설명**: PRD.md를 기반으로 설계 및 명세 작성
+- **설명**: PRD.md를 기반으로 설계 및 명세 작성
 
 ### **⑥ docs/SPEC.md 생성**
 - **역할**: 기술 명세 문서 생성
 - **산출**: `docs/SPEC.md`
-- **우측 설명**: 기술 명세 문서 생성
+- **설명**: 기술 명세 문서 생성
 
 ---
 
@@ -45,17 +105,17 @@
 - **입력**: `docs/SPEC.md` + `design.md` (Warm Visual 디자인 시스템 반드시 적용)
 - **역할**: 설계서와 디자인 시스템을 철저히 따르며 코드 구현
 - **산출**: 웹 앱 코드 (design.md의 모든 스타일, 컴포넌트, 모션 적용)
-- **우측 설명**: SPEC.md를 기반으로 구현 진행
+- **설명**: SPEC.md를 기반으로 구현 진행
 
 ### **⑧ output/index.html 생성**
 - **역할**: 완성된 웹 앱 코드 생성
 - **산출**: `output/index.html`
-- **우측 설명**: 신규물 생성
+- **설명**: 신규물 생성
 
 ### **⑨ docs/SELF_CHECK.md 생성**
 - **역할**: Generator 자체 검점 결과 기록
 - **산출**: `docs/SELF_CHECK.md`
-- **우측 설명**: Generator 자체 검점 결과 기록
+- **설명**: Generator 자체 검점 결과 기록
 
 ---
 
@@ -63,12 +123,12 @@
 - **입력**: `docs/PRD.md`, `docs/SPEC.md`, `design.md`, `output/index.html`
 - **역할**: PRD vs SPEC vs HTML 일관성 검증 + design.md 디자인 시스템 준수 확인
 - **산출**: 평가 결과 (기능성, 디자인 일관성, 기술품질, 완성도)
-- **우측 설명**: PRD, SPEC, design.md, 신규물 종합 검증
+- **설명**: PRD, SPEC, design.md, 신규물 종합 검증
 
 ### **⑪ docs/QA_REPORT.md 생성**
 - **역할**: 평가 결과 및 개선사항 보고서 작성
 - **산출**: `docs/QA_REPORT.md`
-- **우측 설명**: 평가 결과 및 개선사항 보고서 작성
+- **설명**: 평가 결과 및 개선사항 보고서 작성
 
 ---
 
@@ -77,11 +137,11 @@
 - **결과**:
   - ✅ **PASS**: 프로젝트 완료
   - ❌ **FAIL/조건부**: ⑦ Generator로 돌아가 피드백 반영 (최대 3회)
-- **우측 설명**: 최종 승인 여부 결정
+- **설명**: 최종 승인 여부 결정
 
 ---
 
-## 🔄 반복 루프
+## 반복 루프
 
 ```
 Evaluator 판정
@@ -93,47 +153,59 @@ Evaluator 판정
 
 ---
 
-## 📁 핵심 파일 및 에이전트
+## 자연어 트리거
 
-| 단계 | 파일/도구 | 입력 | 출력 | 역할 |
-|------|----------|------|------|------|
-| ③ | PRD Builder Skill | USER_REQUEST.md | PRD.md | 요구사항 정의 |
-| **⑤** | **Planner Agent** | **PRD.md + design.md** | **SPEC.md** | **화면 설계 (디자인 시스템 반영)** |
-| **⑦** | **Generator Agent** | **SPEC.md + design.md** | **index.html** | **코드 구현 (디자인 시스템 철저히 적용)** |
-| **⑩** | **Evaluator Agent** | **PRD, SPEC, design.md, HTML** | **QA_REPORT.md** | **품질 검증 (디자인 준수 확인)** |
-
-### design.md의 역할
-- **디자인 시스템**: Warm Visual 톤의 색상, 그림자, 라운드, 타이포그래피, 모션
-- **컴포넌트 명세**: 모든 UI 요소의 스타일 토큰 및 적용 위치
-- **필수 준수**: Planner와 Generator는 design.md를 반드시 참고해야 함
+| 발화 | 트리거 대상 | Scale Mode |
+|------|-----------|-----------|
+| "만들어줘", "구현해줘", "생성해줘" | 전체 하네스 (①~⑫) | Full |
+| "수정해줘", "개선해줘" | Generator 반복 (⑦~⑫) | Standard |
+| "다시 만들어줘", "리셋" | 전체 하네스 재실행 | Full |
 
 ---
 
-## ⚠️ 중요 원칙
+## Scale Modes
 
-1. **Design.md 우선 준수**: 구현 전에 design.md의 모든 내용 반영
-   - Planner: PRD + design.md를 함께 읽고 SPEC 작성
-   - Generator: SPEC + design.md를 함께 읽고 HTML 구현 (색, 그림자, 라운드, 모션 등 모두 적용)
-   - Evaluator: design.md 준수 여부를 명시적으로 검증
-
-2. **Generator와 Evaluator 분리**: 반드시 다른 서브에이전트로 호출
-   - = "만드는 AI와 평가하는 AI를 분리"하는 핵심
-
-3. **각 단계 파일 확인**: 다음 단계 실행 전 산출물 존재 확인
-
-4. **반복 횟수 제한**: FAIL/조건부 시 최대 3회까지만 반복
-   - 3회 후에도 미합격 → 현재 상태로 완료 + 이슈 보고
-
-5. **에이전트 지시사항**: `agents/` 폴더 파일 + design.md 참고
-   - `agents/planner.md` — Planner 에이전트
-   - `agents/generator.md` — Generator 에이전트  
-   - `agents/evaluator.md` — Evaluator 에이전트
-   - `agents/evaluation_criteria.md` — 평가 기준
-   - **`design.md` — 디자인 시스템 (필수)**
+| 모드 | 설명 | 사용 시점 |
+|------|------|----------|
+| **Lite** | 단순 수정 (HTML 일부 수정, 텍스트 변경) | 특정 버그 수정, 스타일 미조정 |
+| **Standard** | Evaluator 1회 포함 단일 반복 | 기능 추가, 소규모 개선 |
+| **Full** | Planner→Generator→Evaluator 전체 하네스 | 앱 신규 생성, 대규모 재설계 |
 
 ---
 
-## 💬 완료 보고 형식
+## 트리거 경계
+
+### Should-Trigger (하네스 실행)
+
+- "칼로리 계산 앱 만들어줘"
+- "기능 추가해줘"
+- "UI 개선해줘"
+- "버그 수정해줘"
+- "처음부터 다시 만들어줘"
+
+### NOT-Trigger (다른 도구 사용)
+
+- "CLAUDE.md 읽어줘" → 파일 읽기만 수행
+- "현재 상태 보고해줘" → 상태 확인만
+- "문서 검토해줘" → 단순 검토 (하네스 미실행)
+
+---
+
+## 도메인 프레임워크
+
+| 요소 | 설명 |
+|------|------|
+| **TDEE 계산** | Harris-Benedict 공식 (BMR × 활동계수) |
+| **인증** | Supabase Auth (이메일/비밀번호, 비회원) |
+| **데이터 저장** | PostgreSQL (Supabase) + RLS 적용 |
+| **AI 분석** | Google Gemini 2.5 Flash/Pro (음식 칼로리) |
+| **디자인 시스템** | Warm Visual (design.md 참고) |
+
+---
+
+## 산출물 형식
+
+### 완료 보고
 
 ```
 ## 하네스 실행 완료
@@ -153,6 +225,36 @@ Evaluator 판정
 2. [설정] 탭에서 API 키 입력 (Supabase, Gemini)
 3. 회원가입 후 사용 시작
 ```
+
+### 핵심 파일 및 에이전트
+
+| 단계 | 파일/도구 | 입력 | 출력 | 역할 |
+|------|----------|------|------|------|
+| ③ | PRD Builder Skill | USER_REQUEST.md | PRD.md | 요구사항 정의 |
+| **⑤** | **Planner Agent** | **PRD.md + design.md** | **SPEC.md** | **화면 설계 (디자인 시스템 반영)** |
+| **⑦** | **Generator Agent** | **SPEC.md + design.md** | **index.html** | **코드 구현 (디자인 시스템 철저히 적용)** |
+| **⑩** | **Evaluator Agent** | **PRD, SPEC, design.md, HTML** | **QA_REPORT.md** | **품질 검증 (디자인 준수 확인)** |
+
+---
+
+## 품질 체크리스트 (하네스 실행 전 확인)
+
+- [ ] design.md 존재 확인
+- [ ] agents/ 폴더의 4개 파일 존재 확인
+- [ ] Generator와 Evaluator를 다른 서브에이전트로 호출할 준비
+- [ ] QA 반복 제한 3회 인지
+- [ ] CHANGELOG.md 업데이트 준비
+
+---
+
+## 변경 이력
+
+| 날짜 | 변경 내용 | 사유 |
+|------|----------|------|
+| 2026-05-30 | 12섹션 스키마 적용 및 폴더 구조 추가 | workspace-standards 04-CLAUDE_MD_GUIDE 준수 |
+| 2026-05-29 | design.md 디자인 시스템 필수 준수 추가 | design.md 구현 전 반영 원칙 명시 |
+| 2026-05-29 | 12단계 워크플로우 상세 추가 | 이미지 기반 워크플로우 정의 |
+| 2026-05-29 | CLAUDE.md 워크플로우 중심으로 리팩토링 | 에이전트 상세 지시는 agents/ 이동 |
 
 ---
 
@@ -183,8 +285,7 @@ Evaluator 판정
 ### 작성 원칙
 - 전문적이고 기술적인 한국어 톤 사용
 - 미래에 코드를 처음 보는 개발자가 흐름을 파악할 수 있는 수준으로 작성
-- 파일이 루트에 없으면 아래 헤더로 신규 생성
-- 파일이 없으면 아래 헤더로 신규 생성:
+- 파일이 루트에 없으면 아래 헤더로 신규 생성:
   ```markdown
   # Changelog
 
