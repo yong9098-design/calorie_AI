@@ -1,4 +1,4 @@
-# 칼로리 트래커 생성 하네스
+# 칼로리 트래커(Calo AI) 생성 하네스
 
 > 사용자 요청 → 자동 설계 → 자동 구현 → 자동 검수 → PASS/FAIL 판정
 
@@ -46,12 +46,23 @@
 Calorie Calculator/
 ├── CLAUDE.md              # 이 파일 — 하네스 마스터 가이드
 ├── CHANGELOG.md           # 기능 구현 이력 (매 QA 합격 시 업데이트)
-├── design.md              # Warm Visual 디자인 시스템 (필수)
+├── design.md              # 디자인 시스템 
 ├── agents/                # 에이전트 지시사항
 │   ├── planner.md         # Planner 에이전트 (설계 전문)
 │   ├── generator.md       # Generator 에이전트 (구현 전문)
 │   ├── evaluator.md       # Evaluator 에이전트 (검증 전문)
 │   └── evaluation_criteria.md  # QA 평가 기준
+├── api/                   # API 백엔드 및 유틸리티
+│   ├── _env.js            # 환경설정 모듈
+│   ├── config.js          # 설정 파일
+│   ├── food-search.js     # 음식 검색 API
+│   └── analyze.js         # 데이터 분석 유틸리티
+├── archive/               # 아카이브 및 참고 문서
+│   ├── ARCHITECTURE.html  # 아키텍처 다이어그램
+│   ├── architecture_docs/ # 아키텍처 문서
+│   ├── docs/              # 참고 문서
+│   ├── logo/              # 로고 자료
+│   └── png/               # 이미지 파일
 ├── docs/                  # 기획·설계·QA 문서
 │   ├── PRD.md             # 제품 요구사항 정의
 │   ├── SPEC.md            # 기술 명세서
