@@ -1,516 +1,335 @@
-# design.md
+# Design.md — Cal AI Warm Visual
 
-`design.md`를 작성, 수정, 검증, 비교, 토큰 export할 때는 `C:\Users\hylee\Documents\GStack + Superpowers\skills\design-md\SKILL.md`의 DESIGN.md 스킬 규칙을 적용한다.
+`output/index.html` 전체 화면에 적용되는 **Warm Visual 톤**의 디자인 사양입니다.
 
-# Google Labs Stitch 포맷 / W3C DTCG 표준 기반
-
-## Design System: Cal AI
-
-**Project ID:** calorie-ai
-
-이 파일은 `output/index.html`의 현재 구현을 기준으로 정리한 Cal AI 전용 디자인 시스템이다.  
-Cal AI는 음식 사진 분석, 칼로리 기록, 목표 관리, 식단 히스토리 확인을 모바일에서 빠르게 처리하는 건강 관리 웹앱이다.
-
-이 파일이 디자인의 source of truth다. 이후 화면 색상, 폰트, 간격, 모서리, 컴포넌트 스타일을 바꿀 때는 먼저 이 파일을 수정하고 코드에 반영한다.
-
-## 1. Visual Theme & Atmosphere
-
-Cal AI의 기본 톤은 밝고 신뢰감 있는 모바일 헬스 앱이다. 사용자는 음식을 빠르게 기록하고 하루 섭취량을 확인해야 하므로, 화면은 가볍고 선명하며 다음 행동이 즉시 보여야 한다.
-
-- **분위기:** 건강함, 산뜻함, 명료함, 부담 없는 기록 경험.
-- **밀도:** 모바일 430px 폭 안에서 정보가 충분히 보이되, 입력 흐름은 막히지 않는 중간 밀도.
-- **미학:** 밝은 회색 앱 배경 위에 흰 카드, 초록 CTA, 낮은 그림자를 사용한다.
-- **핵심 행동:** 사진 분석, 저장, 목표 수정, 음식 DB 기록처럼 사용자가 행동해야 하는 지점은 초록색으로 표시한다.
-- **금지 톤:** 의료 앱처럼 딱딱한 파랑 톤, 과도한 그라데이션, 장식성 카드 남발, 랜딩 페이지 같은 과장된 히어로 구성.
-
-## 2. Color Palette & Roles
-
-현재 `output/index.html`의 `:root` CSS 변수와 inline style을 기준으로 정리한다. 코드에서는 하단 JSON 토큰의 정확한 hex 값을 사용한다.
-
-| 이름 | Hex | 역할 |
-|---|---:|---|
-| Fresh Green | `#22C55E` | 주요 CTA, 활성 탭, 칼로리 강조, 성공적 진행 상태 |
-| Deep Green | `#16A34A` | primary hover, 초록 그라디언트 끝점, 진한 성공 텍스트 |
-| Mint Surface | `#F0FDF4` | 선택된 카드, 성공 메시지, 초록 강조 배경 |
-| Mint Border | `#D1FAE5` | 성공 메시지 테두리, 연한 초록 구분 |
-| App Background | `#F9FAFB` | 모바일 앱 내부 기본 배경 |
-| App Shell | `#E5E7EB` | 데스크톱에서 모바일 앱 바깥 배경 |
-| Card White | `#FFFFFF` | 카드, 상단바, 바텀 내비게이션, 바텀시트 |
-| Ink Black | `#111827` | 주요 제목과 본문 텍스트 |
-| Muted Gray | `#6B7280` | 보조 텍스트, 날짜, 캡션, 비활성 탭 |
-| Quiet Border | `#E5E7EB` | 입력, 탭 구분선, 카드 선택 전 테두리 |
-| Danger Red | `#EF4444` | 오류, 삭제, 위험 액션 |
-| Warning Orange | `#F59E0B` | 경고, 목표 초과, 주의 상태 |
-| Info Blue | `#3B82F6` | 단백질 등 영양소 보조 정보 |
-
-## 3. Typography Rules
-
-기본 UI 폰트는 한글 가독성을 위해 `Noto Sans KR`을 사용하고, 숫자와 칼로리 수치는 `Inter`를 함께 사용한다.
-
-- 전체 본문은 `Noto Sans KR`, `Inter`, sans-serif 순서로 렌더링한다.
-- 칼로리, 목표량, 통계 수치처럼 숫자 리듬이 중요한 요소는 `Inter`를 사용한다.
-- 모바일 화면 내부 제목은 보통 18px, 주요 단계 제목은 20px, 로고성 문구는 28~32px를 사용한다.
-- 거대한 숫자는 TDEE 결과처럼 한 화면에서 가장 중요한 결과에만 사용한다.
-- 본문과 라벨은 13~16px 범위에서 유지한다.
-
-## 4. Component Stylings
-
-- **Buttons:** 기본 버튼은 Fresh Green 배경, 흰 텍스트, `radius.md`를 사용한다. 높이는 최소 44px 이상이다. hover/pressed 상태는 Deep Green 또는 scale 피드백을 사용한다.
-- **Cards:** 일반 카드는 Card White 배경, `radius.lg`, `spacing.4` padding, 낮은 그림자 `shadow.sm`을 사용한다.
-- **Selectable Cards:** 성별, 활동량, 목표, 모델 선택처럼 선택 가능한 카드는 Quiet Border 2px를 기본으로 하고, 선택 시 Fresh Green border와 Mint Surface 배경을 사용한다.
-- **Inputs:** 입력과 select는 Card White 배경, Quiet Border 1.5~2px, `radius.md`, 12~14px 수직 padding을 사용한다. focus는 Fresh Green border로 표시한다.
-- **Bottom Navigation:** 화면 하단 고정, 높이 60px + safe area, 활성 탭은 Fresh Green, 비활성 탭은 Muted Gray를 사용한다.
-- **FAB:** 음식 사진 분석 시작 버튼은 60px 원형, 초록 그라디언트, 강한 초록 그림자를 사용한다. 앱의 가장 중요한 즉시 행동이므로 화면 오른쪽 하단에 고정한다.
-- **Bottom Sheets:** 카메라/갤러리, 재분석, 음식 DB 같은 선택 흐름은 하단 바텀시트로 표시한다. 상단 모서리는 20px, dim overlay는 rgba black 0.5를 사용한다.
-- **Modals:** 재설정, 로그아웃, 게스트 시작 모달은 중앙 모달로 표시하고, 24px radius와 강한 shadow를 사용한다. 중요한 확인 액션은 색상으로 의미를 구분한다.
-- **Toasts:** 저장 완료 토스트는 하단 90px 위치, pill 형태, 초록 그라디언트와 흰 텍스트를 사용한다.
-
-## 5. Layout Principles
-
-Cal AI는 모바일 앱 쉘을 기준으로 한다.
-
-- 앱 컨테이너는 `width: 100%`, `max-width: 430px`, `min-height: 100dvh`를 사용한다.
-- 데스크톱에서는 화면 중앙에 430px 앱이 놓이고, 바깥은 App Shell 배경으로 둔다.
-- 상단바는 sticky, 높이 56px, 흰 배경, 하단 border를 사용한다.
-- 하단 내비게이션은 fixed, max-width 430px, z-index 100을 사용한다.
-- 본문 화면은 하단 내비게이션과 safe area를 고려해 padding-bottom을 둔다.
-- 주요 화면 padding은 16px, 바텀시트 padding은 20px를 기준으로 한다.
-- 터치 가능한 요소는 최소 44px 높이를 유지한다.
+프로젝트의 기본 디자인 토큰은 `design.md`에 정의되어 있으며, 이 문서는 그 위에
+**온보딩에서 출발해 앱 전체(인증·홈·히스토리·통계·설정·바텀 내비게이션·FAB·시트)로 확장된 Warm Visual 레이어**를 정의합니다.
 
 ---
 
-## 이 파일이 맞는 프로젝트
+## 0. Design System Workflow
 
-| 우선순위 | 프로젝트 유형 | 이유 |
-|---|---|---|
-| 1순위 | Cal AI 칼로리 트래커 | 현재 `output/index.html`에서 추출한 실제 디자인 기준 |
-| 2순위 | 모바일 헬스/식단/운동 기록 앱 | 초록 CTA, 기록 카드, 대시보드 구조 재사용 가능 |
-| 3순위 | 사진 분석 + 저장 + 통계 앱 | FAB, 분석 결과 수정, 히스토리, 바텀시트 패턴 재사용 가능 |
+레퍼런스(Stitch / Figma)에서 **design system 정보**를 가져옵니다.
 
-**맞지 않는 경우**
+```
+Stitch / Figma 레퍼런스
+        ↓
+design.md (시스템 정보 import)
+        ↓
+세분화된 디자인 시스템 md (상황에 따라 세분화 가능)
+    • colors.md
+    • typography.md
+    • spacing.md
+    • components.md
+```
 
-- B2B SaaS 대시보드처럼 고밀도 테이블 중심 UI.
-- 브랜드 랜딩 페이지.
-- 어두운 테마가 핵심인 앱.
-
----
-
-## 작성 3단계
-
-### Step 1 - 현재 구현 기준 확인
-
-이 디자인 시스템은 `output/index.html`의 현재 구현에서 시작했다. 디자인을 바꾸기 전에는 다음 위치를 먼저 확인한다.
-
-- `:root` CSS 변수.
-- `.btn`, `.card`, `.input-group`, `.top-bar`, `#bottom-nav`, `#fab`, `.sheet`.
-- inline style로 남아 있는 모달, 토스트, 음식 DB 카드.
-
-### Step 2 - 이 파일 먼저 수정
-
-색상, 폰트, 간격, radius, shadow를 바꿀 때는 코드보다 이 파일을 먼저 수정한다.
-
-### Step 3 - 코드 동기화
-
-이 파일의 토큰을 기준으로 `output/index.html`의 `:root` 변수와 컴포넌트 CSS를 업데이트한다. inline style은 가능하면 공통 클래스 또는 CSS 변수로 이동한다.
+**주의**: Claude.md 파일에서 `@design.md` 도구를 반드시 명시하여 다른 에이전트도 이 정의서를 참고할 수 있도록 합니다.
 
 ---
 
-## 1. Colors
+## 1. Atmosphere — Warm Visual
+
+Cal AI는 건강 매니아용이 아닌 일상적이고 친구 같은 톤을 출발점으로 삼습니다.
+
+- **분위기**: 민트 그라디언트 쉘 + 부드러운 큰 멈춤 라운드 + 그린 글로우 CTA. 철저하게 원형적이고 촉각적.
+- **밀도**: 모바일 430px 폭, 낮은~중간 밀도. 카드 간 간격과 레이어시드는 넓게.
+- **일관성**: 온보딩 하나만 봐도 인증/홈/히스토리/통계/설정/바텀 네비게이션/FAB 모두 속하는 시각적 가족이 되도록 색조·라운드·그림자 토큰을 전역으로 공유.
+- **금지**: 딱딱한 직사각·하드 경계·의료적 파랑. 온도 차가운 그린은 CTA와 진행 수치에만 한정.
+
+---
+
+## 2. Foundations (global tokens)
 
 ```json
 {
   "color": {
-    "primary": {
-      "$value": "#22C55E",
-      "$type": "color",
-      "$description": "Fresh Green. 주요 CTA, 활성 탭, 칼로리 강조, 선택 상태에 사용."
-    },
-    "primary-hover": {
-      "$value": "#16A34A",
-      "$type": "color",
-      "$description": "Deep Green. primary hover, pressed, 초록 그라디언트 끝점."
-    },
-    "primary-subtle": {
-      "$value": "#F0FDF4",
-      "$type": "color",
-      "$description": "Mint Surface. 선택된 카드, 성공 메시지, 연한 초록 배경."
-    },
-    "primary-border": {
-      "$value": "#D1FAE5",
-      "$type": "color",
-      "$description": "Mint Border. 성공 메시지 테두리와 연한 초록 경계."
-    },
-    "background": {
-      "$value": "#F9FAFB",
-      "$type": "color",
-      "$description": "모바일 앱 내부 기본 배경."
-    },
-    "background-shell": {
-      "$value": "#E5E7EB",
-      "$type": "color",
-      "$description": "데스크톱에서 모바일 앱 바깥 영역 배경."
-    },
-    "surface": {
-      "$value": "#FFFFFF",
-      "$type": "color",
-      "$description": "카드, 상단바, 바텀 내비게이션, 모달, 바텀시트."
-    },
-    "surface-muted": {
-      "$value": "#F3F4F6",
-      "$type": "color",
-      "$description": "썸네일 placeholder, 비활성 pill, 보조 표면."
-    },
-    "surface-cool": {
-      "$value": "#F8FAFC",
-      "$type": "color",
-      "$description": "TDEE breakdown 등 차분한 정보 박스."
-    },
-    "text": {
-      "$value": "#111827",
-      "$type": "color",
-      "$description": "주요 제목과 본문 텍스트."
-    },
-    "text-secondary": {
-      "$value": "#374151",
-      "$type": "color",
-      "$description": "모달 버튼, 보조 제목, 강조도가 낮은 본문."
-    },
-    "text-muted": {
-      "$value": "#6B7280",
-      "$type": "color",
-      "$description": "캡션, 날짜, 비활성 탭, 보조 설명."
-    },
-    "text-disabled": {
-      "$value": "#9CA3AF",
-      "$type": "color",
-      "$description": "disabled 버튼, 약한 안내 문구."
-    },
-    "border": {
-      "$value": "#E5E7EB",
-      "$type": "color",
-      "$description": "입력, 구분선, 카드 선택 전 테두리."
-    },
-    "error": {
-      "$value": "#EF4444",
-      "$type": "color",
-      "$description": "오류, 삭제, 위험 액션."
-    },
-    "error-subtle": {
-      "$value": "#FEF2F2",
-      "$type": "color",
-      "$description": "오류 메시지 배경."
-    },
-    "warning": {
-      "$value": "#F59E0B",
-      "$type": "color",
-      "$description": "주의, 목표 초과, 통계 기준선."
-    },
-    "warning-subtle": {
-      "$value": "#FFFBEB",
-      "$type": "color",
-      "$description": "경고 메시지 배경."
-    },
-    "info": {
-      "$value": "#3B82F6",
-      "$type": "color",
-      "$description": "단백질 등 보조 영양소 정보."
-    }
-  }
-}
-```
-
----
-
-## 2. Typography
-
-```json
-{
-  "font": {
-    "family": {
-      "sans": {
-        "$value": "'Noto Sans KR', 'Inter', sans-serif",
-        "$type": "fontFamily",
-        "$description": "기본 UI 폰트. 한글 가독성을 우선한다."
-      },
-      "number": {
-        "$value": "'Inter', sans-serif",
-        "$type": "fontFamily",
-        "$description": "칼로리, 목표량, 통계 수치."
-      }
-    },
-    "size": {
-      "2xs": { "$value": "9px", "$type": "dimension", "$description": "차트 날짜와 작은 수치." },
-      "xs": { "$value": "10px", "$type": "dimension", "$description": "하단 내비게이션 라벨." },
-      "sm": { "$value": "12px", "$type": "dimension", "$description": "작은 배지, 보조 캡션." },
-      "md": { "$value": "13px", "$type": "dimension", "$description": "폼 라벨, 메시지." },
-      "base": { "$value": "14px", "$type": "dimension", "$description": "카드 내부 기본 텍스트." },
-      "input": { "$value": "15px", "$type": "dimension", "$description": "입력 필드와 탭 텍스트." },
-      "button": { "$value": "16px", "$type": "dimension", "$description": "주요 버튼." },
-      "heading": { "$value": "18px", "$type": "dimension", "$description": "상단바 제목과 시트 제목." },
-      "section-title": { "$value": "20px", "$type": "dimension", "$description": "온보딩 단계 제목, 통계 숫자." },
-      "logo": { "$value": "32px", "$type": "dimension", "$description": "인증 화면 로고성 타이틀." },
-      "result": { "$value": "52px", "$type": "dimension", "$description": "TDEE 결과 대형 숫자." }
-    },
-    "weight": {
-      "regular": { "$value": "400", "$type": "fontWeight" },
-      "medium": { "$value": "500", "$type": "fontWeight" },
-      "semibold": { "$value": "600", "$type": "fontWeight" },
-      "bold": { "$value": "700", "$type": "fontWeight" }
-    },
-    "lineHeight": {
-      "tight": { "$value": "1", "$type": "number", "$description": "대형 숫자." },
-      "normal": { "$value": "1.5", "$type": "number", "$description": "일반 본문." },
-      "comfortable": { "$value": "1.6", "$type": "number", "$description": "모달 설명 텍스트." }
-    }
-  }
-}
-```
-
----
-
-## 3. Spacing
-
-```json
-{
-  "spacing": {
-    "0": { "$value": "0px", "$type": "dimension" },
-    "1": { "$value": "4px", "$type": "dimension" },
-    "1.5": { "$value": "6px", "$type": "dimension" },
-    "2": { "$value": "8px", "$type": "dimension" },
-    "2.5": { "$value": "10px", "$type": "dimension" },
-    "3": { "$value": "12px", "$type": "dimension" },
-    "3.5": { "$value": "14px", "$type": "dimension" },
-    "4": { "$value": "16px", "$type": "dimension", "$description": "기본 화면 padding과 카드 padding." },
-    "5": { "$value": "20px", "$type": "dimension", "$description": "바텀시트 padding." },
-    "6": { "$value": "24px", "$type": "dimension" },
-    "8": { "$value": "32px", "$type": "dimension" },
-    "10": { "$value": "40px", "$type": "dimension", "$description": "빈 상태 상하 padding." }
-  }
-}
-```
-
----
-
-## 4. Border Radius
-
-```json
-{
-  "radius": {
-    "none": { "$value": "0px", "$type": "dimension" },
-    "xs": { "$value": "2px", "$type": "dimension", "$description": "step dot, sheet handle." },
-    "sm": { "$value": "4px", "$type": "dimension", "$description": "차트 막대, 작은 수량 버튼." },
-    "md": { "$value": "8px", "$type": "dimension", "$description": "버튼, 입력, 작은 카드, 썸네일." },
-    "lg": { "$value": "10px", "$type": "dimension", "$description": "선택 카드, 식단 카드, 정보 박스." },
-    "xl": { "$value": "12px", "$type": "dimension", "$description": "일반 카드, 모달 입력." },
-    "sheet": { "$value": "20px", "$type": "dimension", "$description": "바텀시트 상단 모서리." },
-    "modal": { "$value": "24px", "$type": "dimension", "$description": "중앙 확인 모달." },
-    "pill": { "$value": "50px", "$type": "dimension", "$description": "토스트 pill." },
-    "full": { "$value": "9999px", "$type": "dimension", "$description": "FAB, 원형 아이콘." }
-  }
-}
-```
-
----
-
-## 5. Shadows
-
-```json
-{
+    "warm.shell":      { "$value": "#eef5ee", "$type": "color", "$description": "데스크탑 쪽 앱 바깥 쉘." },
+    "warm.app-bg":     { "$value": "#f7faf6", "$type": "color", "$description": "앱 내부 기본 배경. 메인 그라디언트 종료점." },
+    "warm.surface":    { "$value": "#FFFFFF", "$type": "color", "$description": "카드, 입력 배경. 메인 시스템의 surface를 재사용." },
+    "warm.surface-translucent": { "$value": "rgba(255,255,255,.78)", "$type": "color", "$description": "상단바·바텀 내비게이션에 사용하는 글래스 표면." },
+    "warm.selected":   { "$value": "linear-gradient(135deg,#dcfce7,#bbf7d0)", "$type": "gradient", "$description": "선택·강조 카드 배경." },
+    "warm.hero-bubble":{ "$value": "radial-gradient(circle at 30% 30%, #d1fae5, #86efac 70%, #22c55e 110%)", "$type": "gradient", "$description": "온보딩 히어로 원형 + auth 로고 원형." },
+    "warm.cta":        { "$value": "linear-gradient(135deg,#22c55e,#16a34a)", "$type": "gradient", "$description": "Primary CTA, FAB, 저장 토스트 공유 그라디언트." },
+    "warm.danger":     { "$value": "linear-gradient(135deg,#f87171,#ef4444)", "$type": "gradient", "$description": ".btn-danger 그라디언트." }
+  },
   "shadow": {
-    "xs": {
-      "$value": "0 1px 2px rgba(0, 0, 0, 0.05)",
+    "warm.card": {
+      "$value": "0 1px 2px rgba(17,24,39,.04),0 8px 24px -12px rgba(17,24,39,.08)",
       "$type": "shadow",
-      "$description": "작은 통계 카드와 식단 카드."
+      "$description": "메인 카드 그림자 — 말랑하고 멀리 퍼지는 둥글 그림자."
     },
-    "sm": {
-      "$value": "0 1px 3px rgba(0, 0, 0, 0.06)",
+    "warm.glow": {
+      "$value": "0 12px 28px -10px rgba(34,197,94,.55)",
       "$type": "shadow",
-      "$description": "일반 카드 기본 그림자."
+      "$description": "Primary CTA, FAB, 선택 카드 그린 글로우."
     },
-    "dropdown": {
-      "$value": "0 4px 12px rgba(0, 0, 0, 0.12)",
+    "warm.glow-soft": {
+      "$value": "0 10px 24px -10px rgba(34,197,94,.35)",
       "$type": "shadow",
-      "$description": "히스토리 더보기 메뉴."
-    },
-    "fab": {
-      "$value": "0 6px 20px rgba(34, 197, 94, 0.45)",
-      "$type": "shadow",
-      "$description": "사진 분석 FAB."
-    },
-    "fab-hover": {
-      "$value": "0 8px 24px rgba(34, 197, 94, 0.55)",
-      "$type": "shadow",
-      "$description": "FAB hover."
-    },
-    "modal": {
-      "$value": "0 24px 60px rgba(0, 0, 0, 0.2)",
-      "$type": "shadow",
-      "$description": "중앙 확인 모달."
-    },
-    "toast": {
-      "$value": "0 8px 24px rgba(34, 197, 94, 0.4)",
-      "$type": "shadow",
-      "$description": "저장 완료 토스트."
-    },
-    "none": {
-      "$value": "none",
-      "$type": "shadow"
+      "$description": "마이너 CTA, 시각적 강조 카드."
     }
+  },
+  "radius": {
+    "warm.btn":   { "$value": "999px", "$type": "dimension", "$description": "모든 버튼(.btn)." },
+    "warm.input": { "$value": "12px",  "$type": "dimension", "$description": ".input-group input/select." },
+    "warm.card":  { "$value": "18px",  "$type": "dimension", "$description": ".card, .macro-bars, .meal-card, .history-meal-card, .bar-chart, .settings-section." },
+    "warm.tile":  { "$value": "16px",  "$type": "dimension", "$description": ".ring-stat, .stat-box, .meal-thumb-icon." },
+    "warm.sheet": { "$value": "24px",  "$type": "dimension", "$description": "바텀 시트 상단 모서리." },
+    "warm.pill":  { "$value": "999px", "$type": "dimension", "$description": ".auth-tabs, .stats-tabs, .date-nav, .nav-btn.active 필." }
   }
 }
 ```
 
 ---
 
-## 6. Z-index
+## 3. Components — 적용 맵
 
-```json
-{
-  "zIndex": {
-    "base": { "$value": "0", "$type": "number" },
-    "top-bar": { "$value": "50", "$type": "number", "$description": "sticky 상단바와 드롭다운 기준." },
-    "fab": { "$value": "90", "$type": "number", "$description": "음식 분석 FAB." },
-    "bottom-nav": { "$value": "100", "$type": "number", "$description": "하단 내비게이션." },
-    "overlay": { "$value": "200", "$type": "number", "$description": "바텀시트 overlay." },
-    "modal-overlay": { "$value": "500", "$type": "number", "$description": "중앙 모달 dim layer." },
-    "modal": { "$value": "501", "$type": "number", "$description": "중앙 모달." },
-    "toast": { "$value": "600", "$type": "number", "$description": "저장 완료 토스트." }
-  }
-}
-```
+각 컴포넌트별 Warm Visual 레이어가 어떻게 동작하는지 요약.
 
----
+### 3.1 Shell & background
+- `html, body` → `warm.shell` (바깥쉘 민트 그레이).
+- `#app` → `linear-gradient(180deg,#f0fdf4 0%, warm.app-bg 22%)` — 상단이 민트에서 소프트하게 배경으로 녹아들어 상단바 글래스감이 자연스럽게 드러남.
 
-## 7. Breakpoints
+### 3.2 Top bar (`.top-bar`)
+- `rgba(255,255,255,.78)` + `backdrop-filter: blur(14px)` 글래스 표면.
+- 하단 구분선 제거, 아주 약한 `0 1px 0 rgba(17,24,39,.04)` 그림자만.
+- 높이 60px, 제목 20px / weight 800.
 
-```json
-{
-  "breakpoint": {
-    "app-max": {
-      "$value": "430px",
-      "$type": "dimension",
-      "$description": "Cal AI 모바일 앱 쉘 최대 폭."
-    },
-    "sm": {
-      "$value": "640px",
-      "$type": "dimension",
-      "$description": "모바일 가로 또는 작은 태블릿."
-    },
-    "md": {
-      "$value": "768px",
-      "$type": "dimension",
-      "$description": "태블릿 이상. 앱은 여전히 430px 중앙 배치."
-    }
-  }
-}
-```
+### 3.3 Buttons (`.btn`)
+- 기본 하이트 52px, `border-radius: 999`, font 15.5px / 700.
+- `.btn-primary`: `warm.cta` 그라디언트 + `warm.glow`. hover 시 글로우 폭 확대.
+- `.btn-outline`: 흰 배경 + 연한 민트 보더(`--green-light`) + 그린 다크 텍스트.
+- `.btn-danger`: 레드 그라디언트 + 레드 글로우.
+- `.btn-sm`: 38px 소형 pill.
+- 항상 `:active` 시 `scale(.98)` 마이크로 모션으로 닿그 안정적인 터치 피드백.
 
----
+### 3.4 Cards (`.card`)
+- `border-radius: 18px`, padding 18px, `warm.card-shadow`.
+- 연한 1px 테두리(`rgba(17,24,39,.04)`)로 쉘 위에서도 구분 가능.
 
-## 8. Animation
+### 3.5 Inputs (`.input-group input`)
+- `border-radius: 12px`, padding 13/14, focus 시 3px 그린 링.
+- Label → 12.5px / weight 600.
 
-```json
-{
-  "animation": {
-    "duration": {
-      "instant": { "$value": "150ms", "$type": "duration", "$description": "모달 버튼 pressed 피드백." },
-      "fast": { "$value": "200ms", "$type": "duration", "$description": "버튼, 탭, 입력 focus, 선택 카드." },
-      "normal": { "$value": "300ms", "$type": "duration", "$description": "바텀시트 slideUp, step dot." },
-      "chart": { "$value": "500ms", "$type": "duration", "$description": "매크로 바와 차트 폭 변화." },
-      "spinner": { "$value": "700ms", "$type": "duration", "$description": "로딩 spinner 회전 주기." }
-    },
-    "easing": {
-      "default": { "$value": "ease", "$type": "cubicBezier", "$description": "기본 transition." },
-      "linear": { "$value": "linear", "$type": "cubicBezier", "$description": "spinner 회전." }
-    }
-  }
-}
-```
+### 3.6 Bottom nav (`#bottom-nav`)
+- 상단바와 동일한 글래스 표면. 위쪽 부드러운 그림자.
+- 활성 탭은 아이콘 뒤 36×24 민트 필 배경(`warm.green-bg`)이 그려져 세그멘티드 느낌.
 
----
+### 3.7 FAB (`#fab`)
+- `warm.cta` 그라디언트 + 이중 그림자 `0 14px 32px -6px rgba(34,197,94,.6), 0 0 0 6px rgba(34,197,94,.08)` 으로 바깥으로 퍼지는 후일로 회절 감입.
 
-## Component Tokens
+### 3.8 Auth screen (`#screen-auth`)
+- 로고 영역 `.auth-logo::before`로 **92×92 히어로 버블**을 자동 렌더링 (HTML 수정 없이).
+- 탭은 underline에서 필 형 세그멘티드 컨트롤로 교체: `.auth-tabs` 재미 + `.auth-tab.active`가 흰 카드 표면 + 그림자.
 
-```json
-{
-  "component": {
-    "app": {
-      "maxWidth": { "$value": "{breakpoint.app-max}", "$type": "dimension" },
-      "minHeight": { "$value": "100dvh", "$type": "dimension" }
-    },
-    "topBar": {
-      "height": { "$value": "56px", "$type": "dimension" },
-      "paddingX": { "$value": "{spacing.4}", "$type": "dimension" },
-      "background": { "$value": "{color.surface}", "$type": "color" },
-      "border": { "$value": "1px solid {color.border}", "$type": "border" }
-    },
-    "bottomNav": {
-      "height": { "$value": "60px", "$type": "dimension" },
-      "activeColor": { "$value": "{color.primary}", "$type": "color" },
-      "inactiveColor": { "$value": "{color.text-muted}", "$type": "color" }
-    },
-    "button": {
-      "minHeight": { "$value": "44px", "$type": "dimension" },
-      "padding": { "$value": "14px", "$type": "dimension" },
-      "radius": { "$value": "{radius.md}", "$type": "dimension" },
-      "fontSize": { "$value": "{font.size.button}", "$type": "dimension" },
-      "fontWeight": { "$value": "{font.weight.semibold}", "$type": "fontWeight" }
-    },
-    "card": {
-      "padding": { "$value": "{spacing.4}", "$type": "dimension" },
-      "radius": { "$value": "{radius.xl}", "$type": "dimension" },
-      "shadow": { "$value": "{shadow.sm}", "$type": "shadow" }
-    },
-    "input": {
-      "padding": { "$value": "12px", "$type": "dimension" },
-      "border": { "$value": "1.5px solid {color.border}", "$type": "border" },
-      "focusBorderColor": { "$value": "{color.primary}", "$type": "color" },
-      "radius": { "$value": "{radius.md}", "$type": "dimension" },
-      "fontSize": { "$value": "{font.size.input}", "$type": "dimension" }
-    },
-    "fab": {
-      "size": { "$value": "60px", "$type": "dimension" },
-      "radius": { "$value": "{radius.full}", "$type": "dimension" },
-      "background": { "$value": "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)", "$type": "gradient" },
-      "shadow": { "$value": "{shadow.fab}", "$type": "shadow" }
-    },
-    "sheet": {
-      "maxWidth": { "$value": "{breakpoint.app-max}", "$type": "dimension" },
-      "padding": { "$value": "{spacing.5}", "$type": "dimension" },
-      "radius": { "$value": "{radius.sheet} {radius.sheet} 0 0", "$type": "dimension" },
-      "maxHeight": { "$value": "92dvh", "$type": "dimension" }
-    },
-    "modal": {
-      "maxWidth": { "$value": "340px", "$type": "dimension" },
-      "radius": { "$value": "{radius.modal}", "$type": "dimension" },
-      "shadow": { "$value": "{shadow.modal}", "$type": "shadow" }
-    }
-  }
-}
-```
+### 3.9 Home ring & stats
+- `.ring-kcal`: 34px / weight 800 / letter-spacing -1px.
+- `.ring-stat`: 흰 카드, 16px radius, `warm.card-shadow`.
+
+### 3.10 Home macro bars (`.macro-bars`)
+- 세 막대를 하나의 흰 카드(`warm.card`)로 묶음.
+- 트랙 높이 8px, radius 999, fill은 `warm.cta` 그라디언트. 초과 시 Warning Orange 그라디언트.
+
+### 3.11 Meal cards (`.meal-card`, `.history-meal-card`)
+- 18px radius, `warm.card-shadow`.
+- 썸네일 아이콘 슬롯은 48×48 민트 그라디언트(`linear-gradient(135deg,#f0fdf4,#dcfce7)`).
+- 칼로리 수치는 Deep Green · Inter 타불러 숫자.
+
+### 3.12 History date nav (`.date-nav`)
+- 일자 셀렉터를 **떠있는 필**로 변경: 흰 배경 + radius 999 + `warm.card-shadow`. 날짜 버튼은 36px 원형, hover 시 `warm.green-bg`.
+
+### 3.13 Stats tabs (`.stats-tabs`) & chart
+- Auth 탭과 동일한 필 세그멘티드 스타일.
+- 차트 메인 영역을 흰 카드로 감싸고 `bar-body`는 수직 그라디언트(`#86efac → #22c55e`).
+- `.stat-box`: 16px radius, sb-val을 Deep Green / weight 800.
+
+### 3.14 Settings (`.settings-section`)
+- 18px radius 카드, `warm.card-shadow`.
+- 섹션 타이틀은 Deep Green 소문자로 차별화.
+- 아이템 사이 구분선은 초시한 `rgba(17,24,39,.05)`.
+
+### 3.15 Bottom sheet (`.sheet`)
+- 24px 상단 모서리, 굵은 22px padding, 위로 넘치는 소프트 그림자.
+- 제목 19px / weight 800.
 
 ---
 
-## 적용 현황
+## 4. Onboarding (per-screen) Spec
 
-| 카테고리 | 상태 | 기준 |
+Warm Visual 톤의 출발점인 온보딩 4단계는 위의 전역 토큰에 더해 다음 컴포넌트를 사용합니다.
+
+### 4.1 Hero header (`.onb-header`)
+- 108×108 원형 그라디언트 버블(`warm.hero-bubble`) + 우상단 흰색 말풍선 태그(`안녕하세요!`).
+- 22px / weight 800 로고 텍스트, 13px 보조 카피.
+
+### 4.2 Step progress (`.step-bar`)
+- 4개 점, `flex:1`, height 4px, gap 6px. 활성 상태만 Fresh Green.
+
+### 4.3 Step1 — Gender pill (`.sel-card`)
+- 48px height pill, 선택 시 단색 그린 + 그린 글로우 + 흰 글자.
+
+### 4.4 Step1 — Input group card
+- 한 개의 흰 카드 안에 라벨–숫자 행 3개를 구분선으로 묶음. 숫자는 Inter 20px 700, 오른쪽 정렬.
+
+### 4.5 Step2 — Activity list (`.activity-item`)
+- 16px radius 흰 카드, 좌측 48×48 둥근 사각 아이콘 슬롯, 우측 24×24 라디오 — 선택 시 그린 채움 + 흰 체크 SVG.
+- 선택 시 배경이 `warm.selected` 그라디언트, 보더 제거, 그린 글로우 추가.
+
+### 4.6 Step3 — Goal cards (`.goal-card`)
+- 18px radius 흰 카드. 56×56 흰 아이콘 슬롯 + 텍스트 + 우측 delta 칩.
+- `data-delta` 속성을 CSS `::after content:attr(data-delta)` 로 출력 (감량 `−500` · 유지 `±0` · 증량 `+300`).
+
+### 4.7 Privacy check (`.privacy-check`)
+- 14px radius, 반투명 흰 배경, 1px 보더 동의 박스.
+
+### 4.8 Step4 — TDEE result hero (`.tdee-result`)
+- 24px radius, 민트 그라디언트 배경, 우상단 흰 빛 글로우(`::before`).
+- 58px Inter 800 숫자, kcal 단위 보조 라벨.
+- 아래로 흰 카드 breakdown + 3분할 매크로 박스 + 흰 카드 직접 수정 입력.
+
+### 4.9 Nav buttons (`.onb-nav .btn`)
+- 56px height pill, primary는 `warm.cta` + `warm.glow`.
+
+---
+
+## 5. Motion
+
+| 대상 | 속성 | 시간 / easing |
 |---|---|---|
-| Colors | 확정 | `output/index.html` `:root` 및 inline style |
-| Typography | 확정 | `body`, 숫자 컴포넌트, 버튼, 라벨 |
-| Spacing | 초안 | 현재 CSS의 4~40px 사용값 정리 |
-| Border Radius | 확정 | 버튼, 카드, 바텀시트, 모달 구현값 |
-| Shadows | 확정 | 카드, FAB, 드롭다운, 모달, 토스트 구현값 |
-| Z-index | 확정 | 상단바, FAB, nav, overlay, modal, toast |
-| Breakpoints | 확정 | `max-width: 430px` 모바일 앱 쉘 |
-| Animation | 초안 | 현재 transition과 keyframes 기준 |
-| Component Tokens | 초안 | 코드 동기화 시 우선 적용 대상 |
+| 카드 선택 상태 변화 | `background, border-color, box-shadow` | 200ms ease |
+| 진행 dot 색 변화 | `background` | 300ms ease |
+| 모든 버튼 hover | `background, box-shadow` | 150ms ease |
+| 모든 버튼 active (`scale(.98)`) | `transform` | 120ms ease |
 
 ---
 
-## 코드 동기화 TODO
+## 6. Accessibility
 
-- `output/index.html`의 `:root` 변수명을 이 파일의 semantic token과 연결한다.
-- inline style로 남아 있는 모달, 토스트, 음식 DB 카드 스타일을 공통 CSS 클래스로 이동한다.
-- 초록 그라디언트는 FAB, 게스트 시작 CTA, 저장 토스트처럼 핵심 행동에만 제한한다.
-- emoji는 식사 맥락과 빈 상태를 보조하는 정도로 사용하고, 핵심 UI 식별자는 가능하면 아이콘 또는 텍스트 라벨을 사용한다.
-- 색상, radius, shadow를 코드에서 직접 바꾼 경우 이 파일도 반드시 업데이트한다.
+- 모든 터치 타깃 최소 44–52px.
+- 활성 상태는 색 변화만이 아니라 그림자·체크 마크로도 표현해 색맹 대응.
+- Focus 시 입력 필드 3px 그린 링으로 키보드 사용자 강조.
+- 숫자 위주 데이터는 `font-variant-numeric: tabular-nums`로 시각 비교 보장.
+
+---
+
+## 7. 코드 적용 위치
+
+| 파일 | 영역 | 내용 |
+|---|---|---|
+| `output/index.html` | `<style>` 내 `/* ── 온보딩 (Warm Visual) ── */` | 온보딩 4단계 전용 CSS |
+| `output/index.html` | `<style>` 내 `/* ── Warm Visual Global Theme (appended overrides) ── */` (`</style>` 직전) | 인증·홈·히스토리·통계·설정·시트·바텀 내비게이션·FAB·버튼·카드·입력 전역 override |
+| `output/index.html` | `#screen-onboarding > .onb-header` | 온보딩 헤더 — 로고 이미지 (`.onb-brand-mark`) + 보조 카피 |
+| `output/index.html` | `#screen-auth > .auth-logo` | 인증 헤더 — 로고 이미지 (`.auth-brand-mark`) + 보조 카피 |
+| `output/index.html` | `#guest-modal` 헤더 원형 컨테이너 | 흰 원 안에 `img/logo-v2.png` 렌더 |
+| `output/index.html` | `#splash-screen` (body 직하) | 스플래시 / 론치 화면 |
+| `output/index.html` | `.goal-card[data-delta]` | delta 칩 표시용 속성 |
+| `output/img/logo-v2.png` | 온보딩 / 인증 / 비회원 모달 | Calo AI 레터마크 (흔 배경 투명 처리됨) |
+| `output/img/app-icon.png` | 스플래시 화면 | Calo AI 앱 아이콘 |
+
+JS 로직은 **그대로 유지**됩니다. 아이콘 교체 시 이모지 문자열이 있던 `MEAL_ICON` / `DIET_MEAL_EMOJI` 상수는 SVG 문자열로 교체되었고, `renderHomeMeals`, `renderHistory`, `renderDietList`, `goStep`, `loadHomeData`, `loadHistoryData`, `loadStatsData`, `loadSettingsUI`, `showToast`, `renderChart` 등 기존 함수는 한 줄도 수정하지 않았습니다.
+
+---
+
+## 8. Brand Mark
+
+Calo AI 레터마크는 세 곳에서 일관되게 등장합니다. 모두 동일한 투명 PNG (`output/img/logo-v2.png`)를 사용하며 존재 권역의 배경에 자연스럽게 올라갑니다.
+
+| 위치 | 클래스 | 폭 | 추가 입키스탈 |
+|---|---|---:|---|
+| 온보딩 헤더 | `.onb-brand-mark` | 220px (max 60%) | `filter: drop-shadow(0 14px 28px rgba(34,197,94,.18))` |
+| 인증 헤더 | `.auth-brand-mark` | 180px (max 55%) | 동일 드롭 섬돀 |
+| 비회원 시작 모달 | inline `<img>` in 80px 흰 원 | 58px | 원 컨테이너 `box-shadow: 0 10px 24px -6px rgba(0,0,0,.25)` |
+
+흔 배경 제거는 알파 채널 전처리로 자동화되어 있으며(`min(R,G,B) ≥ 252 → alpha 0`, smooth falloff 220→252), 그래디언트/흰 배경 위에서 외곽 계단 없이 깨끗게 떠 있습니다.
+
+---
+
+## 9. Iconography
+
+기존 이모지 아이콘을 전용 **Lucide 계열 라인 SVG**로 전면 교체했습니다. 모든 아이콘은 `viewBox="0 0 24 24"`, `stroke="currentColor"`, `stroke-width="2"`, `width:1em; height:1em` 이므로 부모의 `font-size` / `color`를 그대로 상속합니다.
+
+### 9.1 원칙
+- **수단·타입·의미 전달 아이콘**만 유지 (메식 종류, 액션, 이동 타붙 등).
+- **장식적 이모지** (타이틀 앞의 🔥📊🎯⚡🤖🚀 등)은 **완전 제거**. 텍스트가 의미를 다 전달.
+- 아이콘 색은 `currentColor` 상속 — 새로운 색을 주고 싶으면 괄는 상자에 `color` 설정만 하면 됨.
+- 영양소 세부(단백·탄수화물·지방 등)처럼 너무 작은 아이콘 어울리는 곳은 **컬러 도트(●)** 로 대체.
+
+### 9.2 컴포넌트별 적용
+| 영역 | 이전 이모지 | 교체 아이콘 |
+|---|---|---|
+| 온보딩 성별 | 👨 👩 | (완전 제거 — pill과 텍스트만으로 명확) |
+| 온보딩 활동량 | 🛋️ 🚶 🏋️ 🏃 🏅 | sofa / walk / dumbbell / run / medal |
+| 온보딩 목표 | 📉 ⚖️ 📈 | trending-down / balance / trending-up |
+| 온보딩 시작 버튼 | 🚀 시작하기 | "시작하기" 술주 |
+| 식사 타입 (mt-btn / option / MEAL_ICON / DIET_MEAL_EMOJI) | 🍳 🍱 🍽️ 🍪 | sun / bowl / plate / cookie |
+| 식사 카드 메뉴 | ✏️ 🔄 🗑️ | edit / refresh / trash |
+| 카메라 시트 / 미리보기 | 🖼️ 📷 | image / camera |
+| 빈 상태 | 🍽️ 📋 | plate / list |
+| 악의 / 알림 | ⚠️ | alert (트라이액글) |
+| 로딩 / 검색 없음 | ⏳ 🔍 | spinner / search |
+| 최근 음식 | ⏱ | clock |
+| 설정 저장 / 성공 / 일정 | ✓ ✅ 🎯 | check (이모지 장식 수식어 제거) |
+| 로그아웃 모달 | 👋 🔐 | wave / lock |
+| 재분석 모달 | 🔄 | refresh |
+| 비회원 혜택 chip | ✅ 📊 🔒 | check / bar-chart / lock |
+| 분석 hint | 📊 칼로리 분석 보기 | bar-chart 아이콘 + 텍스트 |
+| 음식 DB 영양소 | 🔥 💪 🌾 🫒 | 컬러 도트 (빨·파·주·녹) |
+| 레이블 앞 장식 | 🤖 ⚡ 🎯 | 제거 (텍스트만) |
+
+### 9.3 아이콘 삽입 관용구
+```html
+<!-- 인라인 텍스트 압으로 넘어갈 때 -->
+<span style="display:inline-flex;vertical-align:-2px;margin-right:4px">
+  <!-- SVG의 width=1em / height=1em 동작 이용 -->
+  <svg ...>...</svg>
+</span>레이블
+```
+
+아이콘 주입이 많은 파일 하단에 SVG 일러레이가 존재했던 구조는 제거되고, 인라인 테플릿에 직접 삽입하는 방식이 채택되었습니다(최소 파일·의존성 기준).
+
+---
+
+## 10. Splash / Launch Screen
+
+앱 진입 시 맨 위에 떠서 **로고를 중앙에 페이드 인시키고 최소 2초 가시 후 페이드 아웃**하는 전용 론치 화면입니다.
+
+### 10.1 구조
+```html
+<div id="splash-screen">
+  <div class="splash-mark"><img src="img/app-icon.png" alt="Calo AI"></div>
+  <div class="splash-caption">CALO AI</div>
+</div>
+```
+
+### 10.2 스타일 토큰
+- 배경: `linear-gradient(180deg,#f7faf6 0%, #eef5ee 100%)` — Warm Visual shell과 동일한 톤의 세로 그라디언트.
+- 로고 컨테이너: 148×148, `border-radius:36px` (iOS 앱 아이콘 비율), 그림자 `0 24px 50px -14px rgba(34,197,94,.45), 0 4px 12px rgba(17,24,39,.06)`.
+- 캐프션 글자: 12px Inter / 600 / `letter-spacing:.18em` / 대문자 / `rgba(22,163,74,.55)`.
+- z-index: 9999 (모든 UI 위).
+
+### 10.3 모션
+| 단계 | 속성 | 시간 |
+|---|---|---|
+| 로고 등장 | `opacity 0→1`, `transform scale(.92→1.02→1)` | 0.8s `cubic-bezier(.2,.7,.3,1)` |
+| 캐프션 등장 | `opacity 0→1` | 0.3s 도달 지연 + 0.8s ease |
+| 최소 노출 | 가시 유지 | **2000 ms** (`MIN_VISIBLE_MS`) |
+| 페이드 아웃 | `opacity → 0` | 0.5s ease, 이후 `display:none` 제거 |
+
+### 10.4 JS 제어
+- `window.load` 또는 `readyState === 'complete'` 시점부터 경과 시간 계산.
+- `MIN_VISIBLE_MS` 임계에 도달한 수간 페이드 아웃 시작.
+- 페이드 아웃 520ms 후 `display:none`으로 완전 제거 (클릭 감이 도달 가능하게).
+- 기존 `#loading-overlay` 스피너는 그대로 유지 — 앱 초기화가 2초 이상 걸리면 스플래시 사라진 뒤 자연스럽게 노출.
+
+### 10.5 자산
+- `output/img/app-icon.png` — Calo AI 앱 아이콘 (부드러운 모서리 사각형 파워 그린 바탕).
+
+---
+
+## 11. 향후 확장 포인트
+
+- **다크 테마**: `warm.shell`, `warm.app-bg`, `warm.surface` 토큰을 다크 카운터파트로 매핑. `warm.cta`와 글로우는 유지하되 strength 조정.
+- **모션 강화**: 카드 선택 시 짧은 scale(1.02) bounce, 진행 dot 채움 시 좌→우 흐르는 fill 애니메이션.
+- **타이포 정제**: Inter 대신 Inter Variable 또는 Geist Variable로 교체 시 숫자 가독성 추가 향상.
+- **스플래시 애니메이션**: 로고 등장 이후 잠깐한 링 / 파티클 이펙트를 워터마크로 추가 가능.
+- **아이콘 패키지화**: 현재 인라인된 SVG를 `<defs><symbol>` 기반 단일 스프라이트로 묶으면 재사용·유지보수 향상.
