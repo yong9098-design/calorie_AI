@@ -44,34 +44,50 @@
 
 ```
 Calorie Calculator/
+├── package.json           # ⭐ npm 의존성 (루트 필수)
+├── package-lock.json      # npm 잠금 파일
+├── skills-lock.json       # 스킬 시스템 잠금 파일
 ├── CLAUDE.md              # 이 파일 — 하네스 마스터 가이드
-├── CHANGELOG.md           # 기능 구현 이력 (매 QA 합격 시 업데이트)
+├── CHANGELOG.md           # 기능 구현 이력 
 ├── design.md              # 디자인 시스템 
+├── README.md              # 프로젝트 설명서
+│
 ├── agents/                # 에이전트 지시사항
 │   ├── planner.md         # Planner 에이전트 (설계 전문)
 │   ├── generator.md       # Generator 에이전트 (구현 전문)
 │   ├── evaluator.md       # Evaluator 에이전트 (검증 전문)
 │   └── evaluation_criteria.md  # QA 평가 기준
+│
 ├── api/                   # API 백엔드 및 유틸리티
-│   ├── _env.js            # 환경설정 모듈
-│   ├── config.js          # 설정 파일
-│   ├── food-search.js     # 음식 검색 API
-│   └── analyze.js         # 데이터 분석 유틸리티
 ├── archive/               # 아카이브 및 참고 문서
-│   ├── ARCHITECTURE.html  # 아키텍처 다이어그램
-│   ├── architecture_docs/ # 아키텍처 문서
-│   ├── docs/              # 참고 문서
-│   ├── logo/              # 로고 자료
-│   └── png/               # 이미지 파일
+│
+├── config/                # ⭐ 배포 설정 (GitHub & Vercel)
+│   └── vercel.json        # Vercel 배포 설정
+│
+├── server/                # 로컬 개발 서버
+│   ├── dev-server.js      # 개발 서버 (로컬 실행용)
+│   ├── local-server.js    # 로컬 테스트 서버
+│   └── start-local-server.bat  # 서버 시작 배치
+│
 ├── docs/                  # 기획·설계·QA 문서
 │   ├── PRD.md             # 제품 요구사항 정의
 │   ├── SPEC.md            # 기술 명세서
 │   ├── USER_REQUEST.md    # 사용자 요청 원문
 │   ├── SELF_CHECK.md      # Generator 자체 검점
 │   └── QA_REPORT.md       # Evaluator QA 보고서
+│
 └── output/                # 최종 산출물
     └── index.html         # 완성된 웹 앱
 ```
+
+### 배포 필수 파일
+
+| 파일 | 위치 | 역할 | 배포 필수 |
+|------|------|------|----------|
+| `package.json` | 루트 | npm 의존성 정의 | ⭐ |
+| `package-lock.json` | 루트 | npm 패키지 버전 고정 | ⭐ |
+| `vercel.json` | `config/` | Vercel 배포 설정 | ⭐ |
+| `output/index.html` | `output/` | 최종 웹 앱 파일 | ⭐ |
 
 ---
 
