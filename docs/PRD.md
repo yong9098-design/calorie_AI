@@ -1,4 +1,4 @@
-# PRD: Cal AI — AI 칼로리 트래커
+# PRD: CALO AI — AI 칼로리 트래커
 
 ---
 
@@ -347,3 +347,4 @@ Gemini 분석 실패 또는 파싱 오류
 | 재분석 시 image_url 만료 | Phase 2에서 Supabase Storage 영구 저장으로 해결 |
 | API 키 노출 위험 | 서버 `.env` 관리로 해결 — 클라이언트에 키 미전달 |
 | Supabase 무료 플랜 한계 | 이미지 저장 Phase 2로 지연, 데이터 보존 정책 수립 |
+

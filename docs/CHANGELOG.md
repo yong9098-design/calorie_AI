@@ -1,6 +1,17 @@
 # Changelog
 
 
+## [2026-05-29] output/index.html 업데이트 (커밋: b3620eb)
+
+### 변경 내용
+- 칼로리 트래커 앱 개선
+
+### 파일 정보
+- 파일 크기: 164K
+
+---
+
+
 ## [2026-05-29] output/index.html 업데이트 (커밋: 525ab08)
 
 ### 변경 내용
@@ -119,7 +130,7 @@ AI 칼로리 트래커 프로젝트 변경 이력
 
 ---
 
-## [2026-04-20] PRD v2.0으로 변경 되었음 (Cal AI 방향 전환)
+## [2026-04-20] PRD v2.0으로 변경 되었음 (CALO AI 방향 전환)
 
 ### 구현 내용
 - amirdora/ai_calorie_tracker 저장소 기반으로 PRD 전면 재작성
@@ -140,7 +151,7 @@ AI 칼로리 트래커 프로젝트 변경 이력
 
 ---
 
-## [2026-04-21] Cal AI v2 전면 재구현 (harness 파이프라인 R3)
+## [2026-04-21] CALO AI v2 전면 재구현 (harness 파이프라인 R3)
 
 ### 구현 내용
 - PRD v2.0 기반 9개 화면 SPA 전면 재구현 (기존 6기능 → 9기능)
@@ -161,7 +172,7 @@ AI 칼로리 트래커 프로젝트 변경 이력
 - **SPA 라우팅**: `showScreen(id)` + `showMain(tab)` — Bottom Nav 홈/기록/통계/설정 4탭
 
 ### 변경된 파일
-- `output/index.html` — Cal AI v2 전면 재구현 (9화면, 2오버레이, 11개 FR 구현)
+- `output/index.html` — CALO AI v2 전면 재구현 (9화면, 2오버레이, 11개 FR 구현)
 - `SPEC.md` — Planner R3 생성 화면 설계서 (9화면 상세)
 - `SELF_CHECK.md` — R3 Generator 자체 점검 업데이트
 - `QA_REPORT.md` — Evaluator R3 검수 결과 추가
@@ -581,3 +592,4 @@ AI 칼로리 트래커 프로젝트 변경 이력
 - ✅ 음식 저장: 선택 음식 저장 시 `guest_meals` localStorage에 정상 저장 (calories, protein, carbs, fat 정확함)
 - ✅ 식사 기록 표시: 저장 직후 "기록" 탭에서 음식 표시 (영양소 정보 포함)
 - 반복 횟수: 1회 (브라우저 테스트로 확인 완료)
+
