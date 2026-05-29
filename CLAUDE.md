@@ -29,9 +29,9 @@
 ---
 
 ### **⑤ Planner Agent 실행** ⭐ (agents/planner.md 참고)
-- **입력**: `docs/PRD.md`
-- **역할**: PRD를 기반으로 상세 설계 및 명세 작성
-- **산출**: 설계서, 명세서 작성
+- **입력**: `docs/PRD.md` + `design.md` (Warm Visual 디자인 시스템)
+- **역할**: PRD와 디자인 시스템을 기반으로 상세 설계 및 명세 작성
+- **산출**: 설계서, 명세서 작성 (디자인 시스템 반영)
 - **우측 설명**: PRD.md를 기반으로 설계 및 명세 작성
 
 ### **⑥ docs/SPEC.md 생성**
@@ -42,9 +42,9 @@
 ---
 
 ### **⑦ Generator Agent 실행** ⭐ (agents/generator.md 참고)
-- **입력**: `docs/SPEC.md`
-- **역할**: 설계서를 기반으로 코드 구현
-- **산출**: 웹 앱 코드
+- **입력**: `docs/SPEC.md` + `design.md` (Warm Visual 디자인 시스템 반드시 적용)
+- **역할**: 설계서와 디자인 시스템을 철저히 따르며 코드 구현
+- **산출**: 웹 앱 코드 (design.md의 모든 스타일, 컴포넌트, 모션 적용)
 - **우측 설명**: SPEC.md를 기반으로 구현 진행
 
 ### **⑧ output/index.html 생성**
@@ -60,10 +60,10 @@
 ---
 
 ### **⑩ Evaluator Agent 실행** ⭐ (agents/evaluator.md 참고)
-- **입력**: `docs/PRD.md`, `docs/SPEC.md`, `output/index.html`
-- **역할**: 제품 사양서, 설계서, 신규물 종합 검증
-- **산출**: 평가 결과
-- **우측 설명**: PRD, SPEC, 신규물 종합 검증
+- **입력**: `docs/PRD.md`, `docs/SPEC.md`, `design.md`, `output/index.html`
+- **역할**: PRD vs SPEC vs HTML 일관성 검증 + design.md 디자인 시스템 준수 확인
+- **산출**: 평가 결과 (기능성, 디자인 일관성, 기술품질, 완성도)
+- **우측 설명**: PRD, SPEC, design.md, 신규물 종합 검증
 
 ### **⑪ docs/QA_REPORT.md 생성**
 - **역할**: 평가 결과 및 개선사항 보고서 작성
@@ -98,27 +98,38 @@ Evaluator 판정
 | 단계 | 파일/도구 | 입력 | 출력 | 역할 |
 |------|----------|------|------|------|
 | ③ | PRD Builder Skill | USER_REQUEST.md | PRD.md | 요구사항 정의 |
-| ⑤ | Planner Agent | PRD.md | SPEC.md | 화면 설계 |
-| ⑦ | Generator Agent | SPEC.md | index.html | 코드 구현 |
-| ⑩ | Evaluator Agent | PRD, SPEC, HTML | QA_REPORT.md | 품질 검증 |
+| **⑤** | **Planner Agent** | **PRD.md + design.md** | **SPEC.md** | **화면 설계 (디자인 시스템 반영)** |
+| **⑦** | **Generator Agent** | **SPEC.md + design.md** | **index.html** | **코드 구현 (디자인 시스템 철저히 적용)** |
+| **⑩** | **Evaluator Agent** | **PRD, SPEC, design.md, HTML** | **QA_REPORT.md** | **품질 검증 (디자인 준수 확인)** |
+
+### design.md의 역할
+- **디자인 시스템**: Warm Visual 톤의 색상, 그림자, 라운드, 타이포그래피, 모션
+- **컴포넌트 명세**: 모든 UI 요소의 스타일 토큰 및 적용 위치
+- **필수 준수**: Planner와 Generator는 design.md를 반드시 참고해야 함
 
 ---
 
 ## ⚠️ 중요 원칙
 
-1. **Generator와 Evaluator 분리**: 반드시 다른 서브에이전트로 호출
+1. **Design.md 우선 준수**: 구현 전에 design.md의 모든 내용 반영
+   - Planner: PRD + design.md를 함께 읽고 SPEC 작성
+   - Generator: SPEC + design.md를 함께 읽고 HTML 구현 (색, 그림자, 라운드, 모션 등 모두 적용)
+   - Evaluator: design.md 준수 여부를 명시적으로 검증
+
+2. **Generator와 Evaluator 분리**: 반드시 다른 서브에이전트로 호출
    - = "만드는 AI와 평가하는 AI를 분리"하는 핵심
 
-2. **각 단계 파일 확인**: 다음 단계 실행 전 산출물 존재 확인
+3. **각 단계 파일 확인**: 다음 단계 실행 전 산출물 존재 확인
 
-3. **반복 횟수 제한**: FAIL/조건부 시 최대 3회까지만 반복
+4. **반복 횟수 제한**: FAIL/조건부 시 최대 3회까지만 반복
    - 3회 후에도 미합격 → 현재 상태로 완료 + 이슈 보고
 
-4. **에이전트 지시사항**: `agents/` 폴더 파일 참고
+5. **에이전트 지시사항**: `agents/` 폴더 파일 + design.md 참고
    - `agents/planner.md` — Planner 에이전트
    - `agents/generator.md` — Generator 에이전트  
    - `agents/evaluator.md` — Evaluator 에이전트
    - `agents/evaluation_criteria.md` — 평가 기준
+   - **`design.md` — 디자인 시스템 (필수)**
 
 ---
 
