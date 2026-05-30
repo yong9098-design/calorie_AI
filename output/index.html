@@ -2048,7 +2048,7 @@ function selectMealType(type, el) {
 }
 
 async function saveMeal() {
-  const food = document.getElementById('inp-food').value.trim();
+  const food = document.getElementById('inp-food').value.trim().replace(/\p{Emoji}/gu, '').trim();
   const cal = parseInt(document.getElementById('inp-cal').value)||0;
   hideE('save-err');
   if(!food) { showE('save-err','음식명을 입력해 주세요.'); return; }
