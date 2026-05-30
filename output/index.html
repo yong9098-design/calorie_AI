@@ -116,11 +116,16 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 #onb-step1 .input-row .input-group:first-child{border-top:0}
 #onb-step1 .input-row .input-group label{margin:0;font-size:15px;color:var(--text);font-weight:500}
 #onb-step1 .input-row .input-group input{
-  border:none;background:transparent;padding:0;text-align:right;
+  border:none;background:transparent;padding:0;text-align:center;
   font-family:'Inter','Noto Sans KR',sans-serif;font-size:20px;font-weight:700;
-  color:var(--text);width:120px;
+  color:var(--text);width:70px;-moz-appearance:textfield;appearance:textfield;
 }
 #onb-step1 .input-row .input-group input:focus{border:none;outline:none}
+#onb-step1 .input-row .input-group input[type=number]::-webkit-inner-spin-button,
+#onb-step1 .input-row .input-group input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.num-stepper{display:flex;align-items:center;gap:6px}
+.step-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);background:#f9fafb;font-size:20px;font-weight:400;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;padding:0;transition:background .15s,color .15s;touch-action:manipulation}
+.step-btn:active{background:var(--green-bg);color:var(--green-dark);border-color:var(--green-light)}
 
 /* Step2 — activity list */
 .activity-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
@@ -603,7 +608,7 @@ html,body{background:var(--warm-shell)}
 /* ── Stats chart ── */
 .chart-wrap{padding:16px;overflow-x:auto;min-height:240px;display:flex;align-items:flex-start}
 .chart-wrap.chart-center{justify-content:center}
-.chart-wrap.chart-scroll{display:block;min-height:auto}
+.chart-wrap.chart-scroll{justify-content:flex-start;min-height:200px}
 .bar-chart{
   display:flex;align-items:flex-end;gap:4px;position:relative;padding-bottom:28px;
   background:#fff;border-radius:18px;
@@ -718,9 +723,9 @@ html,body{background:var(--warm-shell)}
       </div>
     </div>
     <div class="input-row">
-      <div class="input-group"><label>나이</label><input type="number" id="inp-age" min="10" max="99" placeholder="25"></div>
-      <div class="input-group"><label>키 (cm)</label><input type="number" id="inp-height" min="100" max="250" placeholder="170"></div>
-      <div class="input-group"><label>몸무게 (kg)</label><input type="number" id="inp-weight" min="30" max="300" placeholder="70"></div>
+      <div class="input-group"><label>나이</label><div class="num-stepper"><button class="step-btn" type="button" onclick="stepVal('inp-age',-1)">−</button><input type="number" id="inp-age" min="10" max="99" placeholder="25" inputmode="numeric"><button class="step-btn" type="button" onclick="stepVal('inp-age',1)">+</button></div></div>
+      <div class="input-group"><label>키 (cm)</label><div class="num-stepper"><button class="step-btn" type="button" onclick="stepVal('inp-height',-1)">−</button><input type="number" id="inp-height" min="100" max="250" placeholder="170" inputmode="numeric"><button class="step-btn" type="button" onclick="stepVal('inp-height',1)">+</button></div></div>
+      <div class="input-group"><label>몸무게 (kg)</label><div class="num-stepper"><button class="step-btn" type="button" onclick="stepVal('inp-weight',-1)">−</button><input type="number" id="inp-weight" min="30" max="300" placeholder="70" inputmode="numeric"><button class="step-btn" type="button" onclick="stepVal('inp-weight',1)">+</button></div></div>
     </div>
     <div id="onb-err1" class="error-msg"></div>
     <div class="onb-nav"><button class="btn btn-primary" onclick="goStep(2)">다음</button></div>
@@ -1526,6 +1531,14 @@ async function loadProfile() {
 // ═══════════════════════════════════════════
 //  온보딩
 // ═══════════════════════════════════════════
+function stepVal(id, delta) {
+  const el = document.getElementById(id);
+  const cur = parseFloat(el.value) || parseFloat(el.placeholder) || 0;
+  const min = parseFloat(el.min);
+  const max = parseFloat(el.max);
+  el.value = Math.min(max, Math.max(min, cur + delta));
+}
+
 function goStep(n) {
   if(n===2 && !validateStep1()) return;
   if(n===4 && !validateStep3()) return;
