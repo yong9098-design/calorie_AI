@@ -601,9 +601,9 @@ html,body{background:var(--warm-shell)}
 }
 
 /* ── Stats chart ── */
-.chart-wrap{padding:16px;overflow-x:auto}
-.chart-wrap.chart-center{display:flex;justify-content:center}
-.chart-wrap.chart-scroll{display:block}
+.chart-wrap{padding:16px;overflow-x:auto;min-height:240px;display:flex;align-items:flex-start}
+.chart-wrap.chart-center{justify-content:center}
+.chart-wrap.chart-scroll{display:block;min-height:auto}
 .bar-chart{
   display:flex;align-items:flex-end;gap:4px;position:relative;padding-bottom:28px;
   background:#fff;border-radius:18px;
