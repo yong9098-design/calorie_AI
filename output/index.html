@@ -1365,16 +1365,22 @@ async function loadRuntimeConfig(forceReload=false) {
   if(runtimeConfig) return runtimeConfig;
   if(!runtimeConfigPromise) {
     runtimeConfigPromise = (async () => {
-      const res = await fetch(apiUrl('/api/config'), { cache:'no-store' });
-      const json = await res.json().catch(() => ({}));
-      if(!res.ok) {
-        const fallback = res.status===404
-          ? '/api/config endpoint not found'
-          : `Runtime config load failed (${res.status})`;
-        throw new Error(json.error||fallback);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      try {
+        const res = await fetch(apiUrl('/api/config'), { cache:'no-store', signal: controller.signal });
+        const json = await res.json().catch(() => ({}));
+        if(!res.ok) {
+          const fallback = res.status===404
+            ? '/api/config endpoint not found'
+            : `Runtime config load failed (${res.status})`;
+          throw new Error(json.error||fallback);
+        }
+        runtimeConfig = json;
+        return runtimeConfig;
+      } finally {
+        clearTimeout(timeoutId);
       }
-      runtimeConfig = json;
-      return runtimeConfig;
     })();
   }
   try {
