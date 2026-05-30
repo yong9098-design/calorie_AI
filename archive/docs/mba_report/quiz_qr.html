@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>퀴즈 QR 코드</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      gap: 2vh;
+    }
+
+    .title {
+      font-size: 3.5vw;
+      font-weight: 800;
+      color: #222;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.8vw;
+      color: #666;
+    }
+
+    #qrcode {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2vw;
+      background: #fff;
+      border-radius: 1.5vw;
+      box-shadow: 0 0.4vw 2.5vw rgba(0,0,0,0.12);
+      transition: all 0.2s ease;
+    }
+
+    #qrcode canvas,
+    #qrcode img {
+      transition: all 0.2s ease;
+    }
+
+    .url-label {
+      font-size: 1.6vw;
+      color: #999;
+      letter-spacing: 0.01em;
+    }
+
+    /* 슬라이더 컨테이너 */
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8vh;
+    }
+
+    .slider-label {
+      font-size: 1.5vw;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 1vw;
+    }
+
+    .size-value {
+      font-weight: 700;
+      color: #333;
+      min-width: 3em;
+      text-align: center;
+      background: #f0f0f0;
+      border-radius: 0.5vw;
+      padding: 0.2em 0.6em;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 30vw;
+      height: 0.8vw;
+      border-radius: 999px;
+      background: linear-gradient(to right, #4f46e5, #e0e0e0);
+      outline: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 2vw;
+      height: 2vw;
+      border-radius: 50%;
+      background: #4f46e5;
+      box-shadow: 0 0.2vw 0.8vw rgba(79,70,229,0.4);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 2vw;
+      height: 2vw;
+      border-radius: 50%;
+      background: #4f46e5;
+      border: none;
+      box-shadow: 0 0.2vw 0.8vw rgba(79,70,229,0.4);
+      cursor: pointer;
+    }
+
+    .slider-icons {
+      display: flex;
+      justify-content: space-between;
+      width: 30vw;
+      font-size: 1.3vw;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="title">📱 QR 코드를 스캔하세요!</div>
+  <div class="subtitle">카메라로 찍으면 퀴즈 앱으로 바로 접속됩니다</div>
+  <div id="qrcode"></div>
+  <a href="https://calorie-ai-gamma.vercel.app/" class="url-label" style="text-decoration:none;color:#999;cursor:pointer" target="_blank">calorie-ai-gamma.vercel.app</a>
+
+  <!-- 크기 조절 슬라이더 -->
+  <div class="slider-container">
+    <div class="slider-label">
+      🔍 QR 크기 조절
+      <span class="size-value" id="sizeDisplay">50%</span>
+    </div>
+    <input type="range" id="sizeSlider" min="10" max="90" value="50" step="1">
+    <div class="slider-icons">
+      <span>작게</span>
+      <span>크게</span>
+    </div>
+  </div>
+
+  <script>
+    const slider  = document.getElementById("sizeSlider");
+    const display = document.getElementById("sizeDisplay");
+    const qrEl    = document.getElementById("qrcode");
+
+    function generateQR(val) {
+      // vmin 기준으로 px 계산
+      const vmin = Math.min(window.innerWidth, window.innerHeight);
+      const px   = Math.round(vmin * val / 100);
+
+      // 기존 QR 완전히 지우고 새 크기로 재생성
+      qrEl.innerHTML = "";
+      new QRCode(qrEl, {
+        text: "https://calorie-ai-gamma.vercel.app/",
+        width: px,
+        height: px,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      display.textContent = val + "%";
+
+      // 슬라이더 색상 업데이트
+      const pct = ((val - 10) / (90 - 10)) * 100;
+      slider.style.background =
+        `linear-gradient(to right, #4f46e5 ${pct}%, #e0e0e0 ${pct}%)`;
+    }
+
+    // 초기 렌더링
+    generateQR(50);
+
+    slider.addEventListener("input", () => generateQR(Number(slider.value)));
+
+    // 창 크기가 바뀌어도 현재 % 유지
+    window.addEventListener("resize", () => generateQR(Number(slider.value)));
+  </script>
+</body>
+</html>
