@@ -43,15 +43,14 @@
 ## 폴더 구조
 
 ```
-Calorie Calculator/
-├── package.json           # ⭐ npm 의존성 (루트 필수)
-├── package-lock.json      # npm 잠금 파일
-├── skills-lock.json       # 스킬 시스템 잠금 파일
+Calorie Calculator(Calo AI)/
 ├── CLAUDE.md              # 이 파일 — 하네스 마스터 가이드
 ├── CHANGELOG.md           # 기능 구현 이력 
 ├── design.md              # 디자인 시스템 
 ├── README.md              # 프로젝트 설명서
-│
+├── package.json           # npm 의존성 정의 
+├── vercel.json            # Vercel 배포 설정 
+│ 
 ├── agents/                # 에이전트 지시사항
 │   ├── planner.md         # Planner 에이전트 (설계 전문)
 │   ├── generator.md       # Generator 에이전트 (구현 전문)
@@ -60,14 +59,7 @@ Calorie Calculator/
 │
 ├── api/                   # API 백엔드 및 유틸리티
 ├── archive/               # 아카이브 및 참고 문서
-│
-├── config/                # ⭐ 배포 설정 (GitHub & Vercel)
-│   └── vercel.json        # Vercel 배포 설정
-│
 ├── server/                # 로컬 개발 서버
-│   ├── dev-server.js      # 개발 서버 (로컬 실행용)
-│   ├── local-server.js    # 로컬 테스트 서버
-│   └── start-local-server.bat  # 서버 시작 배치
 │
 ├── docs/                  # 기획·설계·QA 문서
 │   ├── PRD.md             # 제품 요구사항 정의
@@ -251,16 +243,6 @@ Evaluator 판정
 1. output/index.html을 브라우저에서 열기
 2. [설정] 탭에서 API 키 입력 (Supabase, Gemini)
 3. 회원가입 후 사용 시작
-```
-
-### 핵심 파일 및 에이전트
-
-| 단계 | 파일/도구 | 입력 | 출력 | 역할 |
-|------|----------|------|------|------|
-| ③ | PRD Builder Skill | USER_REQUEST.md | PRD.md | 요구사항 정의 |
-| **⑤** | **Planner Agent** | **PRD.md + design.md** | **SPEC.md** | **화면 설계 (디자인 시스템 반영)** |
-| **⑦** | **Generator Agent** | **SPEC.md + design.md** | **index.html** | **코드 구현 (디자인 시스템 철저히 적용)** |
-| **⑩** | **Evaluator Agent** | **PRD, SPEC, design.md, HTML** | **QA_REPORT.md** | **품질 검증 (디자인 준수 확인)** |
 
 ---
 
@@ -274,22 +256,6 @@ Evaluator 판정
 
 ---
 
-## 변경 이력
-
-| 날짜 | 변경 내용 | 사유 |
-|------|----------|------|
-| 2026-05-30 | 12섹션 스키마 적용 및 폴더 구조 추가 | workspace-standards 04-CLAUDE_MD_GUIDE 준수 |
-| 2026-05-29 | design.md 디자인 시스템 필수 준수 추가 | design.md 구현 전 반영 원칙 명시 |
-| 2026-05-29 | 12단계 워크플로우 상세 추가 | 이미지 기반 워크플로우 정의 |
-| 2026-05-29 | CLAUDE.md 워크플로우 중심으로 리팩토링 | 에이전트 상세 지시는 agents/ 이동 |
-
----
-
-## [필수] CHANGELOG 자동 업데이트 규칙
-
-**모든 기능 구현이 완료될 때마다 반드시 `CHANGELOG.md`를 업데이트하라.**
-
-해당 시점: Evaluator가 "합격" 판정을 내린 직후, 또는 사용자가 구현 완료를 확인한 시점.
 
 ### 작성 형식
 
@@ -314,7 +280,5 @@ Evaluator 판정
 - 미래에 코드를 처음 보는 개발자가 흐름을 파악할 수 있는 수준으로 작성
 - 파일이 루트에 없으면 아래 헤더로 신규 생성:
   ```markdown
-  # Changelog
 
-  AI 칼로리 트래커 프로젝트 변경 이력
   ```

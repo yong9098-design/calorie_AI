@@ -27,16 +27,17 @@ function loadEnvFile(filePath) {
   }
 }
 
-loadEnvFile(path.join(__dirname, '.env'));
-loadEnvFile(path.join(__dirname, '.env.local'));
+loadEnvFile(path.join(__dirname, '..', '.env'));
+loadEnvFile(path.join(__dirname, '..', '.env.local'));
 
 // Edge Runtime 핸들러를 env 로드 후 import (process.env가 먼저 채워져야 함)
-const { default: handleAnalyze } = await import('./api/analyze.js');
-const { default: handleConfig } = await import('./api/config.js');
+const { default: handleAnalyze } = await import('../api/analyze.js');
+const { default: handleConfig } = await import('../api/config.js');
+const { default: handleFoodSearch } = await import('../api/food-search.js');
 
 const HOST = process.env.HOST || '0.0.0.0';
 const PORT = Number(process.env.PORT || 3000);
-const OUTPUT_DIR = path.join(__dirname, 'output');
+const OUTPUT_DIR = path.join(__dirname, '..', 'output');
 const DISPLAY_HOST = HOST === '0.0.0.0' ? '127.0.0.1' : HOST;
 
 const MIME_TYPES = {
@@ -134,6 +135,7 @@ async function serveStatic(res, urlPath) {
 
 async function routeApi(nodeReq, nodeRes, pathname) {
   addCorsHeaders(nodeRes);
+  console.log('[API] pathname:', pathname, 'method:', nodeReq.method, 'url:', nodeReq.url);
 
   if (nodeReq.method === 'OPTIONS') {
     nodeRes.statusCode = 204;
@@ -141,21 +143,29 @@ async function routeApi(nodeReq, nodeRes, pathname) {
     return;
   }
 
-  const webReq = await toWebRequest(nodeReq);
-  let webRes;
+  try {
+    const webReq = await toWebRequest(nodeReq);
+    let webRes;
 
-  if (pathname === '/api/config') {
-    webRes = await handleConfig(webReq);
-  } else if (pathname === '/api/analyze') {
-    webRes = await handleAnalyze(webReq);
-  } else {
-    webRes = new Response(JSON.stringify({ error: 'Not Found' }), {
-      status: 404,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    if (pathname === '/api/config') {
+      webRes = await handleConfig(webReq);
+    } else if (pathname === '/api/analyze') {
+      webRes = await handleAnalyze(webReq);
+    } else if (pathname === '/api/food-search') {
+      console.log('[API] Calling handleFoodSearch');
+      webRes = await handleFoodSearch(webReq);
+    } else {
+      webRes = new Response(JSON.stringify({ error: 'Not Found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    await sendWebResponse(webRes, nodeRes);
+  } catch (error) {
+    console.error('[API] Error:', error);
+    sendPlainText(nodeRes, 500, error.message);
   }
-
-  await sendWebResponse(webRes, nodeRes);
 }
 
 // ── HTTP 서버 ──

@@ -7,10 +7,14 @@ const BASE_URL =
   'https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo02/getFoodNtrCpntDbInq02';
 
 export default async function handler(req) {
-  const { searchParams } = new URL(req.url);
-  const q    = searchParams.get('q')    ?? '';
-  const page = searchParams.get('page') ?? '1';
-  const rows = searchParams.get('rows') ?? '10';
+  try {
+    const { searchParams } = new URL(req.url);
+    const q    = searchParams.get('q')    ?? '';
+    const page = searchParams.get('page') ?? '1';
+    const rows = searchParams.get('rows') ?? '10';
+
+    console.log('[food-search] URL:', req.url);
+    console.log('[food-search] q:', q);
 
   const serviceKey = getEnv('FOOD_DB_API_KEY');
   if (!serviceKey) {
@@ -75,10 +79,17 @@ export default async function handler(req) {
     };
   });
 
-  return new Response(JSON.stringify(mapped), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders() },
-  });
+    return new Response(JSON.stringify(mapped), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders() },
+    });
+  } catch (error) {
+    console.error('[food-search] Error:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders() },
+    });
+  }
 }
 
 function corsHeaders() {

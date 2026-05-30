@@ -1,6 +1,30 @@
 # Changelog
 
 
+## [2026-05-31] QR 코드 페이지 최종 디자인
+
+### 구현 내용
+- archive/docs/mba_report/quiz_qr.html 디자인 개선
+- Calo AI 로고 적용 (archive/logo/logo (calo AI).png)
+- 제목: "Caro AI" (초록색 #52c41a)
+- 설명: "카메라로 찍으면 칼로리 계산 앱으로 바로 접속됩니다"
+- 잎 아이콘(🍃) 추가로 자연스러운 분위기 연출
+- 초록색(#52c41a) 기반 일관된 색상 체계 구성
+- QR 크기 조절 슬라이더 유지
+
+### 핵심 로직
+- 로고: 상단 중앙에 배치, 동적으로 로드 (상대 경로 사용)
+- 색상: Calo AI 브랜드 초록색(#52c41a) 통일
+- 레이아웃: 로고 → 제목 → 설명 → QR 코드 → URL → 슬라이더 순서
+- 폰트: Noto Sans KR 웹폰트로 한글 가독성 강화
+- QR 코드: calorie-ai-gamma.vercel.app 링크 포함
+- 반응형: 모바일 화면에 최적화된 gap, padding 설정
+
+### 변경된 파일
+- `archive/docs/mba_report/quiz_qr.html` — 로고 추가, 디자인 최종 완성
+
+---
+
 ## [2026-05-30] output/index.html 업데이트 (커밋: de553e4)
 
 ### 변경 내용
