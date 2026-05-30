@@ -606,7 +606,7 @@ html,body{background:var(--warm-shell)}
   display:flex;align-items:flex-end;gap:4px;position:relative;padding-bottom:28px;
   background:#fff;border-radius:18px;
   box-shadow:var(--warm-card-shadow);border:1px solid rgba(17,24,39,.04);
-  height:160px;
+  height:160px;overflow:hidden;
 }
 .bar-body{
   width:100%;min-width:16px;
@@ -2388,18 +2388,26 @@ function filterFoodsDB() {
 async function searchFoodsFromApi(q) {
   fooddbIsLoading = true;
   renderFoodsDB();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
   try {
-    const res = await fetch(`http://127.0.0.1:8001/api/food-search?q=${encodeURIComponent(q)}&rows=20`);
+    const res = await fetch(`/api/food-search?q=${encodeURIComponent(q)}&rows=20`, {
+      signal: controller.signal
+    });
+    if(!res.ok) throw new Error(`Food search failed: ${res.status}`);
     const results = await res.json();
-    fooddbApiResults = results.map((item, idx) => ({
+    fooddbApiResults = (Array.isArray(results) ? results : []).map((item, idx) => ({
       ...item,
       id: 1000 + idx
     }));
-  } catch {
+  } catch (error) {
+    console.error('[fooddb] search failed:', error);
     fooddbApiResults = [];
+  } finally {
+    clearTimeout(timeoutId);
+    fooddbIsLoading = false;
+    renderFoodsDB();
   }
-  fooddbIsLoading = false;
-  renderFoodsDB();
 }
 
 function updateFooddbUI() {
@@ -2565,7 +2573,7 @@ function renderChart(meals, days) {
     bars+=`<div class="bar-col"><div class="bar-kcal-txt">${kcal||''}</div><div class="bar-body${over?' over':''}" style="height:${h}%"></div><div class="bar-date">${label}</div></div>`;
     if(kcal>0){total+=kcal;cnt++;}
   });
-  document.getElementById('bar-chart').innerHTML=`<div class="goal-line" style="bottom:calc(${goalPct}% + 28px)"></div>${bars}`;
+  document.getElementById('bar-chart').innerHTML=`<div class="goal-line" style="bottom:${goalPct}%"></div>${bars}`;
   const avg = cnt>0?Math.round(total/cnt):0;
   document.getElementById('stats-summary').innerHTML=`
     <div class="stat-box"><div class="sb-val">${avg}</div><div class="sb-label">평균 kcal</div></div>
