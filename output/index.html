@@ -367,8 +367,8 @@ body{font-family:'Noto Sans KR','Inter',sans-serif;color:var(--text);display:fle
 .bar-chart{display:flex;align-items:flex-end;gap:4px;height:160px;position:relative;padding-bottom:28px}
 .goal-line{position:absolute;left:0;right:0;border-top:2px dashed var(--orange);opacity:.7}
 .bar-col{width:35px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;height:100%}
-.bar-body{width:100%;border-radius:4px 4px 0 0;min-width:16px;background:var(--green)}
-.bar-body.over{background:var(--orange)}
+.bar-body{width:100%;border-radius:8px 8px 4px 4px;min-width:16px;background:linear-gradient(180deg,#86efac,#22c55e)}
+.bar-body.over{background:linear-gradient(180deg,#fbbf24,#f59e0b)}
 .bar-date{font-size:9px;color:var(--sub);text-align:center}
 .bar-kcal-txt{font-size:9px;color:var(--sub)}
 .stats-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 16px}
@@ -607,11 +607,6 @@ html,body{background:var(--warm-shell)}
   background:#fff;border-radius:18px;
   box-shadow:var(--warm-card-shadow);border:1px solid rgba(17,24,39,.04);
   height:160px;overflow:hidden;width:max-content;
-}
-.bar-body{
-  width:100%;min-width:16px;
-  border-radius:8px 8px 4px 4px;
-  background:linear-gradient(180deg,#86efac,#22c55e);
 }
 .stat-box{
   background:#fff;border-radius:16px;padding:14px 10px;
@@ -2428,6 +2423,7 @@ async function saveFoodsDB() {
 
   try {
     let savedCount = 0;
+    const targetLoggedAt = new Date(historyDate).toISOString();
     for(const [id, data] of Object.entries(fooddbSelected)) {
       const allFoods = [...fooddbData.recent, ...fooddbData.popular, ...fooddbApiResults];
       const foodId = typeof id === 'string' ? parseInt(id) : id;
@@ -2441,7 +2437,8 @@ async function saveFoodsDB() {
           carbs: food.carb[data.qty] || 0,
           fat: food.fat[data.qty] || 0,
           quantity: data.qty,
-          notes: ''
+          notes: '',
+          logged_at: targetLoggedAt
         };
         await saveMealDirect(meal);
         savedCount++;
@@ -2466,13 +2463,14 @@ async function saveFoodsDB() {
 }
 
 async function saveMealDirect(meal) {
+  const loggedAt = meal.logged_at || new Date().toISOString();
   if(isGuestMode()) {
     const guestMeals = JSON.parse(localStorage.getItem(GUEST_MEALS_KEY) || '[]');
     const newMeal = {
       id: Date.now() + Math.random(),
       user_id: null,
       ...meal,
-      logged_at: new Date().toISOString(),
+      logged_at: loggedAt,
       image_url: null
     };
     guestMeals.push(newMeal);
@@ -2482,7 +2480,7 @@ async function saveMealDirect(meal) {
     const { error } = await sbClient.from('meal_logs').insert([{
       user_id: currentUser.id,
       ...meal,
-      logged_at: new Date().toISOString(),
+      logged_at: loggedAt,
       image_url: null
     }]);
     if(error) throw error;
