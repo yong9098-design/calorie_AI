@@ -601,12 +601,23 @@ html,body{background:var(--warm-shell)}
 }
 
 /* ── Stats chart ── */
-.chart-wrap{padding:16px}
+.chart-wrap{padding:16px;overflow-x:auto}
+.chart-wrap.chart-center{display:flex;justify-content:center}
+.chart-wrap.chart-scroll{display:block}
 .bar-chart{
   display:flex;align-items:flex-end;gap:4px;position:relative;padding-bottom:28px;
   background:#fff;border-radius:18px;
   box-shadow:var(--warm-card-shadow);border:1px solid rgba(17,24,39,.04);
-  height:160px;overflow:hidden;width:max-content;
+  height:160px;overflow:hidden;box-sizing:border-box;
+}
+.bar-chart.chart-week{
+  width:100%;max-width:100%;justify-content:space-between;padding:12px 10px 28px;
+}
+.bar-chart.chart-week .bar-col{
+  flex:1;min-width:30px;max-width:40px;
+}
+.bar-chart.chart-month{
+  width:max-content;min-width:max-content;padding:12px 10px 28px;
 }
 .stat-box{
   background:#fff;border-radius:16px;padding:14px 10px;
@@ -1199,21 +1210,21 @@ let fooddbSearchTimer = null;
 let fooddbApiResults = [];
 const fooddbData = {
   recent: [
-    {id:1,name:'청국장',qty:'medium',cals:{small:100,medium:150,large:200},protein:{small:15,medium:22,large:30},carb:{small:10,medium:15,large:20},fat:{small:5,medium:8,large:10}},
-    {id:2,name:'라면',qty:'medium',cals:{small:280,medium:380,large:480},protein:{small:8,medium:10,large:12},carb:{small:50,medium:65,large:80},fat:{small:12,medium:15,large:18}},
-    {id:3,name:'된장찌개',qty:'medium',cals:{small:80,medium:120,large:160},protein:{small:8,medium:12,large:16},carb:{small:5,medium:8,large:10},fat:{small:4,medium:6,large:8}},
-    {id:4,name:'김밥',qty:'medium',cals:{small:150,medium:220,large:280},protein:{small:6,medium:8,large:10},carb:{small:30,medium:42,large:55},fat:{small:5,medium:8,large:10}},
-    {id:5,name:'고구마',qty:'medium',cals:{small:80,medium:127,large:190},protein:{small:1.5,medium:2.1,large:3.2},carb:{small:18,medium:28,large:42},fat:{small:0.1,medium:0.2,large:0.3}},
+    {id:1,name:'🍲 청국장',qty:'medium',cals:{small:100,medium:150,large:200},protein:{small:15,medium:22,large:30},carb:{small:10,medium:15,large:20},fat:{small:5,medium:8,large:10}},
+    {id:2,name:'🍜 라면',qty:'medium',cals:{small:280,medium:380,large:480},protein:{small:8,medium:10,large:12},carb:{small:50,medium:65,large:80},fat:{small:12,medium:15,large:18}},
+    {id:3,name:'🍲 된장찌개',qty:'medium',cals:{small:80,medium:120,large:160},protein:{small:8,medium:12,large:16},carb:{small:5,medium:8,large:10},fat:{small:4,medium:6,large:8}},
+    {id:4,name:'🍙 김밥',qty:'medium',cals:{small:150,medium:220,large:280},protein:{small:6,medium:8,large:10},carb:{small:30,medium:42,large:55},fat:{small:5,medium:8,large:10}},
+    {id:5,name:'🍠 고구마',qty:'medium',cals:{small:80,medium:127,large:190},protein:{small:1.5,medium:2.1,large:3.2},carb:{small:18,medium:28,large:42},fat:{small:0.1,medium:0.2,large:0.3}},
   ],
   popular: [
-    {id:6,name:'밥',qty:'medium',cals:{small:150,medium:251,large:376},protein:{small:2.5,medium:5.2,large:7.8},carb:{small:33,medium:55,large:82},fat:{small:0.2,medium:0.5,large:0.7}},
-    {id:7,name:'계란',qty:'medium',cals:{small:70,medium:155,large:232},protein:{small:6,medium:13,large:19},carb:{small:0.5,medium:1.1,large:1.6},fat:{small:5,medium:11,large:16.5}},
-    {id:8,name:'닭가슴살',qty:'medium',cals:{small:150,medium:210,large:315},protein:{small:30,medium:42,large:63},carb:{small:0,medium:0,large:0},fat:{small:2.5,medium:4.5,large:6.8}},
-    {id:9,name:'두부',qty:'medium',cals:{small:60,medium:144,large:216},protein:{small:6.5,medium:15.7,large:23.6},carb:{small:1.8,medium:4.3,large:6.5},fat:{small:3.7,medium:8.9,large:13.3}},
-    {id:10,name:'바나나',qty:'medium',cals:{small:80,medium:114,large:160},protein:{small:0.3,medium:0.8,large:1.1},carb:{small:20,medium:26,large:37},fat:{small:0.2,medium:0.3,large:0.4}},
-    {id:11,name:'사과',qty:'medium',cals:{small:40,medium:77,large:116},protein:{small:0.2,medium:0.4,large:0.6},carb:{small:10,medium:20,large:30},fat:{small:0.2,medium:0.2,large:0.3}},
-    {id:12,name:'우유',qty:'medium',cals:{small:60,medium:130,large:195},protein:{small:3,medium:6.5,large:10},carb:{small:5,medium:10,large:15},fat:{small:3,medium:7,large:10}},
-    {id:13,name:'시금치나물',qty:'medium',cals:{small:30,medium:50,large:80},protein:{small:2.5,medium:4,large:6},carb:{small:3,medium:5,large:8},fat:{small:2,medium:3,large:4}},
+    {id:6,name:'🍚 밥',qty:'medium',cals:{small:150,medium:251,large:376},protein:{small:2.5,medium:5.2,large:7.8},carb:{small:33,medium:55,large:82},fat:{small:0.2,medium:0.5,large:0.7}},
+    {id:7,name:'🥚 계란',qty:'medium',cals:{small:70,medium:155,large:232},protein:{small:6,medium:13,large:19},carb:{small:0.5,medium:1.1,large:1.6},fat:{small:5,medium:11,large:16.5}},
+    {id:8,name:'🍗 닭가슴살',qty:'medium',cals:{small:150,medium:210,large:315},protein:{small:30,medium:42,large:63},carb:{small:0,medium:0,large:0},fat:{small:2.5,medium:4.5,large:6.8}},
+    {id:9,name:'🟫 두부',qty:'medium',cals:{small:60,medium:144,large:216},protein:{small:6.5,medium:15.7,large:23.6},carb:{small:1.8,medium:4.3,large:6.5},fat:{small:3.7,medium:8.9,large:13.3}},
+    {id:10,name:'🍌 바나나',qty:'medium',cals:{small:80,medium:114,large:160},protein:{small:0.3,medium:0.8,large:1.1},carb:{small:20,medium:26,large:37},fat:{small:0.2,medium:0.3,large:0.4}},
+    {id:11,name:'🍎 사과',qty:'medium',cals:{small:40,medium:77,large:116},protein:{small:0.2,medium:0.4,large:0.6},carb:{small:10,medium:20,large:30},fat:{small:0.2,medium:0.2,large:0.3}},
+    {id:12,name:'🥛 우유',qty:'medium',cals:{small:60,medium:130,large:195},protein:{small:3,medium:6.5,large:10},carb:{small:5,medium:10,large:15},fat:{small:3,medium:7,large:10}},
+    {id:13,name:'🥬 시금치나물',qty:'medium',cals:{small:30,medium:50,large:80},protein:{small:2.5,medium:4,large:6},carb:{small:3,medium:5,large:8},fat:{small:2,medium:3,large:4}},
   ]
 };
 
@@ -2573,7 +2584,12 @@ function renderChart(meals, days) {
     bars+=`<div class="bar-col"><div class="bar-kcal-txt">${kcal||''}</div><div class="bar-body${over?' over':''}" style="height:${h}%"></div><div class="bar-date">${label}</div></div>`;
     if(kcal>0){total+=kcal;cnt++;}
   });
-  document.getElementById('bar-chart').innerHTML=`<div class="goal-line" style="bottom:${goalPct}%"></div>${bars}`;
+  const chartWrap = document.querySelector('.chart-wrap');
+  const chartEl = document.getElementById('bar-chart');
+  chartWrap.classList.toggle('chart-center', days <= 7);
+  chartWrap.classList.toggle('chart-scroll', days > 7);
+  chartEl.className = `bar-chart ${days <= 7 ? 'chart-week' : 'chart-month'}`;
+  chartEl.innerHTML=`<div class="goal-line" style="bottom:${goalPct}%"></div>${bars}`;
   const avg = cnt>0?Math.round(total/cnt):0;
   document.getElementById('stats-summary').innerHTML=`
     <div class="stat-box"><div class="sb-val">${avg}</div><div class="sb-label">평균 kcal</div></div>
