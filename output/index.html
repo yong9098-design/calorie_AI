@@ -603,11 +603,13 @@ html,body{background:var(--warm-shell)}
 /* ── Stats chart ── */
 .chart-wrap{padding:16px}
 .bar-chart{
-  background:#fff;border-radius:18px;padding:18px 14px 32px;
+  display:flex;align-items:flex-end;gap:4px;position:relative;padding-bottom:28px;
+  background:#fff;border-radius:18px;
   box-shadow:var(--warm-card-shadow);border:1px solid rgba(17,24,39,.04);
-  height:auto;min-height:200px;
+  height:160px;
 }
 .bar-body{
+  width:100%;min-width:16px;
   border-radius:8px 8px 4px 4px;
   background:linear-gradient(180deg,#86efac,#22c55e);
 }
