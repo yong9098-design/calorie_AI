@@ -1114,7 +1114,7 @@ html,body{background:var(--warm-shell)}
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.35-4.35"></path>
         </svg>
-        <input type="text" id="fooddb-search-input" placeholder="음식 검색..." onkeyup="filterFoodsDB()" style="flex:1;border:none;outline:none;font-size:15px;font-family:inherit">
+        <input type="text" id="fooddb-search-input" placeholder="음식 검색..." oninput="filterFoodsDB()" style="flex:1;border:none;outline:none;font-size:15px;font-family:inherit">
       </div>
 
       <!-- 최근 음식 섹션 -->
@@ -1133,6 +1133,8 @@ html,body{background:var(--warm-shell)}
         <div id="fooddb-popular-foods"></div>
       </div>
 
+      <!-- API 오류 경고 -->
+      <div id="fooddb-api-warn" style="display:none;font-size:12px;color:#f59e0b;text-align:center;margin-bottom:8px;padding:6px;background:#fffbeb;border-radius:6px">⚠️ 식품DB API 연결 실패 — 내장 목록만 검색됩니다.</div>
       <!-- API 검색 결과 -->
       <div id="fooddb-search-results"></div>
     </div>
@@ -2291,6 +2293,7 @@ function closeReanalysis() { document.getElementById('reanalysis-modal').classLi
 function openFoodDBModal() {
   fooddbSelected = {};
   fooddbApiResults = [];
+  fooddbApiError = false;
   pendingLogDate = new Date(historyDate);
   document.getElementById('fooddb-search-input').value = '';
   document.getElementById('fooddb-modal').style.display = 'flex';
@@ -2325,8 +2328,10 @@ function renderFoodsDB() {
     const popularFiltered = fooddbData.popular.filter(f => f.name.toLowerCase().includes(q));
     const allMatches = [...recentFiltered, ...popularFiltered, ...fooddbApiResults];
 
+    const apiWarnEl = document.getElementById('fooddb-api-warn');
+    if(apiWarnEl) apiWarnEl.style.display = fooddbApiError ? '' : 'none';
     if(allMatches.length === 0) {
-      searchResult.innerHTML = `<div style="text-align:center;padding:40px;color:var(--sub)"><div style="font-size:32px;color:#cbd5d1;display:flex;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em" style="vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p style="margin-top:12px;font-size:14px">'${q}' 검색 결과가 없습니다.</p></div>`;
+      searchResult.innerHTML = `<div style="text-align:center;padding:40px;color:var(--sub)"><div style="font-size:32px;color:#cbd5d1;display:flex;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em" style="vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p style="margin-top:12px;font-size:14px">'${escH(q)}' 검색 결과가 없습니다.</p></div>`;
     } else {
       renderFooddbSection('fooddb-search-results', allMatches);
     }
@@ -2337,6 +2342,8 @@ function renderFoodsDB() {
   recentSec.style.display = '';
   popularSec.style.display = '';
   searchResult.innerHTML = '';
+  const apiWarnEl = document.getElementById('fooddb-api-warn');
+  if(apiWarnEl) apiWarnEl.style.display = 'none';
   renderFooddbSection('fooddb-recent-foods', fooddbData.recent);
   renderFooddbSection('fooddb-popular-foods', fooddbData.popular);
 }
@@ -2405,13 +2412,16 @@ function filterFoodsDB() {
   fooddbSearchTimer = setTimeout(() => searchFoodsFromApi(q), 300);
 }
 
+let fooddbApiError = false;
+
 async function searchFoodsFromApi(q) {
   fooddbIsLoading = true;
+  fooddbApiError = false;
   renderFoodsDB();
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000);
   try {
-    const res = await fetch(`/api/food-search?q=${encodeURIComponent(q)}&rows=20`, {
+    const res = await fetch(apiUrl(`/api/food-search?q=${encodeURIComponent(q)}&rows=20`), {
       signal: controller.signal
     });
     if(!res.ok) throw new Error(`Food search failed: ${res.status}`);
@@ -2423,6 +2433,7 @@ async function searchFoodsFromApi(q) {
   } catch (error) {
     console.error('[fooddb] search failed:', error);
     fooddbApiResults = [];
+    fooddbApiError = true;
   } finally {
     clearTimeout(timeoutId);
     fooddbIsLoading = false;
@@ -2460,7 +2471,7 @@ async function saveFoodsDB() {
           carbs: food.carb[data.qty] || 0,
           fat: food.fat[data.qty] || 0,
           quantity: data.qty,
-          notes: '',
+          notes: null,
           logged_at: targetLoggedAt
         };
         await saveMealDirect(meal);
@@ -2481,7 +2492,8 @@ async function saveFoodsDB() {
     }
   } catch(e) {
     console.error('[saveFoodsDB] 오류:', e);
-    alert('음식 저장에 실패했습니다: ' + e.message);
+    const msg = e?.message || e?.details || JSON.stringify(e) || '알 수 없는 오류';
+    alert('음식 저장에 실패했습니다: ' + msg);
   }
 }
 
