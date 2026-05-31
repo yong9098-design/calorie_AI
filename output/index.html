@@ -2466,10 +2466,10 @@ async function saveFoodsDB() {
         const meal = {
           meal_type: mealType,
           food_name: data.name,
-          calories: food.cals[data.qty] || 0,
-          protein: food.protein[data.qty] || 0,
-          carbs: food.carb[data.qty] || 0,
-          fat: food.fat[data.qty] || 0,
+          calories: Math.round(food.cals[data.qty] || 0),
+          protein: Math.round(food.protein[data.qty] || 0),
+          carbs: Math.round(food.carb[data.qty] || 0),
+          fat: Math.round(food.fat[data.qty] || 0),
           quantity: data.qty,
           notes: null,
           logged_at: targetLoggedAt
