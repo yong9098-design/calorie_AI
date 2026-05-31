@@ -2289,6 +2289,98 @@ function openReanalysis(mealId) {
 }
 function closeReanalysis() { document.getElementById('reanalysis-modal').classList.remove('active'); currentReanalyzeMeal=null; }
 
+// ── Food Emoji Helper ──
+function getFoodEmoji(name, category) {
+  if (/^\p{Emoji}/u.test(name)) return '';
+  const n = name.toLowerCase();
+  const c = (category || '').toLowerCase();
+  if (n.includes('밥') || n.includes('쌀밥') || n.includes('잡곡')) return '🍚';
+  if (n.includes('라면') || n.includes('라볶이')) return '🍜';
+  if (n.includes('국수') || n.includes('냉면') || n.includes('소면') || n.includes('우동') || n.includes('파스타') || n.includes('스파게티') || n.includes('면')) return '🍜';
+  if (n.includes('김밥')) return '🍙';
+  if (n.includes('초밥') || n.includes('스시')) return '🍣';
+  if (n.includes('만두') || n.includes('교자')) return '🥟';
+  if (n.includes('피자')) return '🍕';
+  if (n.includes('햄버거') || n.includes('버거')) return '🍔';
+  if (n.includes('샌드위치')) return '🥪';
+  if (n.includes('샐러드')) return '🥗';
+  if (n.includes('카레') || n.includes('curry')) return '🍛';
+  if (n.includes('비빔밥') || n.includes('덮밥') || n.includes('볶음밥')) return '🍱';
+  if (n.includes('찌개') || n.includes('된장') || n.includes('청국장') || n.includes('탕') || n.includes('국')) return '🍲';
+  if (n.includes('떡볶이') || n.includes('떡')) return '🍡';
+  if (n.includes('치킨') || n.includes('닭') || n.includes('프라이드')) return '🍗';
+  if (n.includes('삼겹') || n.includes('돼지') || n.includes('베이컨') || n.includes('햄') || n.includes('소시지')) return '🥓';
+  if (n.includes('소고기') || n.includes('쇠고기') || n.includes('스테이크') || n.includes('갈비') || n.includes('불고기')) return '🥩';
+  if (n.includes('연어') || n.includes('참치') || n.includes('고등어') || n.includes('갈치') || n.includes('조기') || n.includes('생선') || n.includes('광어') || n.includes('도미')) return '🐟';
+  if (n.includes('새우')) return '🦐';
+  if (n.includes('꽃게') || n.includes('게')) return '🦀';
+  if (n.includes('오징어') || n.includes('낙지') || n.includes('문어')) return '🦑';
+  if (n.includes('조개') || n.includes('굴') || n.includes('홍합') || n.includes('전복')) return '🦪';
+  if (n.includes('계란') || n.includes('달걀') || n.includes('에그')) return '🥚';
+  if (n.includes('두부')) return '🟫';
+  if (n.includes('두유') || n.includes('콩물')) return '🥛';
+  if (n.includes('우유') || n.includes('밀크')) return '🥛';
+  if (n.includes('요거트') || n.includes('요구르트')) return '🫙';
+  if (n.includes('치즈')) return '🧀';
+  if (n.includes('버터') || n.includes('마가린')) return '🧈';
+  if (n.includes('빵') || n.includes('토스트') || n.includes('바게트') || n.includes('식빵')) return '🍞';
+  if (n.includes('케이크') || n.includes('도넛') || n.includes('마카롱')) return '🎂';
+  if (n.includes('과자') || n.includes('쿠키') || n.includes('비스킷') || n.includes('크래커') || n.includes('스낵') || n.includes('칩')) return '🍪';
+  if (n.includes('초콜릿') || n.includes('초코')) return '🍫';
+  if (n.includes('아이스크림') || n.includes('빙수') || n.includes('젤라또') || n.includes('아이스')) return '🍦';
+  if (n.includes('사탕') || n.includes('캔디') || n.includes('젤리') || n.includes('구미')) return '🍬';
+  if (n.includes('사과')) return '🍎';
+  if (n.includes('바나나')) return '🍌';
+  if (n.includes('딸기')) return '🍓';
+  if (n.includes('포도')) return '🍇';
+  if (n.includes('귤') || n.includes('오렌지') || n.includes('한라봉') || n.includes('레몬') || n.includes('자몽')) return '🍊';
+  if (n.includes('복숭아')) return '🍑';
+  if (n.includes('수박')) return '🍉';
+  if (n.includes('참외') || n.includes('멜론')) return '🍈';
+  if (n.includes('키위')) return '🥝';
+  if (n.includes('망고')) return '🥭';
+  if (n.includes('파인애플')) return '🍍';
+  if (n.includes('체리')) return '🍒';
+  if (n.includes('블루베리') || n.includes('라즈베리') || n.includes('베리')) return '🫐';
+  if (n.includes('배') && !n.includes('배추')) return '🍐';
+  if (n.includes('감') || n.includes('곶감')) return '🍊';
+  if (n.includes('고구마')) return '🍠';
+  if (n.includes('감자')) return '🥔';
+  if (n.includes('당근')) return '🥕';
+  if (n.includes('브로콜리')) return '🥦';
+  if (n.includes('배추') || n.includes('양배추') || n.includes('상추') || n.includes('시금치') || n.includes('깻잎') || n.includes('쌈')) return '🥬';
+  if (n.includes('토마토')) return '🍅';
+  if (n.includes('옥수수')) return '🌽';
+  if (n.includes('버섯')) return '🍄';
+  if (n.includes('마늘') || n.includes('양파') || n.includes('파')) return '🧅';
+  if (n.includes('고추') || n.includes('김치')) return '🌶️';
+  if (n.includes('콩') || n.includes('팥') || n.includes('완두')) return '🫘';
+  if (n.includes('견과') || n.includes('아몬드') || n.includes('호두') || n.includes('캐슈') || n.includes('땅콩')) return '🥜';
+  if (n.includes('커피') || n.includes('아메리카노') || n.includes('에스프레소') || n.includes('라떼') || n.includes('카푸치노')) return '☕';
+  if (n.includes('차') || n.includes('녹차') || n.includes('홍차')) return '🍵';
+  if (n.includes('콜라') || n.includes('사이다') || n.includes('환타') || n.includes('음료') || n.includes('주스') || n.includes('스무디')) return '🥤';
+  if (n.includes('맥주')) return '🍺';
+  if (n.includes('소주') || n.includes('막걸리') || n.includes('와인') || n.includes('술')) return '🍶';
+  if (n.includes('물') || n.includes('워터')) return '💧';
+  if (n.includes('기름') || n.includes('올리브유') || n.includes('참기름') || n.includes('들기름')) return '🫙';
+  if (c.includes('과일')) return '🍎';
+  if (c.includes('채소') || c.includes('야채')) return '🥦';
+  if (c.includes('육류') || c.includes('고기')) return '🥩';
+  if (c.includes('어패류') || c.includes('수산') || c.includes('어류')) return '🐟';
+  if (c.includes('곡류')) return '🌾';
+  if (c.includes('두류')) return '🫘';
+  if (c.includes('유제품')) return '🥛';
+  if (c.includes('음료') || c.includes('주류')) return '🥤';
+  if (c.includes('과자') || c.includes('당류')) return '🍪';
+  if (c.includes('빵')) return '🍞';
+  if (c.includes('버섯')) return '🍄';
+  if (c.includes('해조류') || c.includes('해조')) return '🌿';
+  if (c.includes('알류')) return '🥚';
+  if (c.includes('유지류')) return '🧈';
+  if (c.includes('종실류')) return '🥜';
+  return '🍽️';
+}
+
 // ── Food DB Modal Functions ──
 function openFoodDBModal() {
   fooddbSelected = {};
@@ -2361,6 +2453,7 @@ function renderFooddbSection(id, foods) {
       <input type="checkbox" onchange="toggleFoodDB(${food.id},'${food.name.replace(/'/g,"\\'")}')" ${fooddbSelected[food.id]?'checked':''} style="margin-top:4px;cursor:pointer;width:18px;height:18px;accent-color:var(--green)">
       <div style="flex:1">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          ${(() => { const em = getFoodEmoji(food.name, food.category||''); return em ? `<span style="font-size:18px;line-height:1;flex-shrink:0">${em}</span>` : ''; })()}
           <span style="font-size:14px;font-weight:600;color:var(--text)">${escH(food.name)}</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
