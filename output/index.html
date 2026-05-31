@@ -2448,13 +2448,18 @@ function renderFooddbSection(id, foods) {
   }
   const searchVal = document.getElementById('fooddb-search-input').value.toLowerCase();
   const filtered = foods.filter(f => f.name.toLowerCase().includes(searchVal));
-  container.innerHTML = filtered.map(food => `
+  container.innerHTML = filtered.map(food => {
+    const emoji = getFoodEmoji(food.name, food.category||'');
+    const iconHtml = emoji
+      ? `<div style="width:44px;height:44px;border-radius:12px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">${emoji}</div>`
+      : `<div style="width:44px;height:44px;border-radius:12px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>`;
+    return `
     <div style="display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;transition:background .2s${fooddbSelected[food.id]?';background:var(--green-bg);border-color:var(--green)':''}">
-      <input type="checkbox" onchange="toggleFoodDB(${food.id},'${food.name.replace(/'/g,"\\'")}')" ${fooddbSelected[food.id]?'checked':''} style="margin-top:4px;cursor:pointer;width:18px;height:18px;accent-color:var(--green)">
-      <div style="flex:1">
+      <input type="checkbox" onchange="toggleFoodDB(${food.id},'${food.name.replace(/'/g,"\\'")}')" ${fooddbSelected[food.id]?'checked':''} style="margin-top:4px;cursor:pointer;width:18px;height:18px;accent-color:var(--green);flex-shrink:0">
+      ${iconHtml}
+      <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-          ${(() => { const em = getFoodEmoji(food.name, food.category||''); return em ? `<span style="font-size:18px;line-height:1;flex-shrink:0">${em}</span>` : ''; })()}
-          <span style="font-size:14px;font-weight:600;color:var(--text)">${escH(food.name)}</span>
+          <span style="font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escH(food.name)}</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
           ${['small','medium','large'].map(sz => `
@@ -2469,7 +2474,8 @@ function renderFooddbSection(id, foods) {
         </div>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function toggleFoodDB(id, name) {
