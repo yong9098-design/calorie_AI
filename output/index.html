@@ -1883,7 +1883,8 @@ function renderHomeMeals(meals) {
     if(!list.length) return;
     html += `<div class="meal-section-title">${MEAL_LABEL[type]}</div>`;
     list.forEach(m => {
-      const foodEmojiIcon = getFoodEmoji(m.food_name, m.category||'');
+      const { emoji: extractedEmoji, cleanName } = extractFoodEmoji(m.food_name);
+      const foodEmojiIcon = extractedEmoji || getFoodEmoji(m.food_name, m.category||'');
       const thumb = m.image_url
         ? `<img class="meal-thumb" src="${escH(m.image_url)}" alt="food">`
         : `<div class="meal-thumb-icon">${foodEmojiIcon || MEAL_ICON[m.meal_type]||"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"1em\" height=\"1em\" style=\"vertical-align:middle\"><path d=\"M3 2v6c0 1.1.9 2 2 2h0c1.1 0 2-.9 2-2V2M5 10v12M19 2v20M19 13c-2 0-4-2-4-5s2-5 4-5\"/></svg>"}</div>`;
@@ -1891,7 +1892,7 @@ function renderHomeMeals(meals) {
       const notesAttr = hasDetail ? ` data-notes="${escH(m.notes).replace(/"/g,'&quot;')}"` : '';
       const clickAttr = hasDetail ? ` onclick="showMealDetailFromEl(this)"` : '';
       const hint = hasDetail ? `<div class="detail-hint"><span style="display:inline-flex;vertical-align:-2px;margin-right:4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em" style="vertical-align:middle"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>칼로리 분석 보기</div>` : '';
-      html += `<div class="meal-card${hasDetail?' clickable':''}"${clickAttr}${notesAttr}>${thumb}<div class="meal-info"><div class="meal-name">${escH(m.food_name)}</div><div class="meal-type-tag">단백질 ${m.protein||0}g · 탄수 ${m.carbs||0}g · 지방 ${m.fat||0}g</div>${hint}</div><div class="meal-kcal">${m.calories}</div></div>`;
+      html += `<div class="meal-card${hasDetail?' clickable':''}"${clickAttr}${notesAttr}>${thumb}<div class="meal-info"><div class="meal-name">${escH(cleanName)}</div><div class="meal-type-tag">단백질 ${m.protein||0}g · 탄수 ${m.carbs||0}g · 지방 ${m.fat||0}g</div>${hint}</div><div class="meal-kcal">${m.calories}</div></div>`;
     });
   });
   wrap.innerHTML = html;
@@ -2187,7 +2188,8 @@ function renderHistory(meals) {
     if(!list.length) return;
     html+=`<div class="meal-section-title">${MEAL_LABEL[type]}</div>`;
     list.forEach(m=>{
-      const foodEmojiIcon = getFoodEmoji(m.food_name, m.category||'');
+      const { emoji: extractedEmoji, cleanName } = extractFoodEmoji(m.food_name);
+      const foodEmojiIcon = extractedEmoji || getFoodEmoji(m.food_name, m.category||'');
       const thumb = m.image_url
         ? `<img class="meal-thumb" src="${escH(m.image_url)}" alt="food">`
         : `<div class="meal-thumb-icon">${foodEmojiIcon || MEAL_ICON[m.meal_type]||"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"1em\" height=\"1em\" style=\"vertical-align:middle\"><path d=\"M3 2v6c0 1.1.9 2 2 2h0c1.1 0 2-.9 2-2V2M5 10v12M19 2v20M19 13c-2 0-4-2-4-5s2-5 4-5\"/></svg>"}</div>`;
@@ -2197,7 +2199,7 @@ function renderHistory(meals) {
       const hint = hasDetail ? `<div class="detail-hint"><span style="display:inline-flex;vertical-align:-2px;margin-right:4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em" style="vertical-align:middle"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>칼로리 분석 보기</div>` : '';
       html+=`<div class="history-meal-card${hasDetail?' clickable':''}"${clickAttr}${notesAttr}>
         ${thumb}
-        <div class="meal-info"><div class="meal-name">${escH(m.food_name)}</div>
+        <div class="meal-info"><div class="meal-name">${escH(cleanName)}</div>
         <div class="meal-type-tag">단백질 ${m.protein||0}g · 탄수 ${m.carbs||0}g · 지방 ${m.fat||0}g</div>${hint}</div>
         <div class="meal-kcal">${m.calories}</div>
         <button class="more-btn" onclick="toggleDrop(event,'${escH(m.id)}')">⋮</button>
@@ -2292,6 +2294,11 @@ function openReanalysis(mealId) {
 function closeReanalysis() { document.getElementById('reanalysis-modal').classList.remove('active'); currentReanalyzeMeal=null; }
 
 // ── Food Emoji Helper ──
+function extractFoodEmoji(foodName) {
+  const match = foodName.match(/^([\p{Emoji_Presentation}\p{Extended_Pictographic}]+)\s*/u);
+  if (match) return { emoji: match[1], cleanName: foodName.slice(match[0].length) };
+  return { emoji: '', cleanName: foodName };
+}
 function getFoodEmoji(name, category) {
   if (/^\p{Emoji}/u.test(name)) return '';
   const n = name.toLowerCase();
