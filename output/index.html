@@ -1883,9 +1883,10 @@ function renderHomeMeals(meals) {
     if(!list.length) return;
     html += `<div class="meal-section-title">${MEAL_LABEL[type]}</div>`;
     list.forEach(m => {
+      const foodEmojiIcon = getFoodEmoji(m.food_name, m.category||'');
       const thumb = m.image_url
         ? `<img class="meal-thumb" src="${escH(m.image_url)}" alt="food">`
-        : `<div class="meal-thumb-icon">${MEAL_ICON[m.meal_type]||"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"1em\" height=\"1em\" style=\"vertical-align:middle\"><path d=\"M3 2v6c0 1.1.9 2 2 2h0c1.1 0 2-.9 2-2V2M5 10v12M19 2v20M19 13c-2 0-4-2-4-5s2-5 4-5\"/></svg>"}</div>`;
+        : `<div class="meal-thumb-icon">${foodEmojiIcon || MEAL_ICON[m.meal_type]||"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"1em\" height=\"1em\" style=\"vertical-align:middle\"><path d=\"M3 2v6c0 1.1.9 2 2 2h0c1.1 0 2-.9 2-2V2M5 10v12M19 2v20M19 13c-2 0-4-2-4-5s2-5 4-5\"/></svg>"}</div>`;
       const hasDetail = !!m.notes;
       const notesAttr = hasDetail ? ` data-notes="${escH(m.notes).replace(/"/g,'&quot;')}"` : '';
       const clickAttr = hasDetail ? ` onclick="showMealDetailFromEl(this)"` : '';
@@ -2186,9 +2187,10 @@ function renderHistory(meals) {
     if(!list.length) return;
     html+=`<div class="meal-section-title">${MEAL_LABEL[type]}</div>`;
     list.forEach(m=>{
+      const foodEmojiIcon = getFoodEmoji(m.food_name, m.category||'');
       const thumb = m.image_url
         ? `<img class="meal-thumb" src="${escH(m.image_url)}" alt="food">`
-        : `<div class="meal-thumb-icon">${MEAL_ICON[m.meal_type]||"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"1em\" height=\"1em\" style=\"vertical-align:middle\"><path d=\"M3 2v6c0 1.1.9 2 2 2h0c1.1 0 2-.9 2-2V2M5 10v12M19 2v20M19 13c-2 0-4-2-4-5s2-5 4-5\"/></svg>"}</div>`;
+        : `<div class="meal-thumb-icon">${foodEmojiIcon || MEAL_ICON[m.meal_type]||"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"1em\" height=\"1em\" style=\"vertical-align:middle\"><path d=\"M3 2v6c0 1.1.9 2 2 2h0c1.1 0 2-.9 2-2V2M5 10v12M19 2v20M19 13c-2 0-4-2-4-5s2-5 4-5\"/></svg>"}</div>`;
       const hasDetail = !!m.notes;
       const notesAttr = hasDetail ? ` data-notes="${escH(m.notes).replace(/"/g,'&quot;')}"` : '';
       const clickAttr = hasDetail ? ` onclick="showMealDetailFromEl(this)"` : '';
