@@ -2468,7 +2468,7 @@ function renderFooddbSection(id, foods) {
             <button onclick="changeQtyDB(${food.id},'${sz}')" style="background:${food.qty===sz?'var(--green)':'#f3f4f6'};color:${food.qty===sz?'#fff':'#111827'};border:none;border-radius:4px;padding:4px 8px;font-size:12px;cursor:pointer;transition:background .2s;font-family:inherit">${sz==='small'?'작음':sz==='large'?'큼':'중간'}</button>
           `).join('')}
         </div>
-        <div style="display:flex;gap:12px;font-size:12px">
+        <div style="display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px">
           <div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;flex-shrink:0"></span><span style="color:#ef4444;font-weight:600">${food.cals[food.qty]}Cal</span></div>
           <div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#3b82f6;display:inline-block;flex-shrink:0"></span><span style="color:#3b82f6;font-weight:600">${food.protein[food.qty].toFixed(1)}g</span></div>
           <div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block;flex-shrink:0"></span><span style="color:#f59e0b;font-weight:600">${food.carb[food.qty].toFixed(1)}g</span></div>
