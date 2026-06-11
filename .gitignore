@@ -13,6 +13,7 @@
 .claude/
 skills-lock.json
 .playwright-mcp/
+.vercel-deploy-clean/
 
 # 아카이브 및 테스트 파일
 archive/

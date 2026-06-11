@@ -1,4 +1,0 @@
-[     364ms] [ERROR] Error: <g> attribute transform: Expected number, "translate(undefined, NaN)". @ https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js:5
-[     365ms] [ERROR] Error: <g> attribute transform: Expected number, "translate(undefined, NaN)". @ https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js:5
-[     369ms] [ERROR] Error: <g> attribute transform: Expected number, "translate(undefined, NaN)". @ https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js:86
-[     370ms] [ERROR] Error: <g> attribute transform: Expected number, "translate(undefined, NaN)". @ https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js:86
