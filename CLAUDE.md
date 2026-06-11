@@ -107,14 +107,30 @@ Calorie Calculator(Calo AI)/
 
 ---
 
+## 구현 화면 (6개)
+
+| 화면 | 설명 |
+|------|------|
+| **온보딩** | 4단계 (성별 → 신체정보 → 활동레벨 → TDEE 결과), TDEE 수동 편집 가능 |
+| **인증** | 이메일/비밀번호 로그인·회원가입 탭, 비회원 게스트 모드 |
+| **홈** | 오늘 칼로리 링차트, 식사 목록, FAB(카메라/갤러리 업로드) |
+| **기록** | 날짜 네비게이션, 과거 날짜 식사 추가·편집·삭제 |
+| **통계** | 기간별 칼로리 차트, 식관리 AI 분석 (영양소 평균 + Gemini 평가) |
+| **설정** | Supabase·Gemini API 키 입력, 목표 칼로리·영양소, 모델 선택, 프로필 재설정 |
+
+---
+
 ## 도메인 프레임워크
 
 | 요소 | 설명 |
 |------|------|
-| **TDEE 계산** | Harris-Benedict 공식 (BMR × 활동계수) |
-| **인증** | Supabase Auth (이메일/비밀번호, 비회원) |
+| **TDEE 계산** | Harris-Benedict 공식 (BMR × 활동계수), 수동 편집 지원 |
+| **인증** | Supabase Auth (이메일/비밀번호, 비회원 게스트) |
 | **데이터 저장** | PostgreSQL (Supabase) + RLS 적용 |
-| **AI 분석** | Google Gemini 2.5 Flash/Pro (음식 칼로리) |
+| **AI 분석** | Google Gemini 2.5 Flash/Pro — 음식 이미지 분석 + 식관리 평가 |
+| **식품DB 검색** | 식품의약품안전처 오픈API (`/api/food-search`) + 내장 목록 폴백 |
+| **API 서버** | Vercel Edge Runtime 서버리스 함수 (`api/` 폴더) |
+| **PWA** | manifest.webmanifest + service worker + 아이콘 (홈화면 설치 지원) |
 | **디자인 시스템** | Warm Visual (design.md 참고) |
 
 ---
