@@ -129,6 +129,7 @@ Calorie Calculator(Calo AI)/
 | **데이터 저장** | PostgreSQL (Supabase) + RLS 적용 |
 | **AI 분석** | Google Gemini 2.5 Flash/Pro — 음식 이미지 분석 + 식관리 평가 |
 | **식품DB 검색** | 식품의약품안전처 오픈API (`/api/food-search`) + 내장 목록 폴백 |
+| **InBody 연동** | InBody API — 체성분 실측값(근육량·체지방률) 기반 TDEE 정밀화, 체성분 추이 차트 |
 | **API 서버** | Vercel Edge Runtime 서버리스 함수 (`api/` 폴더) |
 | **PWA** | manifest.webmanifest + service worker + 아이콘 (홈화면 설치 지원) |
 | **디자인 시스템** | Warm Visual (design.md 참고) |
